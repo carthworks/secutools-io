@@ -13,3 +13,7 @@ body {
 .container-page {
 	@apply max-w-6xl mx-auto px-4 sm:px-6;
 } 
+.bg-slate-950{
+    --tw-bg-opacity: 1;
+    background-color: rgb(255 255 255);
+}
