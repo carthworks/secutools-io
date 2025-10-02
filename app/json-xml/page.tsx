@@ -161,7 +161,7 @@ export default function JsonXmlFormatter() {
       try {
         // serialize then format
         const serializer = new XMLSerializer();
-        const raw = serializer.serializeToString(res.doc);
+        const raw = serializer.serializeToString(res.doc!);
         // basic pretty format
         const formattedXml = formatXml(raw);
         return { formatted: formattedXml, valid: true, error: null };
