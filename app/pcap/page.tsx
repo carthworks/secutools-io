@@ -471,7 +471,10 @@ export default function PCAPPage() {
             <FileText size={16} /> Download MD
           </button>
 
-          <button onClick={printAsPDF} className="flex items-center gap-2 px-3 py-2 border rounded">
+          <button
+            onClick={() => printAsPDF(summary, fileName)}
+            className="flex items-center gap-2 px-3 py-2 border rounded"
+          >
             Print / Save as PDF
           </button>
 
