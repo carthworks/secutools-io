@@ -114,7 +114,7 @@ export default function HomePage() {
               <div key={idx} className={`space-y-4 p-4 rounded-lg shadow-sm ${cat.color}`}>
                 <div className="flex items-center gap-2">
                   <cat.icon className="w-5 h-5 text-slate-700" />
-                  <h2 className="text-lg font-semibold">{cat.title}</h2>
+                  <h2 className="text-lg font-semibold uppercase">{cat.title}</h2>
                 </div>
                 <div className="grid gap-3">
                   {cat.tools.map((t) => (
