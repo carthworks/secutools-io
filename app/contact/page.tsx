@@ -65,11 +65,11 @@ Send Message
 <div className="space-y-4">
 <div>
 <h4 className="font-semibold text-slate-800 mb-1"> Email</h4>
-<p className="text-slate-600">contact@cybersecuritytools.io</p>
+<p className="text-slate-600">tkarthikeyan@gmail.com</p>
 </div>
 <div>
 <h4 className="font-semibold text-slate-800 mb-1"> GitHub</h4>
-<p className="text-slate-600">github.com/cybersecurity-tools</p>
+<p className="text-slate-600">github.com/carthworks</p>
 </div>
 <div>
 <h4 className="font-semibold text-slate-800 mb-1"> Discord</h4>

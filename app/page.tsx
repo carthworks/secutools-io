@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 
 import dynamic from "next/dynamic";
+import NetworkTools from "@/components/NetworkTools";
 // import NewsFeedSection from "@/components/NewsFeedSection";
 
 
@@ -53,6 +54,7 @@ const categories: Category[] = [
       { slug: "headers", title: "HTTP Headers", desc: "CORS & CSP overview" , isPublish:true},
       { slug: "cidr", title: "CIDR Calculator", desc: "Subnet ranges, broadcast, network size" , isPublish:true},
       { slug: "asn", title: "ASN Lookup", desc: "Find ASN / ISP from IP (offline dataset)", isPublish:false },
+	  { slug: "network-tool", title: "Network-tool", desc: "IPv4/IPv6 utilities, MAC helpers, and quick math — client-side", isPublish:true },
     ],
   },
   {
@@ -406,7 +408,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-	  <NewsFeedSection />
+	  <section>	  <NewsFeedSection /></section>
+	  {/* <section> <NetworkTools/></section> */}
+
     </div>
   );
 }
