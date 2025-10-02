@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import Section from "@/components/Section"; // your existing Section
-import { Copy, Download, Share2, Trash2, FileText, File } from "lucide-react";
+import { Copy, Share2, Trash2, FileText, File } from "lucide-react";
 
 /**
  * Lightweight PCAP parser (MVP) - enhanced UI wrapper
@@ -128,7 +128,8 @@ function openPrintWindow(html: string) {
     alert("Unable to open print window (popup blocked). Try using your browser's Print -> Save as PDF.");
     return;
   }
-  w.document.write(html);
+  w.document.open();
+  w.document.body.innerHTML = html;
   w.document.close();
   w.focus();
   setTimeout(() => {
@@ -315,41 +316,46 @@ export default function PCAPPage() {
         </p>
 
         {/* file input + drag-drop area */}
-        <div
-          ref={dropRef}
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          className="mt-4 rounded border-2 border-dashed border-slate-700 p-4 text-center bg-slate-950"
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              const el = document.getElementById("pcap-file-input");
-              (el as HTMLInputElement | null)?.click();
-            }
-          }}
-          aria-label="Drop PCAP file here or click to select"
-        >
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <div className="text-sm">Drag & drop a <strong>.pcap</strong> file here</div>
-            <div className="text-sm">or</div>
-            <label htmlFor="pcap-file-input" className="inline-block">
-              <input
-                id="pcap-file-input"
-                type="file"
-                accept=".pcap,.pcapng"
-                onChange={handleFileInput}
-                className="sr-only"
-              />
-              <button className="px-4 py-2 border rounded bg-slate-900 hover:bg-slate-800">
-                Choose file
-              </button>
-            </label>
-          </div>
-          <div className="mt-2 text-xs text-slate-400">
-            Max recommended size: 10 MB. Large files may be slow or truncated.
-          </div>
-        </div>
+      {/* file input + drag-drop area */}
+<div
+  ref={dropRef}
+  onDrop={handleDrop}
+  onDragOver={handleDragOver}
+  className="mt-4 rounded border-2 border-dashed border-slate-700 p-4 text-center bg-slate-950"
+  role="button"
+  tabIndex={0}
+  onKeyDown={(e) => {
+    if (e.key === "Enter") {
+      document.getElementById("pcap-file-input")?.click();
+    }
+  }}
+  aria-label="Drop PCAP file here or click to select"
+>
+  <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+    <div className="text-sm">Drag & drop a <strong>.pcap</strong> file here</div>
+    <div className="text-sm">or</div>
+
+    {/* Fixed: label directly acts as button */}
+    <label
+      htmlFor="pcap-file-input"
+      className="px-4 py-2 border rounded bg-slate-900 hover:bg-slate-800 text-white cursor-pointer"
+    >
+      Choose file
+    </label>
+
+    <input
+      id="pcap-file-input"
+      type="file"
+      accept=".pcap,.pcapng"
+      onChange={handleFileInput}
+      className="hidden"
+    />
+  </div>
+  <div className="mt-2 text-xs text-slate-400">
+    Max recommended size: 10 MB. Large files may be slow or truncated.
+  </div>
+</div>
+
 
         {/* feedback */}
         <div className="flex items-center gap-3 mt-3">
@@ -366,19 +372,19 @@ export default function PCAPPage() {
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 mt-4">
             <div className="p-3 rounded border bg-slate-900 text-sm">
               <div className="text-xs text-slate-400">Magic</div>
-              <div className="font-medium">{summary.magic}</div>
+              <div className="font-medium text-green-300">{summary.magic}</div>
             </div>
             <div className="p-3 rounded border bg-slate-900 text-sm">
               <div className="text-xs text-slate-400">Version</div>
-              <div className="font-medium">{summary.version}</div>
+              <div className="font-medium  text-green-300">{summary.version}</div>
             </div>
             <div className="p-3 rounded border bg-slate-900 text-sm">
               <div className="text-xs text-slate-400">Snaplen</div>
-              <div className="font-medium">{summary.snaplen}</div>
+              <div className="font-medium  text-green-300">{summary.snaplen}</div>
             </div>
             <div className="p-3 rounded border bg-slate-900 text-sm">
               <div className="text-xs text-slate-400">Packets</div>
-              <div className="font-medium">{summary.packetCount}</div>
+              <div className="font-medium  text-green-300">{summary.packetCount}</div>
             </div>
           </div>
         )}
@@ -435,7 +441,7 @@ export default function PCAPPage() {
             <div className="text-sm text-slate-400 mb-2">Packets (first 5000 shown)</div>
             <div className="overflow-auto rounded border bg-slate-900">
               <table className="min-w-full text-sm">
-                <thead className="sticky top-0 bg-slate-800">
+                <thead className="sticky top-0 bg-slate-800 text-green-700">
                   <tr>
                     <th className="px-2 py-2 text-left">#</th>
                     <th className="px-2 py-2 text-left">Timestamp</th>
@@ -444,10 +450,10 @@ export default function PCAPPage() {
                     <th className="px-2 py-2 text-left">Actions</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="text-white">
                   {summary.packets.map((p: any, i: number) => (
-                    <tr key={i} className={i % 2 === 0 ? "bg-slate-900" : "bg-slate-950/20"}>
-                      <td className="px-2 py-2 align-top">{p.index ?? i}</td>
+                    <tr key={i} className={i % 2 === 0 ? "bg-slate-900" : "bg-slate-950/20 text-white"}>
+                      <td className="px-2 py-2 align-top text-white">{p.index ?? i}</td>
                       <td className="px-2 py-2 align-top">{p.ts}</td>
                       <td className="px-2 py-2 align-top">{p.inclLen} / {p.origLen}</td>
                       <td className="px-2 py-2 align-top">
