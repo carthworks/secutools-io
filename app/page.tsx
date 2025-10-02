@@ -1,8 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { Key, Network, Search, FileSearch, FlaskConical, Cloud } from "lucide-react";
+import {
+  Key,
+  Network,
+  Search,
+  FileSearch,
+  FlaskConical,
+  Cloud,
+  Star,
+  StarOff,
+  ExternalLink,
+} from "lucide-react";
 
 type Tool = { slug: string; title: string; desc: string };
 type Category = { title: string; icon: any; color: string; tools: Tool[] };
@@ -73,64 +83,284 @@ const categories: Category[] = [
   },
 ];
 
+/* ---------- helpers ---------- */
+const FAVORITES_KEY = "secu_favs_v1";
+const RECENT_KEY = "secu_recent_v1";
+
+function loadJSON<T>(key: string): T | null {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+    return JSON.parse(raw) as T;
+  } catch {
+    return null;
+  }
+}
+function saveJSON(key: string, value: any) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {}
+}
+
+/* Very small rule to add a simple tag */
+function toolTags(slug: string) {
+  const clientOnly = new Set([
+    "hash", "jwt", "password", "logs", "timestamp", "pcap", "subdomain", "payloads", "cheatsheets"
+  ]);
+  const apiNeeded = new Set(["ip-dns", "cve", "threat", "whois", "headers-check", "aws-s3"]);
+  const tags: string[] = [];
+  if (clientOnly.has(slug)) tags.push("client-only");
+  if (apiNeeded.has(slug)) tags.push("api");
+  if (slug === "pcap") tags.push("upload");
+  return tags;
+}
+
+/* ---------- component ---------- */
 export default function HomePage() {
   const [query, setQuery] = useState("");
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    return loadJSON<string[]>(FAVORITES_KEY) ?? [];
+  });
+  const [recent, setRecent] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    return loadJSON<string[]>(RECENT_KEY) ?? [];
+  });
 
-  const filteredCategories = categories.map((cat) => ({
-    ...cat,
-    tools: cat.tools.filter((t) =>
-      [t.title, t.desc, cat.title].some((field) =>
-        field.toLowerCase().includes(query.toLowerCase())
-      )
-    ),
-  }));
+  const searchRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    // persist favorites
+    saveJSON(FAVORITES_KEY, favorites);
+  }, [favorites]);
+
+  useEffect(() => {
+    saveJSON(RECENT_KEY, recent);
+  }, [recent]);
+
+  // keyboard shortcut to focus search (Cmd/Ctrl+K)
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      const mod = e.ctrlKey || e.metaKey;
+      if (mod && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        searchRef.current?.focus();
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  // filtered view
+  const filteredCategories = useMemo(
+    () =>
+      categories.map((cat) => ({
+        ...cat,
+        tools: cat.tools.filter((t) =>
+          [t.title, t.desc, cat.title].some((field) =>
+            field.toLowerCase().includes(query.toLowerCase())
+          )
+        ),
+      })),
+    [query]
+  );
+
+  // All tools flat (for favorites UI)
+  const allToolsFlat: Tool[] = useMemo(() => categories.flatMap((c) => c.tools), []);
+
+  function toggleFavorite(slug: string) {
+    setFavorites((prev) => {
+      const next = prev.includes(slug) ? prev.filter((s) => s !== slug) : [slug, ...prev];
+      return next.slice(0, 20);
+    });
+  }
+
+  function recordRecent(slug: string) {
+    setRecent((prev) => {
+      const next = [slug, ...prev.filter((s) => s !== slug)];
+      return next.slice(0, 12);
+    });
+  }
+
+  // helper to render icon components stored in category.icon
+  function RenderIcon({ icon: IconComp, className = "w-5 h-5" }: { icon: any; className?: string }) {
+    const Comp = IconComp as any;
+    return <Comp className={className} aria-hidden />;
+  }
+
+  // quick favorites resolved to tool objects
+  const favoritesResolved = favorites.map((s) => allToolsFlat.find((t) => t.slug === s)).filter(Boolean) as Tool[];
+  const recentResolved = recent.map((s) => allToolsFlat.find((t) => t.slug === s)).filter(Boolean) as Tool[];
 
   return (
-    <div className="space-y-12">
-      {/* Hero Section */}
-      <section className="text-center space-y-4">
+    <div className="space-y-10 px-4 sm:px-8 lg:px-24 py-8">
+      {/* Hero */}
+      <section className="text-center space-y-3">
         <h1 className="text-3xl sm:text-4xl font-semibold">Cybersecurity Handy Tools</h1>
         <p className="text-slate-600 max-w-2xl mx-auto">
-          Everyday tools for students and professionals. Fast, privacy-friendly, and open.
+          Practical tools for SOC analysts, pentesters, and students — fast, privacy-friendly, and open.
         </p>
       </section>
 
-      {/* Search */}
-      <section className="max-w-xl mx-auto">
-        <input
-          type="text"
-          placeholder="Search tools..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="w-full border rounded-lg p-3 shadow-sm"
-        />
+      {/* Search & Favorites row */}
+      <section className="max-w-4xl mx-auto space-y-4">
+        <div className="flex gap-3 items-center">
+          <div className="relative flex-1">
+            <input
+              ref={searchRef}
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search tools..."
+              aria-label="Search tools"
+              className="w-full border rounded-lg p-3 shadow-sm pr-20"
+            />
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 flex items-center gap-2">
+              <span className="hidden sm:inline">Press</span>
+              <kbd className="bg-slate-100 border rounded px-2 py-0.5 text-xs">⌘K</kbd>
+            </div>
+          </div>
+
+          <div className="flex gap-2 items-center">
+            <div className="text-sm text-slate-600 hidden sm:block">Favorites</div>
+            <div className="flex gap-2">
+              {favoritesResolved.length === 0 ? (
+                <div className="text-sm text-slate-400 px-3 py-2 rounded border">No favorites</div>
+              ) : (
+                favoritesResolved.slice(0, 6).map((t) => (
+                  <Link
+                    key={t.slug}
+                    href={`/${t.slug}`}
+                    onClick={() => recordRecent(t.slug)}
+                    className="px-3 py-2 rounded border bg-white text-sm shadow-sm hover:bg-slate-50 flex items-center gap-2"
+                    title={t.title}
+                  >
+                    <span className="font-medium">{t.title}</span>
+                  </Link>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Recently used */}
+        {recentResolved.length > 0 && (
+          <div className="flex gap-2 overflow-x-auto py-1">
+            {recentResolved.map((t) => (
+              <Link
+                key={t.slug}
+                href={`/${t.slug}`}
+                onClick={() => recordRecent(t.slug)}
+                className="text-xs whitespace-nowrap px-3 py-1 border rounded bg-white flex items-center gap-2"
+              >
+                <span>{t.title}</span>
+              </Link>
+            ))}
+          </div>
+        )}
       </section>
 
-      {/* Categories - 2 per row */}
+      {/* Categories (2 per row) */}
       <section className="grid md:grid-cols-2 gap-6">
         {filteredCategories.map(
           (cat, idx) =>
             cat.tools.length > 0 && (
               <div key={idx} className={`space-y-4 p-4 rounded-lg shadow-sm ${cat.color}`}>
-                <div className="flex items-center gap-2">
-                  <cat.icon className="w-5 h-5 text-slate-700" />
-                  <h2 className="text-lg font-semibold uppercase">{cat.title}</h2>
+                <div className="flex items-center gap-3">
+                  <RenderIcon icon={cat.icon} />
+                  <h2 className="text-lg font-semibold uppercase tracking-wide">{cat.title}</h2>
+                  <div className="ml-auto text-sm text-slate-500">{cat.tools.length} tools</div>
                 </div>
+
                 <div className="grid gap-3">
-                  {cat.tools.map((t) => (
-                    <Link
-                      key={t.slug}
-                      href={`/${t.slug}`}
-                      className="rounded-lg border border-slate-200 bg-white hover:bg-slate-50 p-4 block shadow-sm"
-                    >
-                      <div className="font-medium">{t.title}</div>
-                      <div className="text-sm text-slate-500">{t.desc}</div>
-                    </Link>
-                  ))}
+                  {cat.tools.map((t) => {
+                    const tags = toolTags(t.slug);
+                    const isFav = favorites.includes(t.slug);
+                    return (
+                      <div
+                        key={t.slug}
+                        className="rounded-lg border border-slate-200 bg-white hover:bg-slate-50 p-3 block shadow-sm flex items-start gap-3"
+                      >
+                        {/* left: title + desc */}
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3">
+                            <div className="font-medium">{t.title}</div>
+                            <div className="flex gap-1 ml-1">
+                              {tags.map((tg) => (
+                                <span key={tg} className="text-xs px-2 py-0.5 bg-slate-100 rounded-full text-slate-600">{tg}</span>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="text-sm text-slate-500 mt-1">{t.desc}</div>
+                        </div>
+
+                        {/* right: actions */}
+                        <div className="flex flex-col items-end gap-2">
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => toggleFavorite(t.slug)}
+                              aria-pressed={isFav}
+                              aria-label={isFav ? `Remove ${t.title} from favorites` : `Add ${t.title} to favorites`}
+                              className="p-1 rounded hover:bg-slate-100"
+                              title={isFav ? "Unfavorite" : "Add to favorites"}
+                            >
+                              {isFav ? <Star className="w-4 h-4 text-amber-500" /> : <StarOff className="w-4 h-4 text-slate-400" />}
+                            </button>
+                            <Link
+                              href={`/${t.slug}`}
+                              onClick={() => recordRecent(t.slug)}
+                              className="px-2 py-1 rounded border text-xs bg-white hover:bg-slate-50"
+                              title={`Open ${t.title}`}
+                            >
+                              Open
+                            </Link>
+                          </div>
+                          <a
+                            href={`/${t.slug}`}
+                            onClick={(e) => {
+                              // also record recent if user opens via link (Link already does)
+                              recordRecent(t.slug);
+                            }}
+                            className="text-xs text-slate-400 hover:text-slate-600"
+                          >
+                            Learn <ExternalLink className="inline w-3 h-3" />
+                          </a>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )
         )}
+      </section>
+
+      {/* Learning resources */}
+      <section>
+        <div className="rounded-lg border p-4 bg-white shadow-sm max-w-4xl mx-auto">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-semibold">Learning Resources</h3>
+              <p className="text-sm text-slate-600">Hand-picked tutorials and labs for hands-on cybersecurity practice.</p>
+            </div>
+            <div className="text-sm text-slate-500">Updated weekly</div>
+          </div>
+
+          <div className="mt-3 grid sm:grid-cols-2 gap-3">
+            <a href="https://owasp.org/Top10/" target="_blank" rel="noreferrer" className="p-3 border rounded hover:bg-slate-50">
+              OWASP Top 10 <div className="text-xs text-slate-500">Web app risks</div>
+            </a>
+            <a href="https://portswigger.net/web-security" target="_blank" rel="noreferrer" className="p-3 border rounded hover:bg-slate-50">
+              PortSwigger Web Security Academy <div className="text-xs text-slate-500">Free labs & tutorials</div>
+            </a>
+            <a href="https://tryhackme.com/" target="_blank" rel="noreferrer" className="p-3 border rounded hover:bg-slate-50">
+              TryHackMe <div className="text-xs text-slate-500">Guided hands-on rooms</div>
+            </a>
+            <a href="https://attack.mitre.org/" target="_blank" rel="noreferrer" className="p-3 border rounded hover:bg-slate-50">
+              MITRE ATT&CK <div className="text-xs text-slate-500">Tactics & techniques</div>
+            </a>
+          </div>
+        </div>
       </section>
     </div>
   );
