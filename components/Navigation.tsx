@@ -25,65 +25,7 @@ import {
 type Tool = { slug: string; title: string; desc: string };
 type Category = { title: string; icon: any; color: string; tools: Tool[] };
 
-const categories0: Category[] = [
-  {
-    title: "Cryptography",
-    icon: Key,
-    tools: [
-      { slug: "hash", title: "Hash Tools", desc: "MD5, SHA1, SHA256, SHA512" },
-      { slug: "jwt", title: "JWT Decoder", desc: "Decode and verify JWTs" },
-      { slug: "password", title: "Password Utilities", desc: "Strength checker and generator" },
-    ],
-  },
-  {
-    title: "Network Analysis",
-    icon: Network,
-    tools: [
-      { slug: "ip-dns", title: "IP & DNS Toolkit", desc: "GeoIP, DNS records, rDNS" },
-      { slug: "ssl", title: "SSL/TLS Checker", desc: "Certificate info and expiry" },
-      { slug: "port", title: "Port Check", desc: "TCP reachability" },
-      { slug: "headers", title: "HTTP Headers", desc: "CORS & CSP overview" },
-    ],
-  },
-  {
-    title: "Threat Intelligence",
-    icon: Search,
-    tools: [
-      { slug: "ioc", title: "IOC Extractor", desc: "Extract IPs, URLs, hashes, emails" },
-      { slug: "cve", title: "CVE Lookup", desc: "Fetch details from CIRCL CVE" },
-      { slug: "threat", title: "Threat Intel Check", desc: "VirusTotal/AbuseIPDB" },
-      { slug: "whois", title: "WHOIS / RDAP", desc: "Ownership & registration" },
-    ],
-  },
-  {
-    title: "Analysis Tools",
-    icon: FileSearch,
-    tools: [
-      { slug: "logs", title: "Log Beautifier", desc: "Format JSON, Apache, Nginx" },
-      { slug: "pcap", title: "PCAP Decoder", desc: "View timestamps, sizes, hex" },
-      { slug: "timestamp", title: "Timestamp Converter", desc: "Unix ↔ Human time" },
-      { slug: "subdomain", title: "Subdomain Finder", desc: "Dictionary-based" },
-    ],
-  },
-  {
-    title: "Testing & Payloads",
-    icon: FlaskConical,
-    tools: [
-      { slug: "payloads", title: "XSS/SQLi Payloads", desc: "Encoders and test payloads" },
-      { slug: "cheatsheets", title: "Cheatsheets", desc: "OWASP Top 10, MITRE ATT&CK" },
-    ],
-  },
-  {
-    title: "Web & Cloud Security",
-    icon: Cloud,
-    tools: [
-      { slug: "headers-check", title: "Security Headers Checker", desc: "Inspect CSP, HSTS, X-Frame-Options" },
-      { slug: "url-trace", title: "URL Unshortener & Redirect Tracer", desc: "Expand and trace redirects" },
-      { slug: "cvss", title: "CVE Severity Calculator", desc: "Compute CVSS scores" },
-      { slug: "aws-s3", title: "AWS S3 Checker", desc: "Test for public/misconfigured buckets" },
-    ],
-  },
-];
+
 
 const categories: Category[] = [
   {
