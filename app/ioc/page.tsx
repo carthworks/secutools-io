@@ -91,7 +91,7 @@ export default function IOCPage() {
                 <h3 className="font-semibold text-slate-200 mb-1">
                   {key.toUpperCase()} ({(values as string[]).length})
                 </h3>
-                {values.length > 0 ? (
+                {(values as string[]).length > 0 ? (
                   <ul className="space-y-1 text-sm">
                     {(values as string[]).map((v, i) => (
                       <li
