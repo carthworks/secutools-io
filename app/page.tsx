@@ -20,8 +20,8 @@ import dynamic from "next/dynamic";
 // import NewsFeedSection from "@/components/NewsFeedSection";
 
 
-type Tool = { slug: string; title: string; desc: string };
-type Category = { title: string; icon: any; color: string; tools: Tool[] };
+type Tool = { slug: string; title: string; desc: string; isPublish:boolean };
+type Category = { title: string; icon: any; color: string; tools: Tool[];  };
 
 
 const NewsFeedSection = dynamic(() => import("@/components/NewsFeedSection"), {
@@ -34,24 +34,25 @@ const categories: Category[] = [
     icon: Key,
     color: "bg-indigo-50",
     tools: [
-      { slug: "hash", title: "Hash Tools", desc: "MD5, SHA1, SHA256, SHA512" },
-      { slug: "jwt", title: "JWT Decoder", desc: "Decode and verify JWTs" },
-      { slug: "password", title: "Password Utilities", desc: "Strength checker and generator" },
-      { slug: "hash-id", title: "Hash Identifier", desc: "Detect type of hash string" },
-      { slug: "obfuscator", title: "String Obfuscator", desc: "ROT13, Caesar, XOR, Base conversions" },
-    ],
+      { slug: "hash", title: "Hash Tools", desc: "MD5, SHA1, SHA256, SHA512",	isPublish:true },
+      { slug: "jwt", title: "JWT Decoder", desc: "Decode and verify JWTs",	isPublish:true },
+      { slug: "password", title: "Password Utilities", desc: "Strength checker and generator",	isPublish:true },
+      { slug: "hash-id", title: "Hash Identifier", desc: "Detect type of hash string",	isPublish:true },
+      { slug: "obfuscator", title: "String Obfuscator", desc: "ROT13, Caesar, XOR, Base conversions",	isPublish:true },
+    ]
+
   },
   {
     title: "Network Analysis",
     icon: Network,
     color: "bg-blue-50",
     tools: [
-      { slug: "ip-dns", title: "IP & DNS Toolkit", desc: "GeoIP, DNS records, rDNS" },
-      { slug: "ssl", title: "SSL/TLS Checker", desc: "Certificate info and expiry" },
-      { slug: "port", title: "Port Check", desc: "TCP reachability" },
-      { slug: "headers", title: "HTTP Headers", desc: "CORS & CSP overview" },
-      { slug: "cidr", title: "CIDR Calculator", desc: "Subnet ranges, broadcast, network size" },
-      { slug: "asn", title: "ASN Lookup", desc: "Find ASN / ISP from IP (offline dataset)" },
+      { slug: "ip-dns", title: "IP & DNS Toolkit", desc: "GeoIP, DNS records, rDNS", isPublish:true },
+      { slug: "ssl", title: "SSL/TLS Checker", desc: "Certificate info and expiry", isPublish:true },
+      { slug: "port", title: "Port Check", desc: "TCP reachability", isPublish:true },
+      { slug: "headers", title: "HTTP Headers", desc: "CORS & CSP overview" , isPublish:true},
+      { slug: "cidr", title: "CIDR Calculator", desc: "Subnet ranges, broadcast, network size" , isPublish:true},
+      { slug: "asn", title: "ASN Lookup", desc: "Find ASN / ISP from IP (offline dataset)", isPublish:false },
     ],
   },
   {
@@ -59,11 +60,11 @@ const categories: Category[] = [
     icon: Search,
     color: "bg-purple-50",
     tools: [
-      { slug: "ioc", title: "IOC Extractor", desc: "Extract IPs, URLs, hashes, emails" },
-      { slug: "cve", title: "CVE Lookup", desc: "Fetch details from CIRCL CVE" },
-      { slug: "cve-feed", title: "CVE Feed Viewer", desc: "Browse latest CVEs from NVD" },
-      { slug: "threat", title: "Threat Intel Check", desc: "VirusTotal/AbuseIPDB" },
-      { slug: "whois", title: "WHOIS / RDAP", desc: "Ownership & registration" },
+      { slug: "ioc", title: "IOC Extractor", desc: "Extract IPs, URLs, hashes, emails", isPublish:true },
+      { slug: "cve", title: "CVE Lookup", desc: "Fetch details from CIRCL CVE", isPublish:true },
+      { slug: "cve-feed", title: "CVE Feed Viewer", desc: "Browse latest CVEs from NVD", isPublish:false },
+      { slug: "threat", title: "Threat Intel Check", desc: "VirusTotal/AbuseIPDB" , isPublish:true},
+      { slug: "whois", title: "WHOIS / RDAP", desc: "Ownership & registration", isPublish:true},
     ],
   },
   {
@@ -71,12 +72,12 @@ const categories: Category[] = [
     icon: FileSearch,
     color: "bg-teal-50",
     tools: [
-      { slug: "logs", title: "Log Beautifier", desc: "Format JSON, Apache, Nginx" },
-      { slug: "pcap", title: "PCAP Decoder", desc: "View timestamps, sizes, hex" },
-      { slug: "timestamp", title: "Timestamp Converter", desc: "Unix ↔ Human time" },
-      { slug: "subdomain", title: "Subdomain Finder", desc: "Dictionary-based" },
-      { slug: "json-xml", title: "JSON/XML Formatter", desc: "Beautify and validate structured data" },
-      { slug: "regex", title: "Regex Tester", desc: "Build and test regex patterns" },
+      { slug: "logs", title: "Log Beautifier", desc: "Format JSON, Apache, Nginx", isPublish:true },
+      { slug: "pcap", title: "PCAP Decoder", desc: "View timestamps, sizes, hex", isPublish:true },
+      { slug: "timestamp", title: "Timestamp Converter", desc: "Unix ↔ Human time" , isPublish:true},
+      { slug: "subdomain", title: "Subdomain Finder", desc: "Dictionary-based", isPublish:true },
+      { slug: "json-xml", title: "JSON/XML Formatter", desc: "Beautify and validate structured data", isPublish:true },
+      { slug: "regex", title: "Regex Tester", desc: "Build and test regex patterns", isPublish:false },
     ],
   },
   {
@@ -84,9 +85,9 @@ const categories: Category[] = [
     icon: FlaskConical,
     color: "bg-yellow-50",
     tools: [
-      { slug: "payloads", title: "XSS/SQLi Payloads", desc: "Encoders and test payloads" },
-      { slug: "cheatsheets", title: "Cheatsheets", desc: "OWASP Top 10, MITRE ATT&CK" },
-      { slug: "wordlist", title: "Wordlist Generator", desc: "Custom password/wordlists" },
+      { slug: "payloads", title: "XSS/SQLi Payloads", desc: "Encoders and test payloads" , isPublish:true},
+      { slug: "cheatsheets", title: "Cheatsheets", desc: "OWASP Top 10, MITRE ATT&CK", isPublish:true },
+      { slug: "wordlist", title: "Wordlist Generator", desc: "Custom password/wordlists", isPublish:false },
     ],
   },
   {
@@ -94,10 +95,10 @@ const categories: Category[] = [
     icon: Cloud,
     color: "bg-pink-50",
     tools: [
-      { slug: "headers-check", title: "Security Headers Checker", desc: "Inspect CSP, HSTS, X-Frame-Options" },
-      { slug: "url-trace", title: "URL Unshortener & Redirect Tracer", desc: "Expand and trace redirects" },
-      { slug: "cvss", title: "CVE Severity Calculator", desc: "Compute CVSS scores" },
-      { slug: "aws-s3", title: "AWS S3 Checker", desc: "Test for public/misconfigured buckets" },
+      { slug: "headers-check", title: "Security Headers Checker", desc: "Inspect CSP, HSTS, X-Frame-Options", isPublish:true },
+      { slug: "url-trace", title: "URL Unshortener & Redirect Tracer", desc: "Expand and trace redirects", isPublish:false },
+      { slug: "cvss", title: "CVE Severity Calculator", desc: "Compute CVSS scores" , isPublish:true},
+      { slug: "aws-s3", title: "AWS S3 Checker", desc: "Test for public/misconfigured buckets", isPublish:false },
     ],
   },
   {
@@ -105,7 +106,7 @@ const categories: Category[] = [
     icon: Code,
     color: "bg-green-50",
     tools: [
-      { slug: "tips", title: "Daily Security Tips", desc: "Flashcards & rotating advice" },
+      { slug: "tips", title: "Daily Security Tips", desc: "Flashcards & rotating advice", isPublish:true },
     ],
   },
 ];
@@ -323,37 +324,52 @@ export default function HomePage() {
                         </div>
 
                         {/* right: actions */}
-                        <div className="flex flex-col items-end gap-2">
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => toggleFavorite(t.slug)}
-                              aria-pressed={isFav}
-                              aria-label={isFav ? `Remove ${t.title} from favorites` : `Add ${t.title} to favorites`}
-                              className="p-1 rounded hover:bg-slate-100"
-                              title={isFav ? "Unfavorite" : "Add to favorites"}
-                            >
-                              {isFav ? <Star className="w-4 h-4 text-amber-500" /> : <StarOff className="w-4 h-4 text-slate-400" />}
-                            </button>
-                            <Link
-                              href={`/${t.slug}`}
-                              onClick={() => recordRecent(t.slug)}
-                              className="px-2 py-1 rounded border text-xs bg-white hover:bg-slate-50"
-                              title={`Open ${t.title}`}
-                            >
-                              Open
-                            </Link>
-                          </div>
-                          <a
-                            href={`/${t.slug}`}
-                            onClick={() => {
-                              // also record recent if user opens via link (Link already does)
-                              recordRecent(t.slug);
-                            }}
-                            className="text-xs text-slate-400 hover:text-slate-600"
-                          >
-                            Learn <ExternalLink className="inline w-3 h-3" />
-                          </a>
-                        </div>
+                      <div className="flex flex-col items-end gap-2">
+  {t.isPublish === false ? (
+    // 🔧 In Development Badge
+    <div className="px-2 py-1 rounded bg-yellow-100 text-yellow-800 text-xs font-medium">
+      🚧 In Development
+    </div>
+  ) : (
+    <>
+      <div className="flex gap-2">
+        <button
+          onClick={() => toggleFavorite(t.slug)}
+          aria-pressed={isFav}
+          aria-label={
+            isFav
+              ? `Remove ${t.title} from favorites`
+              : `Add ${t.title} to favorites`
+          }
+          className="p-1 rounded hover:bg-slate-100"
+          title={isFav ? "Unfavorite" : "Add to favorites"}
+        >
+          {isFav ? (
+            <Star className="w-4 h-4 text-amber-500" />
+          ) : (
+            <StarOff className="w-4 h-4 text-slate-400" />
+          )}
+        </button>
+        <Link
+          href={`/${t.slug}`}
+          onClick={() => recordRecent(t.slug)}
+          className="px-2 py-1 rounded border text-xs bg-white hover:bg-slate-50"
+          title={`Open ${t.title}`}
+        >
+          Open
+        </Link>
+      </div>
+      <a
+        href={`/${t.slug}`}
+        onClick={() => recordRecent(t.slug)}
+        className="text-xs text-slate-400 hover:text-slate-600"
+      >
+        Learn <ExternalLink className="inline w-3 h-3" />
+      </a>
+    </>
+  )}
+</div>
+
                       </div>
                     );
                   })}

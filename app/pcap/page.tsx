@@ -223,8 +223,64 @@ export default function PCAPPage() {
     downloadBlob(md, (fileName || "pcap") + ".md", "text/markdown");
   }
 
+  function printAsPDF(summary: any, fileName: string | null) {
+  if (!summary) return;
+
+  const html = `
+    <html>
+      <head>
+        <title>PCAP - ${fileName || "file"}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <style>
+          body { font-family: Arial, sans-serif; padding: 20px; color: #111; }
+          pre { background: #f6f8fa; padding: 10px; border-radius: 6px; overflow-x: auto; }
+          .meta { margin-bottom: 10px; }
+          .packet { margin-bottom: 8px; }
+          .hex { font-family: monospace; white-space: pre-wrap; word-break: break-word; background:#f0f0f0; padding:8px; border-radius:4px; }
+        </style>
+      </head>
+      <body>
+        <h1>PCAP - ${fileName || "file"}</h1>
+        <div class="meta">
+          <p><strong>Magic:</strong> ${summary.magic}</p>
+          <p><strong>Version:</strong> ${summary.version}</p>
+          <p><strong>Snaplen:</strong> ${summary.snaplen}</p>
+          <p><strong>Network:</strong> ${summary.network}</p>
+          <p><strong>Packets:</strong> ${summary.packetCount}</p>
+        </div>
+        <hr/>
+        ${(summary.packets && Array.isArray(summary.packets) ? summary.packets.map((p: any) => {
+          if (p.notice) return `<div class="packet"><em>${p.notice}</em></div>`;
+          return `<div class="packet">
+            <h4>Packet #${p.index} — ${p.ts} (incl:${p.inclLen} orig:${p.origLen})</h4>
+            <pre class="hex">${p.firstBytes}</pre>
+          </div>`;
+        }).join("") : "")}
+      </body>
+    </html>
+  `;
+
+  // Create a blob URL
+  const blob = new Blob([html], { type: "text/html" });
+  const url = URL.createObjectURL(blob);
+
+  // Create an iframe for printing
+  const iframe = document.createElement("iframe");
+  iframe.style.display = "none";
+  iframe.src = url;
+  document.body.appendChild(iframe);
+
+  iframe.onload = () => {
+    iframe.contentWindow?.focus();
+    iframe.contentWindow?.print();
+    URL.revokeObjectURL(url);
+    document.body.removeChild(iframe);
+  };
+}
+
+
   /* Print: generate simple HTML */
-  function printAsPDF() {
+  function printAsPDF0() {
     if (!summary) return;
     const html = `
       <html>
@@ -249,10 +305,10 @@ export default function PCAPPage() {
           <p><strong>Packets:</strong> ${summary.packetCount}</p>
         </div>
         <hr/>
-        ${summary.packets.map((p: any) => {
+        ${(summary.packets && Array.isArray(summary.packets) ? summary.packets.map((p: any) => {
           if (p.notice) return `<div class="packet"><em>${p.notice}</em></div>`;
           return `<div class="packet"><h4>Packet #${p.index} — ${p.ts} (incl:${p.inclLen} orig:${p.origLen})</h4><pre class="hex">${p.firstBytes}</pre></div>`;
-        }).join("")}
+        }).join("") : "")}
       </body>
       </html>
     `;
