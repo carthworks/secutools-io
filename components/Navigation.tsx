@@ -216,16 +216,16 @@ export default function Navigation() {
     : null;
 
   return (
-    <header className="border-b border-slate-200 bg-white/80 backdrop-blur sticky top-0 z-30">
+    <header className="border-b border-slate-200 bg-black/80 backdrop-blur text-white sticky top-0 z-30">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <Link href="/" className="font-semibold text-lg flex items-center gap-2">
-            <span className="text-primary">SecuTools.io</span>
+            <span className="text-primary text-white">SecuTools.io</span>
           </Link>
         </div>
 
         {/* Desktop nav */}
-        <nav className="hidden sm:flex items-center gap-4 text-sm text-slate-700">
+        <nav className="hidden sm:flex items-center gap-4 text-sm text-white-700">
           {/* Categories dropdown */}
           <div className="relative" ref={menuRef}>
             <button
