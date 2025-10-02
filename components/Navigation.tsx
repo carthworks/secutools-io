@@ -1,11 +1,14 @@
 ﻿"use client"
 import { useState } from "react"
-import Link from "next/link"
+import Link from "next/link";
+import { type LucideIcon } from "lucide-react";
+import { Key, Network, Search, FileSearch, FlaskConical, Cloud } from "lucide-react";
+
 
 export default function Navigation() {
 const [isOpen, setIsOpen] = useState(false)
 
-const categories = [
+const categories0 = [
 {
 title: "Cryptography",
 icon: "",
@@ -55,11 +58,77 @@ tools: [
 }
 ]
 
+
+const categories = [
+  {
+    title: "Cryptography",
+    icon: Key, // 🔑 Cryptographic tools
+    tools: [
+      { slug: "hash", title: "Hash Tools", desc: "MD5, SHA1, SHA256, SHA512" },
+      { slug: "jwt", title: "JWT Decoder", desc: "Decode and verify JWTs" },
+      { slug: "password", title: "Password Utilities", desc: "Strength checker and generator" }
+    ]
+  },
+  {
+    title: "Network Analysis",
+    icon: Network, // 🌐 Network-related tools
+    tools: [
+      { slug: "ip-dns", title: "IP & DNS Toolkit", desc: "GeoIP, DNS records, rDNS" },
+      { slug: "ssl", title: "SSL/TLS Checker", desc: "Certificate info and expiry" },
+      { slug: "port", title: "Port Check", desc: "TCP reachability" },
+      { slug: "headers", title: "HTTP Headers", desc: "CORS & CSP overview" }
+    ]
+  },
+  {
+    title: "Threat Intelligence",
+    icon: Search, // 🕵️ Threat hunting & enrichment
+    tools: [
+      { slug: "ioc", title: "IOC Extractor", desc: "Extract IPs, URLs, hashes, emails" },
+      { slug: "cve", title: "CVE Lookup", desc: "Fetch details from CIRCL CVE" },
+      { slug: "threat", title: "Threat Intel Check", desc: "VirusTotal/AbuseIPDB" },
+      { slug: "whois", title: "WHOIS / RDAP", desc: "Ownership & registration" },
+      { slug: "ioc-enrichment", title: "IOC Enrichment", desc: "Auto-fetch IP/domain/hash reputation" }
+    ]
+  },
+  {
+    title: "Analysis Tools",
+    icon: FileSearch, // 📑 Logs, PCAP, decoding
+    tools: [
+      { slug: "logs", title: "Log Beautifier", desc: "Format JSON, Apache, Nginx" },
+      { slug: "pcap", title: "PCAP Decoder", desc: "View timestamps, sizes, hex" },
+      { slug: "timestamp", title: "Timestamp Converter", desc: "Unix ↔ Human time" },
+      { slug: "subdomain", title: "Subdomain Finder", desc: "Dictionary-based" },
+      { slug: "string-decoder", title: "Suspicious String Decoder", desc: "Decode Base64, hex, ROT13, URL encodings" }
+    ]
+  },
+  {
+    title: "Testing & Payloads",
+    icon: FlaskConical, // 🧪 Pentest payloads, labs
+    tools: [
+      { slug: "payloads", title: "XSS/SQLi Payloads", desc: "Encoders and test payloads" },
+      { slug: "cheatsheets", title: "Cheatsheets", desc: "OWASP Top 10, MITRE ATT&CK" },
+      { slug: "yara", title: "YARA Rule Tester", desc: "Run YARA rules on text/files" },
+      { slug: "sigma", title: "Sigma Rule Converter", desc: "Convert Sigma rules to SIEM queries" },
+      { slug: "mitre", title: "MITRE ATT&CK Mapper", desc: "Map TTP IDs to tactics/techniques" }
+    ]
+  },
+  {
+    title: "Web & Cloud Security",
+    icon: Cloud, // ☁️ Web + Cloud misconfig checks
+    tools: [
+      { slug: "headers-check", title: "Security Headers Checker", desc: "Inspect CSP, HSTS, X-Frame-Options" },
+      { slug: "url-trace", title: "URL Unshortener & Redirect Tracer", desc: "Expand and trace redirects" },
+      { slug: "cvss", title: "CVE Severity Calculator", desc: "Compute CVSS base/temporal scores" },
+      { slug: "aws-s3", title: "AWS S3 Bucket Checker", desc: "Test for public/misconfigured buckets" }
+    ]
+  }
+];
+
 return (
 <header className="border-b border-slate-200 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-10">
 <div className="container-page flex items-center justify-between py-4">
 <Link href="/" className="font-semibold text-lg">
-<span className="text-primary"></span> Cybersecurity Handy Tools
+<span className="text-primary"></span> SecuTools.io
 </Link>
 
 <nav className="hidden sm:flex gap-4 text-sm text-slate-600">
@@ -81,7 +150,7 @@ Tool Categories
 {categories.map((category, index) => (
 <div key={index} className="border-b border-slate-100 pb-3 last:border-b-0 last:pb-0">
 <div className="flex items-center gap-2 mb-2">
-<span className="text-lg">{category.icon}</span>
+{/* <span className="text-lg">{category.icon}</span> */}
 <h3 className="font-semibold text-slate-800 text-sm">{category.title}</h3>
 </div>
 <div className="grid grid-cols-1 gap-1">

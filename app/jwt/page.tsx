@@ -5,14 +5,20 @@ import Section from '@/components/Section'
 export default function JwtPage(){
 	const [token, setToken] = useState('')
 	const [secret, setSecret] = useState('')
-	const [decoded, setDecoded] = useState<any>(null)
-	const [verified, setVerified] = useState<string>('')
+	const [decoded, setDecoded] = useState<Record<string, unknown> | null>(null);
+	const [verified, setVerified] = useState<string>('');
 
-	async function decode(){
-		const res = await fetch('/api/jwt', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ token, secret }) })
-		const data = await res.json()
-		setDecoded(data.decoded)
-		setVerified(data.verified ? 'Valid signature' : (data.error || 'Not verified'))
+	async function decode() {
+		try {
+			const res = await fetch('/api/jwt', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ token, secret }) });
+			if (!res.ok) throw new Error('Network response was not ok');
+			const data = await res.json();
+			setDecoded(data.decoded);
+			setVerified(data.verified ? 'Valid signature' : (data.error || 'Not verified'));
+		} catch (error: any) {
+			setDecoded(null);
+			setVerified(error.message || 'Error decoding JWT');
+		}
 	}
 
 	return (
