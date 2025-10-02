@@ -12,79 +12,21 @@ import {
   Star,
   StarOff,
   ExternalLink,
-  Code, Terminal
+  Code
   
 } from "lucide-react";
+
+import dynamic from "next/dynamic";
+// import NewsFeedSection from "@/components/NewsFeedSection";
+
 
 type Tool = { slug: string; title: string; desc: string };
 type Category = { title: string; icon: any; color: string; tools: Tool[] };
 
-const categories0: Category[] = [
-  {
-    title: "Cryptography",
-    icon: Key,
-    color: "bg-indigo-50",
-    tools: [
-      { slug: "hash", title: "Hash Tools", desc: "MD5, SHA1, SHA256, SHA512" },
-      { slug: "jwt", title: "JWT Decoder", desc: "Decode and verify JWTs" },
-      { slug: "password", title: "Password Utilities", desc: "Strength checker and generator" },
-    ],
-  },
-  {
-    title: "Network Analysis",
-    icon: Network,
-    color: "bg-blue-50",
-    tools: [
-      { slug: "ip-dns", title: "IP & DNS Toolkit", desc: "GeoIP, DNS records, rDNS" },
-      { slug: "ssl", title: "SSL/TLS Checker", desc: "Certificate info and expiry" },
-      { slug: "port", title: "Port Check", desc: "TCP reachability" },
-      { slug: "headers", title: "HTTP Headers", desc: "CORS & CSP overview" },
-    ],
-  },
-  {
-    title: "Threat Intelligence",
-    icon: Search,
-    color: "bg-purple-50",
-    tools: [
-      { slug: "ioc", title: "IOC Extractor", desc: "Extract IPs, URLs, hashes, emails" },
-      { slug: "cve", title: "CVE Lookup", desc: "Fetch details from CIRCL CVE" },
-      { slug: "threat", title: "Threat Intel Check", desc: "VirusTotal/AbuseIPDB" },
-      { slug: "whois", title: "WHOIS / RDAP", desc: "Ownership & registration" },
-    ],
-  },
-  {
-    title: "Analysis Tools",
-    icon: FileSearch,
-    color: "bg-teal-50",
-    tools: [
-      { slug: "logs", title: "Log Beautifier", desc: "Format JSON, Apache, Nginx" },
-      { slug: "pcap", title: "PCAP Decoder", desc: "View timestamps, sizes, hex" },
-      { slug: "timestamp", title: "Timestamp Converter", desc: "Unix ↔ Human time" },
-      { slug: "subdomain", title: "Subdomain Finder", desc: "Dictionary-based" },
-    ],
-  },
-  {
-    title: "Testing & Payloads",
-    icon: FlaskConical,
-    color: "bg-yellow-50",
-    tools: [
-      { slug: "payloads", title: "XSS/SQLi Payloads", desc: "Encoders and test payloads" },
-      { slug: "cheatsheets", title: "Cheatsheets", desc: "OWASP Top 10, MITRE ATT&CK" },
-    ],
-  },
-  {
-    title: "Web & Cloud Security",
-    icon: Cloud,
-    color: "bg-pink-50",
-    tools: [
-      { slug: "headers-check", title: "Security Headers Checker", desc: "Inspect CSP, HSTS, X-Frame-Options" },
-      { slug: "url-trace", title: "URL Unshortener & Redirect Tracer", desc: "Expand and trace redirects" },
-      { slug: "cvss", title: "CVE Severity Calculator", desc: "Compute CVSS scores" },
-      { slug: "aws-s3", title: "AWS S3 Checker", desc: "Test for public/misconfigured buckets" },
-    ],
-  },
-];
-// import { Key, Network, Search, FileSearch, FlaskConical, Cloud, Code, Terminal } from "lucide-react";
+
+const NewsFeedSection = dynamic(() => import("@/components/NewsFeedSection"), {
+  ssr: false,
+});
 
 const categories: Category[] = [
   {
@@ -365,7 +307,7 @@ export default function HomePage() {
                     return (
                       <div
                         key={t.slug}
-                        className="rounded-lg border border-slate-200 bg-white hover:bg-slate-50 p-3 block shadow-sm flex items-start gap-3"
+                        className="rounded-lg border border-slate-200 bg-white hover:bg-slate-50 p-3 shadow-sm flex items-start gap-3"
                       >
                         {/* left: title + desc */}
                         <div className="flex-1">
@@ -403,7 +345,7 @@ export default function HomePage() {
                           </div>
                           <a
                             href={`/${t.slug}`}
-                            onClick={(e) => {
+                            onClick={() => {
                               // also record recent if user opens via link (Link already does)
                               recordRecent(t.slug);
                             }}
@@ -448,6 +390,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+	  <NewsFeedSection />
     </div>
   );
 }
