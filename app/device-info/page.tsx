@@ -243,11 +243,17 @@ export default function DeviceInfo() {
       if (navigator?.clipboard?.writeText) {
         await navigator.clipboard.writeText(text);
       } else {
+        // Fallback for older browsers (deprecated)
         const ta = document.createElement("textarea");
         ta.value = text;
         document.body.appendChild(ta);
         ta.select();
-        document.execCommand("copy");
+        // document.execCommand is deprecated, but used as a last resort fallback
+        try {
+          document.execCommand("copy");
+        } catch {
+          // If copy fails, do nothing
+        }
         ta.remove();
       }
       setLastAction("Copied JSON");
@@ -419,8 +425,8 @@ export default function DeviceInfo() {
                 <div>
                   <div className="font-medium">Suggestions</div>
                   <ul className="list-disc pl-5">
-                    {(info.suggestions as string[]).map((s, i) => (
-                      <li key={i}>{s}</li>
+                    {(info.suggestions as string[]).map((s) => (
+                      <li key={s}>{s}</li>
                     ))}
                   </ul>
                 </div>
