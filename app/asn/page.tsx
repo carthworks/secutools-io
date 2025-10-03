@@ -18,26 +18,13 @@ import {
   Info,
 } from "lucide-react";
 
-/**
- * ASNLookup component
- *
- * Features:
- * - Offline dataset (sample built-in + CSV upload to extend)
- * - IPv4/IPv6 validation (IPv6 best-effort)
- * - CIDR-aware longest-prefix match lookup
- * - One-click copy, export (text/markdown/json), print-as-pdf, share
- * - Simple syntax highlighting for result output (no external libs)
- * - Real-time preview (debounced), error detection & suggestions
- * - Accessible controls and responsive layout
- */
-
 /* ---------------------------
    Types & sample dataset
    --------------------------- */
 
 type ASNRecord = {
-  asn: string; // e.g. "AS15169"
-  cidr: string; // e.g. "8.8.8.0/24"
+  asn: string;
+  cidr: string;
   isp: string;
   country?: string;
   notes?: string;
@@ -52,100 +39,145 @@ const SAMPLE_DATA: ASNRecord[] = [
 ];
 
 /* ---------------------------
-   Helpers: IP utilities
+   Helpers: IP utilities (defensive)
    --------------------------- */
 
 /* IPv4 regex (strict-ish) */
 const IPV4_RE =
   /^(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)){3}$/;
 
-/* Basic IPv6 presence checks (full validation is complex; we do simple detection) */
+/* Basic IPv6 presence checks (very light) */
 const IPV6_RE = /:/;
 
-/* Convert IPv4 dotted quad to 32-bit integer */
-function ipv4ToInt(ip: string): number {
-  return ip.split(".").reduce((acc, octet) => (acc << 8) + parseInt(octet, 10), 0) >>> 0;
+/* Convert IPv4 dotted quad to 32-bit integer (safe) */
+function ipv4ToInt(ip: string): number | null {
+  if (!ip || typeof ip !== "string") return null;
+  const parts = ip.split(".");
+  if (parts.length !== 4) return null;
+  let acc = 0;
+  for (const p of parts) {
+    if (!/^\d+$/.test(p)) return null;
+    const n = Number(p);
+    if (Number.isNaN(n) || n < 0 || n > 255) return null;
+    acc = (acc << 8) + n;
+    // keep unsigned 32-bit
+    acc = acc >>> 0;
+  }
+  return acc >>> 0;
 }
 
-/* Given cidr 'a.b.c.d/n', check if ip inside (IPv4 only) */
-function cidrContains(cidr: string, ip: string): boolean {
+/* Create mask for n bits (0..32) in unsigned 32-bit */
+function maskFromBits(bits: number): number {
+  const b = Math.max(0, Math.min(32, Number(bits) || 0));
+  if (b === 0) return 0;
+  // e.g., b=24 -> mask = 0xFFFFFF00
+  return ((0xffffffff >>> 0) << (32 - b)) >>> 0;
+}
+
+/* Given cidr 'a.b.c.d/n', check if ip inside (IPv4 only). Defensive: returns false for invalid inputs */
+function cidrContains(cidr: string | undefined, ip: string | undefined): boolean {
   try {
-    if (!IPV4_RE.test(ip)) return false; // we only do CIDR checks for IPv4 here
-    const [net, bitsStr] = cidr.split("/");
+    if (!cidr || !ip || typeof cidr !== "string" || typeof ip !== "string") return false;
+    if (!IPV4_RE.test(ip)) return false; // only checking IPv4 here
+    const parts = cidr.split("/");
+    if (parts.length !== 2) return false;
+    const net = parts[0];
+    const bitsStr = parts[1];
+    if (!IPV4_RE.test(net)) return false;
     const bits = parseInt(bitsStr || "32", 10);
+    if (Number.isNaN(bits) || bits < 0 || bits > 32) return false;
     const ipInt = ipv4ToInt(ip);
     const netInt = ipv4ToInt(net);
-    const mask = bits === 0 ? 0 : 0xffffffff << (32 - bits);
-    return (ipInt & mask) === (netInt & mask);
+    if (ipInt === null || netInt === null) return false;
+    const mask = maskFromBits(bits);
+    return ((ipInt & mask) >>> 0) === ((netInt & mask) >>> 0);
   } catch {
     return false;
   }
 }
 
-/* Longest-prefix match: prefer larger prefix length */
-function prefixLength(cidr: string): number {
-  const parts = cidr.split("/");
-  return parseInt(parts[1] || "0", 10);
+/* Longest-prefix match length (defensive) */
+function prefixLength(cidr: string | undefined): number {
+  try {
+    if (!cidr || typeof cidr !== "string") return 0;
+    const parts = cidr.split("/");
+    if (parts.length !== 2) return 0;
+    const v = parseInt(parts[1] || "0", 10);
+    if (Number.isNaN(v) || v < 0 || v > 32) return 0;
+    return v;
+  } catch {
+    return 0;
+  }
 }
 
 /* Validate IP (IPv4 strict, IPv6 best-effort) */
-function isValidIP(ip: string) {
-  const v4 = IPV4_RE.test(ip);
-  const v6 = IPV6_RE.test(ip) && ip.split("::").length <= 2; // very light check
+function isValidIP(ip: string | undefined): boolean {
+  if (!ip || typeof ip !== "string") return false;
+  const v4 = IPV4_RE.test(ip.trim());
+  const v6 = IPV6_RE.test(ip) && ip.split("::").length <= 2;
   return v4 || v6;
 }
 
 /* ---------------------------
-   Export / copy helpers
+   Export / copy helpers (defensive)
    --------------------------- */
 
 function downloadBlob(filename: string, content: string, mime = "text/plain") {
-  const blob = new Blob([content], { type: mime });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
+  try {
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  } catch (e) {
+    // swallow; UI shows action result
+    // console.error("download error", e);
+  }
 }
 
 async function tryWebShare(data: { title?: string; text?: string; url?: string }) {
-  if ((navigator as any).share) {
-    try {
+  try {
+    if ((navigator as any).share) {
       await (navigator as any).share(data);
       return true;
-    } catch {
-      return false;
     }
+  } catch {
+    // ignore
   }
   return false;
 }
 
 /* ---------------------------
-   Syntax highlight (very small)
+   Syntax highlight (defensive)
    --------------------------- */
 
+function escapeHtml(s: string) {
+  return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+}
+
+/* Very small highlighter; safe for null/undefined */
 function highlightJSON(obj: any) {
-  const json = typeof obj === "string" ? obj : JSON.stringify(obj, null, 2);
-  // naive tokenizer
-  return json
-    .replace(/(&)/g, "&amp;")
-    .replace(/(>)/g, "&gt;")
-    .replace(/(<)/g, "&lt;")
-    .replace(
+  try {
+    const json = obj == null ? JSON.stringify(obj) : typeof obj === "string" ? obj : JSON.stringify(obj, null, 2);
+    return escapeHtml(json).replace(
       /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|\b-?\d+(\.\d+)?([eE][+\-]?\d+)?\b)/g,
       (match) => {
-        let cls = "text-blue-600"; // string
+        let cls = "text-blue-600";
         if (/^"/.test(match)) {
-          cls = /:\s*$/.test(match) ? "text-slate-700 font-semibold" : "text-emerald-700"; // key vs string
+          cls = /:\s*$/.test(match) ? "text-slate-700 font-semibold" : "text-emerald-700";
         } else if (/true|false/.test(match)) cls = "text-rose-600";
         else if (/null/.test(match)) cls = "text-slate-500 italic";
-        else cls = "text-orange-600"; // number
+        else cls = "text-orange-600";
         return `<span class="${cls}">${match}</span>`;
       }
     );
+  } catch {
+    return `<span class="text-slate-600">Unable to render result</span>`;
+  }
 }
 
 /* ---------------------------
@@ -153,100 +185,138 @@ function highlightJSON(obj: any) {
    --------------------------- */
 
 export default function ASNLookup() {
-  // data
-  const [dataset, setDataset] = useState<ASNRecord[]>(() => SAMPLE_DATA.slice());
-  const [ipInput, setIpInput] = useState("");
+  const [dataset, setDataset] = useState<ASNRecord[]>(() => Array.isArray(SAMPLE_DATA) ? SAMPLE_DATA.slice() : []);
+  const [ipInput, setIpInput] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [result, setResult] = useState<{ found?: ASNRecord; suggestion?: ASNRecord; message?: string } | null>(null);
   const [history, setHistory] = useState<string[]>([]);
   const [lastAction, setLastAction] = useState<string | null>(null);
-  const resultRef = useRef<HTMLPreElement | null>(null);
+  const resultRef = useRef<HTMLDivElement | null>(null);
 
-  // debounce lookup
+  // debounce lookup (defensive: skip if input empty)
   useEffect(() => {
-    if (ipInput.trim() === "") {
+    const val = (ipInput || "").trim();
+    if (val === "") {
       setError(null);
       setResult(null);
       return;
     }
     const t = setTimeout(() => {
-      handleLookup(ipInput.trim());
+      handleLookup(val);
     }, 300);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ipInput]);
 
-  // core lookup logic
-  function handleLookup(ip: string) {
+  // core lookup logic with defensive guards
+  function handleLookup(ipRaw: string) {
+    const ip = String(ipRaw || "").trim();
     setLoading(true);
     setError(null);
     setResult(null);
 
-    if (!isValidIP(ip)) {
-      setError("Invalid IP address. Try IPv4 like 8.8.8.8 or IPv6 like 2001:4860:4860::8888.");
-      setLoading(false);
-      return;
-    }
-
-    // IPv4 exact CIDR or longest-prefix
-    // 1) find exact CIDR that contains ip
-    const matches = dataset.filter((r) => cidrContains(r.cidr, ip));
-    if (matches.length > 0) {
-      // pick longest prefix
-      matches.sort((a, b) => prefixLength(b.cidr) - prefixLength(a.cidr));
-      const found = matches[0];
-      setResult({ found, message: "Exact/Longest-prefix match found." });
-      setHistory((h) => [`${new Date().toISOString()} — ${ip} → ${found.asn} (${found.isp})`, ...h].slice(0, 30));
-      setLoading(false);
-      return;
-    }
-
-    // 2) no exact match: try best suggestion by longest common prefix heuristics (IPv4 only)
-    // We'll try to find CIDR where network octets match progressively.
-    if (IPV4_RE.test(ip)) {
-      const octets = ip.split(".");
-      // prefer /16 then /8 etc
-      const candidates = dataset
-        .map((r) => ({ r, len: prefixLength(r.cidr) }))
-        .sort((a, b) => b.len - a.len)
-        .map((x) => x.r);
-      // check if first n octets match network
-      let best: ASNRecord | null = null;
-      for (const r of candidates) {
-        const [net] = r.cidr.split("/");
-        const netOctets = net.split(".");
-        let common = 0;
-        for (let i = 0; i < 4; i++) {
-          if (netOctets[i] === octets[i]) common++;
-          else break;
-        }
-        if (common > 0) {
-          best = r;
-          break;
-        }
+    try {
+      if (!isValidIP(ip)) {
+        setError("Invalid IP address. Use IPv4 like 8.8.8.8 or IPv6 like 2001:4860:4860::8888.");
+        setLoading(false);
+        return;
       }
-      setResult({ suggestion: best ?? undefined, message: "No exact match — showing nearest suggestion." });
-      setHistory((h) => [`${new Date().toISOString()} — ${ip} → no exact match`, ...h].slice(0, 30));
-      setLoading(false);
-      return;
-    }
 
-    // IPv6 fallback (no dataset)
-    setResult({ message: "No offline IPv6 mapping available. Try WHOIS or online sources." });
-    setHistory((h) => [`${new Date().toISOString()} — ${ip} → ipv6 (no offline match)`, ...h].slice(0, 30));
-    setLoading(false);
+      // ensure dataset is array
+      const safeDataset = Array.isArray(dataset) ? dataset : [];
+
+      // match by CIDR (IPv4 only)
+      const matches = safeDataset.filter((r) => {
+        try {
+          return cidrContains(r?.cidr, ip);
+        } catch {
+          return false;
+        }
+      });
+
+      if (matches.length > 0) {
+        // sort by longest prefix (safe prefixLength)
+        matches.sort((a, b) => prefixLength(b?.cidr) - prefixLength(a?.cidr));
+        const found = matches[0];
+        setResult({ found, message: "Exact/Longest-prefix match found." });
+        setHistory((h) => {
+          const entry = `${new Date().toISOString()} — ${ip} → ${found?.asn ?? "N/A"} (${found?.isp ?? "N/A"})`;
+          return [entry, ...h].slice(0, 30);
+        });
+        setLoading(false);
+        return;
+      }
+
+      // no exact match -> suggestion heuristic for IPv4
+      if (IPV4_RE.test(ip)) {
+        const octets = ip.split(".");
+        const candidates = safeDataset
+          .map((r) => ({ r, len: prefixLength(r?.cidr) }))
+          .sort((a, b) => b.len - a.len)
+          .map((x) => x.r);
+
+        let best: ASNRecord | null = null;
+        for (const r of candidates) {
+          try {
+            const net = (r?.cidr || "").split("/")[0];
+            if (!net) continue;
+            const netOctets = net.split(".");
+            let common = 0;
+            for (let i = 0; i < 4; i++) {
+              if (netOctets[i] === octets[i]) common++;
+              else break;
+            }
+            if (common > 0) {
+              best = r;
+              break;
+            }
+          } catch {
+            continue;
+          }
+        }
+
+        setResult({ suggestion: best ?? undefined, message: "No exact match — showing nearest suggestion." });
+        setHistory((h) => [`${new Date().toISOString()} — ${ip} → no exact match`, ...h].slice(0, 30));
+        setLoading(false);
+        return;
+      }
+
+      // IPv6 fallback
+      setResult({ message: "No offline IPv6 mapping available. Try WHOIS or online sources." });
+      setHistory((h) => [`${new Date().toISOString()} — ${ip} → ipv6 (no offline match)`, ...h].slice(0, 30));
+      setLoading(false);
+    } catch (e) {
+      // catch-all for unexpected errors
+      setError("Unexpected error during lookup. Please try again.");
+      setLoading(false);
+      // eslint-disable-next-line no-console
+      console.error("lookup error", e);
+    }
   }
 
-  // copy result text
+  // copy result text (defensive: navigator.clipboard may be unavailable)
   async function copyResult() {
     const text = formatTextResult();
     try {
-      await navigator.clipboard.writeText(text);
-      setLastAction("Copied to clipboard");
-      setTimeout(() => setLastAction(null), 1800);
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+        setLastAction("Copied to clipboard");
+      } else {
+        // fallback using textarea
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+        setLastAction("Copied (fallback)");
+      }
     } catch {
       setLastAction("Copy failed");
+    } finally {
       setTimeout(() => setLastAction(null), 1800);
     }
   }
@@ -254,130 +324,169 @@ export default function ASNLookup() {
   function formatTextResult(): string {
     if (!result) return "No result";
     if (result.found) {
-      return `ASN: ${result.found.asn}\nISP: ${result.found.isp}\nCIDR: ${result.found.cidr}\nCountry: ${result.found.country || "N/A"}\nNotes: ${result.found.notes || ""}`;
+      const f = result.found;
+      return `ASN: ${f.asn ?? "N/A"}\nISP: ${f.isp ?? "N/A"}\nCIDR: ${f.cidr ?? "N/A"}\nCountry: ${f.country ?? "N/A"}\nNotes: ${f.notes ?? ""}`;
     }
     if (result.suggestion) {
-      return `No exact match. Nearest suggestion:\nASN: ${result.suggestion.asn}\nISP: ${result.suggestion.isp}\nCIDR: ${result.suggestion.cidr}`;
+      const s = result.suggestion;
+      return `No exact match. Nearest suggestion:\nASN: ${s.asn ?? "N/A"}\nISP: ${s.isp ?? "N/A"}\nCIDR: ${s.cidr ?? "N/A"}`;
     }
-    return result.message || "No result";
+    return result.message ?? "No result";
   }
 
   // export handlers
   function exportText() {
-    downloadBlob("asn-result.txt", formatTextResult(), "text/plain;charset=utf-8");
-    setLastAction("Exported .txt");
-    setTimeout(() => setLastAction(null), 1800);
+    try {
+      downloadBlob("asn-result.txt", formatTextResult(), "text/plain;charset=utf-8");
+      setLastAction("Exported .txt");
+    } catch {
+      setLastAction("Export failed");
+    } finally {
+      setTimeout(() => setLastAction(null), 1800);
+    }
   }
   function exportJSON() {
-    const payload = result?.found ?? result?.suggestion ?? { message: result?.message ?? "no result" };
-    downloadBlob("asn-result.json", JSON.stringify(payload, null, 2), "application/json");
-    setLastAction("Exported .json");
-    setTimeout(() => setLastAction(null), 1800);
+    try {
+      const payload = result?.found ?? result?.suggestion ?? { message: result?.message ?? "no result" };
+      downloadBlob("asn-result.json", JSON.stringify(payload ?? {}, null, 2), "application/json");
+      setLastAction("Exported .json");
+    } catch {
+      setLastAction("Export failed");
+    } finally {
+      setTimeout(() => setLastAction(null), 1800);
+    }
   }
   function exportMarkdown() {
-    const md = `# ASN Lookup Result\n\n${formatTextResult().replace(/\n/g, "\n\n")}\n`;
-    downloadBlob("asn-result.md", md, "text/markdown");
-    setLastAction("Exported .md");
-    setTimeout(() => setLastAction(null), 1800);
+    try {
+      const md = `# ASN Lookup Result\n\n${formatTextResult().replace(/\n/g, "\n\n")}\n`;
+      downloadBlob("asn-result.md", md, "text/markdown");
+      setLastAction("Exported .md");
+    } catch {
+      setLastAction("Export failed");
+    } finally {
+      setTimeout(() => setLastAction(null), 1800);
+    }
   }
 
   function exportPrintPDF() {
-    // open printable page and call print — minimal deps
-    const content = `
-      <html>
-      <head>
-        <title>ASN Lookup Result</title>
-        <meta name="viewport" content="width=device-width,initial-scale=1"/>
-        <style>
-          body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; padding:24px; color:#0f172a}
-          pre{background:#f8fafc;padding:16px;border-radius:8px;overflow:auto}
-          h1{font-size:18px;margin-bottom:8px}
-          .meta{color:#64748b;font-size:13px;margin-bottom:12px}
-        </style>
-      </head>
-      <body>
-        <h1>ASN Lookup Result</h1>
-        <div class="meta">Generated: ${new Date().toLocaleString()}</div>
-        <pre>${escapeHtml(formatTextResult())}</pre>
-      </body>
-      </html>
-    `;
-    const w = window.open("", "_blank", "noopener,noreferrer");
-    if (!w) {
-      setLastAction("Unable to open print window");
+    try {
+      const content = `
+        <html>
+        <head>
+          <title>ASN Lookup Result</title>
+          <meta name="viewport" content="width=device-width,initial-scale=1"/>
+          <style>
+            body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; padding:24px; color:#0f172a}
+            pre{background:#f8fafc;padding:16px;border-radius:8px;overflow:auto}
+            h1{font-size:18px;margin-bottom:8px}
+            .meta{color:#64748b;font-size:13px;margin-bottom:12px}
+          </style>
+        </head>
+        <body>
+          <h1>ASN Lookup Result</h1>
+          <div class="meta">Generated: ${new Date().toLocaleString()}</div>
+          <pre>${escapeHtml(formatTextResult())}</pre>
+        </body>
+        </html>
+      `;
+      const w = window.open("", "_blank", "noopener,noreferrer");
+      if (!w) {
+        setLastAction("Unable to open print window");
+        setTimeout(() => setLastAction(null), 1800);
+        return;
+      }
+      w.document.write(content);
+      w.document.close();
+      setTimeout(() => {
+        try {
+          w.focus();
+          w.print();
+        } catch {
+          // ignore
+        }
+      }, 300);
+      setLastAction("Opened print dialog");
+    } catch {
+      setLastAction("Print failed");
+    } finally {
       setTimeout(() => setLastAction(null), 1800);
-      return;
     }
-    w.document.write(content);
-    w.document.close();
-    // give the browser a tick
-    setTimeout(() => {
-      w.focus();
-      w.print();
-    }, 300);
-    setLastAction("Opened print dialog");
-    setTimeout(() => setLastAction(null), 1800);
   }
 
-  function escapeHtml(s: string) {
-    return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-  }
-
-  // share action (Web Share API fallback)
+  // share (with fallback)
   async function shareResult() {
     const text = formatTextResult();
-    const shared = await tryWebShare({ title: "ASN Lookup Result", text });
-    if (!shared) {
-      // fallback: copy
-      try {
-        await navigator.clipboard.writeText(text);
+    try {
+      const shared = await tryWebShare({ title: "ASN Lookup Result", text });
+      if (!shared) {
+        // fallback: copy
+        await copyResult();
         setLastAction("Copied result to clipboard (share fallback)");
-      } catch {
-        setLastAction("Share not available; copy failed");
+      } else {
+        setLastAction("Shared via Web Share");
       }
-      setTimeout(() => setLastAction(null), 1800);
-    } else {
-      setLastAction("Shared via Web Share");
+    } catch {
+      setLastAction("Share failed");
+    } finally {
       setTimeout(() => setLastAction(null), 1800);
     }
   }
 
-  // CSV upload: expected columns: asn,cidr,isp,country,notes
+  // CSV upload: defensive parsing
   async function handleCSVUpload(file: File | null) {
-    if (!file) return;
-    const txt = await file.text();
-    const lines = txt.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
-    const newRows: ASNRecord[] = [];
-    for (const line of lines) {
-      const parts = line.split(",").map((p) => p.trim());
-      if (parts.length < 3) continue; // need at least asn,cidr,isp
-      newRows.push({ asn: parts[0], cidr: parts[1], isp: parts[2], country: parts[3], notes: parts[4] });
-    }
-    if (newRows.length === 0) {
-      setLastAction("No valid rows found in CSV");
-      setTimeout(() => setLastAction(null), 1800);
+    if (!file) {
+      setLastAction("No file selected");
+      setTimeout(() => setLastAction(null), 1200);
       return;
     }
-    setDataset((d) => [...newRows, ...d]);
-    setLastAction(`Loaded ${newRows.length} rows`);
-    setTimeout(() => setLastAction(null), 1800);
+    try {
+      const txt = await file.text();
+      const lines = txt.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+      const newRows: ASNRecord[] = [];
+      for (const line of lines) {
+        const parts = line.split(",").map((p) => p.trim());
+        if (parts.length < 3) continue;
+        const asn = parts[0] || "AS_UNKNOWN";
+        const cidr = parts[1] || "";
+        const isp = parts[2] || "Unknown ISP";
+        const country = parts[3] || "";
+        const notes = parts[4] || "";
+        // basic validation: CIDR must include "/" and have valid IPv4 network
+        if (!cidr.includes("/") || !IPV4_RE.test(cidr.split("/")[0])) continue;
+        newRows.push({ asn, cidr, isp, country, notes });
+      }
+      if (newRows.length === 0) {
+        setLastAction("No valid rows found in CSV");
+        setTimeout(() => setLastAction(null), 1800);
+        return;
+      }
+      setDataset((d) => [...newRows, ...(Array.isArray(d) ? d : [])]);
+      setLastAction(`Loaded ${newRows.length} rows`);
+    } catch (e) {
+      setLastAction("CSV parse failed");
+      // eslint-disable-next-line no-console
+      console.error("csv parse error", e);
+    } finally {
+      setTimeout(() => setLastAction(null), 1800);
+    }
   }
 
-  // small UI actions
   function clearHistory() {
     setHistory([]);
     setLastAction("History cleared");
     setTimeout(() => setLastAction(null), 1200);
   }
 
-  // small derived html highlight
+  // derived highlighted safe HTML
   const highlighted = useMemo(() => {
-    if (!result) return "";
-    if (result.found) {
-      return highlightJSON(result.found);
+    try {
+      if (!result) return `<span class="text-slate-600">No result</span>`;
+      if (result.found) return highlightJSON(result.found);
+      if (result.suggestion) return highlightJSON({ suggestion: result.suggestion, note: result.message ?? "" });
+      return `<span class="text-slate-600">${escapeHtml(result.message ?? "No result")}</span>`;
+    } catch {
+      return `<span class="text-slate-600">Unable to render</span>`;
     }
-    if (result.suggestion) return highlightJSON({ suggestion: result.suggestion, note: result.message });
-    return `<span class="text-slate-600">${escapeHtml(result.message || "No result")}</span>`;
   }, [result]);
 
   return (
@@ -416,7 +525,7 @@ export default function ASNLookup() {
               type="text"
               inputMode="text"
               value={ipInput}
-              onChange={(e) => setIpInput(e.target.value)}
+              onChange={(e) => setIpInput(String(e.target.value || ""))}
               placeholder="e.g., 8.8.8.8 or 2001:4860:4860::8888"
               className="flex-1 px-3 py-2 rounded border bg-white dark:bg-slate-900 text-sm outline-none focus:ring-2 focus:ring-indigo-300"
               aria-label="IP address input"
@@ -456,11 +565,17 @@ export default function ASNLookup() {
 
             <button
               onClick={() => {
-                // export current dataset sample
-                const csv = dataset.map((r) => [r.asn, r.cidr, r.isp, r.country ?? "", r.notes ?? ""].join(",")).join("\n");
-                downloadBlob("asn-dataset-sample.csv", csv, "text/csv");
-                setLastAction("Dataset downloaded");
-                setTimeout(() => setLastAction(null), 1200);
+                try {
+                  const csv = (Array.isArray(dataset) ? dataset : []).map((r) =>
+                    [r?.asn ?? "", r?.cidr ?? "", r?.isp ?? "", r?.country ?? "", r?.notes ?? ""].join(",")
+                  ).join("\n");
+                  downloadBlob("asn-dataset-sample.csv", csv, "text/csv");
+                  setLastAction("Dataset downloaded");
+                } catch {
+                  setLastAction("Download failed");
+                } finally {
+                  setTimeout(() => setLastAction(null), 1200);
+                }
               }}
               className="inline-flex items-center gap-2 px-3 py-2 rounded border text-sm"
               aria-label="Download dataset"
@@ -476,10 +591,25 @@ export default function ASNLookup() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => {
-                    navigator.clipboard?.writeText(history.join("\n")).then(() => {
-                      setLastAction("History copied");
+                    try {
+                      const txt = (history || []).join("\n");
+                      if (navigator?.clipboard?.writeText) {
+                        navigator.clipboard.writeText(txt);
+                        setLastAction("History copied");
+                      } else {
+                        const ta = document.createElement("textarea");
+                        ta.value = txt;
+                        document.body.appendChild(ta);
+                        ta.select();
+                        document.execCommand("copy");
+                        ta.remove();
+                        setLastAction("History copied (fallback)");
+                      }
+                    } catch {
+                      setLastAction("Copy failed");
+                    } finally {
                       setTimeout(() => setLastAction(null), 1200);
-                    });
+                    }
                   }}
                   className="px-2 py-1 rounded text-xs border"
                 >
@@ -491,7 +621,7 @@ export default function ASNLookup() {
               </div>
             </div>
             <div className="mt-2 max-h-36 overflow-auto text-xs text-slate-700 dark:text-slate-200">
-              {history.length === 0 ? <div className="text-slate-400">No lookups yet</div> : history.map((h, i) => <div key={i} className="py-0.5">{h}</div>)}
+              {(history || []).length === 0 ? <div className="text-slate-400">No lookups yet</div> : (history || []).map((h, i) => <div key={i} className="py-0.5">{String(h)}</div>)}
             </div>
           </div>
         </div>
@@ -512,12 +642,6 @@ export default function ASNLookup() {
                 <button onClick={copyResult} className="px-2 py-1 rounded border text-sm" aria-label="Copy result">
                   <Copy className="w-4 h-4" /> <span className="hidden sm:inline">Copy</span>
                 </button>
-                <div className="relative">
-                  <button className="px-2 py-1 rounded border text-sm" aria-label="Export options">
-                    <File className="w-4 h-4" /> <span className="hidden sm:inline">Export</span>
-                  </button>
-                  <div className="absolute right-0 mt-10 hidden group-hover:block"></div>
-                </div>
 
                 <button onClick={exportText} className="px-2 py-1 rounded border text-sm" aria-label="Export text">
                   <FileText className="w-4 h-4" /> TXT
@@ -569,37 +693,42 @@ export default function ASNLookup() {
 
                   {/* suggestions & actions */}
                   <div className="mt-3 flex flex-wrap gap-2 items-center">
-                    {result?.found && (
+                    {result?.found ? (
                       <a
                         target="_blank"
                         rel="noreferrer"
-                        href={`https://whois.arin.net/rest/ip/${result.found.cidr.split("/")[0]}`}
+                        href={`https://whois.arin.net/rest/ip/${String(result.found.cidr || "").split("/")[0]}`}
                         className="text-xs px-2 py-1 rounded border"
                       >
                         Lookup WHOIS
                       </a>
-                    )}
-                    {result?.suggestion && (
+                    ) : null}
+                    {result?.suggestion ? (
                       <div className="text-xs px-2 py-1 rounded bg-yellow-50 text-yellow-800">
-                        Suggestion: {result.suggestion.asn} — {result.suggestion.isp}
+                        Suggestion: {result.suggestion.asn ?? "N/A"} — {result.suggestion.isp ?? "N/A"}
                       </div>
-                    )}
-                    {!result?.found && !result?.suggestion && result?.message && (
+                    ) : null}
+                    {!result?.found && !result?.suggestion && result?.message ? (
                       <div className="text-xs px-2 py-1 rounded bg-slate-50 text-slate-800">{result.message}</div>
-                    )}
+                    ) : null}
 
                     {/* allow adding custom override: quick add */}
                     <button
                       onClick={() => {
-                        if (!ipInput || !isValidIP(ipInput)) {
-                          setLastAction("Provide a valid IP to create mapping");
+                        try {
+                          if (!ipInput || !isValidIP(ipInput)) {
+                            setLastAction("Provide a valid IP to create mapping");
+                            setTimeout(() => setLastAction(null), 1200);
+                            return;
+                          }
+                          const guess: ASNRecord = { asn: "AS_CUSTOM", cidr: `${ipInput}/32`, isp: "Manual entry", country: "", notes: "Added by user" };
+                          setDataset((d) => [guess, ...(Array.isArray(d) ? d : [])]);
+                          setLastAction("Added manual mapping to dataset");
+                        } catch {
+                          setLastAction("Add mapping failed");
+                        } finally {
                           setTimeout(() => setLastAction(null), 1200);
-                          return;
                         }
-                        const guess = { asn: "AS_CUSTOM", cidr: `${ipInput}/32`, isp: "Manual entry", country: "", notes: "Added by user" };
-                        setDataset((d) => [guess, ...d]);
-                        setLastAction("Added manual mapping to dataset");
-                        setTimeout(() => setLastAction(null), 1200);
                       }}
                       className="px-2 py-1 rounded border text-sm"
                       aria-label="Add manual mapping"
@@ -624,7 +753,7 @@ export default function ASNLookup() {
       <div className="mt-4 bg-white dark:bg-slate-800 p-4 rounded border">
         <div className="flex items-center justify-between">
           <div className="text-sm font-medium">Dataset (preview)</div>
-          <div className="text-xs text-slate-500">Rows: {dataset.length}</div>
+          <div className="text-xs text-slate-500">Rows: {(Array.isArray(dataset) ? dataset.length : 0)}</div>
         </div>
         <div className="mt-2 text-xs overflow-auto max-h-40">
           <table className="w-full text-left text-xs border-collapse">
@@ -638,18 +767,18 @@ export default function ASNLookup() {
               </tr>
             </thead>
             <tbody>
-              {dataset.slice(0, 12).map((r, i) => (
+              {(Array.isArray(dataset) ? dataset.slice(0, 12) : []).map((r, i) => (
                 <tr key={i} className="border-t">
-                  <td className="py-1 pr-3">{r.asn}</td>
-                  <td className="py-1 pr-3">{r.cidr}</td>
-                  <td className="py-1 pr-3">{r.isp}</td>
-                  <td className="py-1 pr-3">{r.country}</td>
-                  <td className="py-1 pr-3">{r.notes}</td>
+                  <td className="py-1 pr-3">{r?.asn ?? ""}</td>
+                  <td className="py-1 pr-3">{r?.cidr ?? ""}</td>
+                  <td className="py-1 pr-3">{r?.isp ?? ""}</td>
+                  <td className="py-1 pr-3">{r?.country ?? ""}</td>
+                  <td className="py-1 pr-3">{r?.notes ?? ""}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-          {dataset.length > 12 && <div className="mt-2 text-xs text-slate-500">Showing first 12 rows</div>}
+          {(Array.isArray(dataset) && dataset.length > 12) && <div className="mt-2 text-xs text-slate-500">Showing first 12 rows</div>}
         </div>
       </div>
     </div>

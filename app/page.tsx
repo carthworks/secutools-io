@@ -1,4 +1,4 @@
-// File: app/(public)/page.tsx   (or wherever your homepage component lives)
+// File: app/(public)/page.tsx
 "use client";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
@@ -13,10 +13,11 @@ import {
   StarOff,
   ExternalLink,
   Code,
-  Info
+  Info,
 } from "lucide-react";
 import dynamic from "next/dynamic";
-import NetworkTools from "@/components/NetworkTools";
+import StableIcon from "@/components/StableIcon";
+
 
 type Tool = { slug: string; title: string; desc: string; isPublish: boolean };
 type Category = { title: string; icon: any; color: string; tools: Tool[] };
@@ -112,7 +113,7 @@ const RECENT_KEY = "secu_recent_v1";
 
 function loadJSON<T>(key: string): T | null {
   try {
-    const raw = localStorage.getItem(key);
+    const raw = typeof window !== "undefined" ? localStorage.getItem(key) : null;
     if (!raw) return null;
     return JSON.parse(raw) as T;
   } catch {
@@ -121,7 +122,7 @@ function loadJSON<T>(key: string): T | null {
 }
 function saveJSON(key: string, value: any) {
   try {
-    localStorage.setItem(key, JSON.stringify(value));
+    if (typeof window !== "undefined") localStorage.setItem(key, JSON.stringify(value));
   } catch {}
 }
 
@@ -151,51 +152,70 @@ function toolTags(slug: string) {
 
 /* ---------- component ---------- */
 export default function HomePage() {
+  // search + UI state
+  const [mounted, setMounted] = useState(false);
   const [query, setQuery] = useState("");
-  const [favorites, setFavorites] = useState<string[]>(() => {
-    if (typeof window === "undefined") return [];
-    return loadJSON<string[]>(FAVORITES_KEY) ?? [];
-  });
-  const [recent, setRecent] = useState<string[]>(() => {
-    if (typeof window === "undefined") return [];
-    return loadJSON<string[]>(RECENT_KEY) ?? [];
-  });
+  const [favorites, setFavorites] = useState<string[]>([]); // load on mount
+  const [recent, setRecent] = useState<string[]>([]); // load on mount
 
   // UI state
-  const [openCategories, setOpenCategories] = useState<Record<string, boolean>>(() => {
-    // default: open first two categories for discoverability
-    return categories.reduce<Record<string, boolean>>((acc, c, idx) => {
+  const [openCategories, setOpenCategories] = useState<Record<string, boolean>>(() =>
+    categories.reduce<Record<string, boolean>>((acc, c, idx) => {
       acc[c.title] = idx < 2;
       return acc;
-    }, {});
-  });
+    }, {})
+  );
   const [activeTagFilters, setActiveTagFilters] = useState<string[]>([]);
-  const [darkMode, setDarkMode] = useState<boolean>(() => {
-    try {
-      return localStorage.getItem("secu_dark") === "1";
-    } catch {
-      return false;
-    }
-  });
+  const [darkMode, setDarkMode] = useState<boolean>(false); // hydrate on mount
 
   const searchRef = useRef<HTMLInputElement | null>(null);
   const categoryRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
+  // run on mount: load localStorage and set mounted
   useEffect(() => {
+    setMounted(true);
+
+    try {
+      const favs = loadJSON<string[]>(FAVORITES_KEY) ?? [];
+      const rec = loadJSON<string[]>(RECENT_KEY) ?? [];
+      setFavorites(Array.isArray(favs) ? favs : []);
+      setRecent(Array.isArray(rec) ? rec : []);
+    } catch {
+      setFavorites([]);
+      setRecent([]);
+    }
+
+    try {
+      const dm = typeof window !== "undefined" && localStorage.getItem("secu_dark") === "1";
+      setDarkMode(Boolean(dm));
+      if (dm) document.documentElement.classList.add("dark");
+      else document.documentElement.classList.remove("dark");
+    } catch {
+      // ignore
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // persist favorites/recent to localStorage when they change (safe: only runs client-side)
+  useEffect(() => {
+    if (!mounted) return;
     saveJSON(FAVORITES_KEY, favorites);
-  }, [favorites]);
+  }, [favorites, mounted]);
 
   useEffect(() => {
+    if (!mounted) return;
     saveJSON(RECENT_KEY, recent);
-  }, [recent]);
+  }, [recent, mounted]);
 
+  // update dark mode class & persist
   useEffect(() => {
+    if (!mounted) return;
     try {
       localStorage.setItem("secu_dark", darkMode ? "1" : "0");
       if (darkMode) document.documentElement.classList.add("dark");
       else document.documentElement.classList.remove("dark");
     } catch {}
-  }, [darkMode]);
+  }, [darkMode, mounted]);
 
   // keyboard shortcut to focus search (Cmd/Ctrl+K)
   useEffect(() => {
@@ -232,8 +252,13 @@ export default function HomePage() {
     });
   }
 
+  // RenderIcon: show a stable placeholder until mounted to avoid SVG markup mismatches
   function RenderIcon({ icon: IconComp, className = "w-5 h-5" }: { icon: any; className?: string }) {
     const Comp = IconComp as any;
+    if (!mounted) {
+      // placeholder preserves layout and size — avoids SSR/client mismatch
+      return <span className={`${className} inline-block`} aria-hidden />;
+    }
     return <Comp className={className} aria-hidden />;
   }
 
@@ -244,30 +269,29 @@ export default function HomePage() {
         .map((cat) => ({
           ...cat,
           tools: cat.tools.filter((t) => {
-            const q = query.trim().toLowerCase();
+            const q = (query || "").trim().toLowerCase();
             const matchesQuery =
               q.length === 0 ||
-              [t.title, t.desc, cat.title].some((field) => field.toLowerCase().includes(q));
+              [t.title, t.desc, cat.title].some((field) => String(field || "").toLowerCase().includes(q));
             const tTags = toolTags(t.slug);
-            const matchesTags =
-              activeTagFilters.length === 0 || activeTagFilters.every((f) => tTags.includes(f));
+            const matchesTags = (activeTagFilters || []).length === 0 || activeTagFilters.every((f) => tTags.includes(f));
             return matchesQuery && matchesTags;
           }),
         }))
-        .filter((cat) => cat.tools.length > 0),
+        .filter((cat) => (cat.tools || []).length > 0),
     [query, activeTagFilters]
   );
 
-  const favoritesResolved = favorites
+  const favoritesResolved = (favorites || [])
     .map((s) => allToolsFlat.find((t) => t.slug === s))
     .filter(Boolean) as Tool[];
-  const recentResolved = recent
+  const recentResolved = (recent || [])
     .map((s) => allToolsFlat.find((t) => t.slug === s))
     .filter(Boolean) as Tool[];
 
   function scrollToCategory(title: string) {
-    const el = categoryRefs.current[title];
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    const el = categoryRefs.current ? categoryRefs.current[title] : null;
+    if (el && typeof el.scrollIntoView === "function") el.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   function toggleCategory(title: string) {
@@ -432,7 +456,7 @@ export default function HomePage() {
                 <div className="flex items-center gap-3">
                   <RenderIcon icon={cat.icon} />
                   <h2 className="text-lg font-semibold uppercase tracking-wide">{cat.title}</h2>
-                  <div className="ml-auto text-sm text-slate-500">{cat.tools.length} tools</div>
+                  <div className="ml-auto text-sm text-slate-500">{(cat.tools || []).length} tools</div>
                   <div className="ml-2 flex items-center gap-2">
                     <button
                       onClick={() => toggleCategory(cat.title)}
@@ -446,9 +470,9 @@ export default function HomePage() {
 
                 {/* tools area (accordion-aware) */}
                 <div className={`mt-4 grid gap-3 ${openCategories[cat.title] ? "" : "hidden md:block"}`}>
-                  {cat.tools.map((t) => {
+                  {(cat.tools || []).map((t) => {
                     const tags = toolTags(t.slug);
-                    const isFav = favorites.includes(t.slug);
+                    const isFav = (favorites || []).includes(t.slug);
                     return (
                       <div
                         key={t.slug}
@@ -553,12 +577,7 @@ export default function HomePage() {
               </div>
 
               <div className="mt-3 grid md:grid-cols-1 gap-4">
-                {/* NewsFeedSection remains dynamic; we wrap it in a card grid container.
-                    If NewsFeedSection returns a list of articles, it should render into cards;
-                    here we place it directly and rely on its markup. */}
                 <NewsFeedSection />
-                {/* If NewsFeedSection renders multiple items, the grid will place them nicely.
-                    If you need separate control, make NewsFeedSection export a list and map here. */}
               </div>
             </div>
           </section>
