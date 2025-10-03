@@ -25,6 +25,7 @@ import {
   FlaskConical,
   Cloud,
   Code,
+  Newspaper 
 } from "lucide-react";
 
 /* -----------------------
@@ -128,6 +129,163 @@ function searchTools(q: string) {
 }
 
 /* -----------------------
+   Live Ticker Component
+   ----------------------- */
+
+/**
+ * LiveTicker: small component that fetches public IP, estimates download/upload speed,
+ * latency and a light CVE count. Defensive to network failures and CORS — shows placeholders.
+ *
+ * Update interval: 30s (configurable below).
+ */
+function LiveTicker() {
+  const [ip, setIp] = useState<string | null>(null);
+  const [downloadMbps, setDownloadMbps] = useState<number | null>(null);
+  const [uploadMbps, setUploadMbps] = useState<number | null>(null);
+  const [latencyMs, setLatencyMs] = useState<number | null>(null);
+  const [cveCount, setCveCount] = useState<number | null>(null);
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    const INTERVAL = 30_000; // 30s
+
+    async function fetchIp() {
+      try {
+        const res = await fetch("https://api.ipify.org?format=json");
+        if (!mountedRef.current) return;
+        const data = await res.json();
+        setIp(data.ip);
+      } catch (e) {
+        console.error("Failed to fetch IP:", e);
+        setIp(null);
+      }
+    }
+
+    // measure latency with a cheap generate_204 endpoint
+    async function measureLatency() {
+      try {
+        const start = performance.now();
+        // this endpoint returns 204 quickly
+        await fetch("https://www.gstatic.com/generate_204", { cache: "no-store", mode: "no-cors" }).catch(() => {
+          // some browsers block no-cors timing; fallback to try-catch
+        });
+        const end = performance.now();
+        const ms = Math.round(end - start);
+        if (mountedRef.current) setLatencyMs(ms);
+      } catch {
+        if (mountedRef.current) setLatencyMs(null);
+      }
+    }
+
+    // naive download speed estimator:
+    // fetch a known large-ish CDN file, read its blob size or content-length and measure time.
+    async function measureDownload() {
+      try {
+        const url = "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js";
+        const start = performance.now();
+        const resp = await fetch(url, { cache: "no-store" });
+        const t1 = performance.now();
+        // try header length
+        let bytes = 0;
+        const cl = resp.headers.get("content-length");
+        if (cl) {
+          bytes = parseInt(cl, 10);
+        } else {
+          // fallback: read as blob to get size (may be slower)
+          const blob = await resp.blob();
+          bytes = blob.size;
+        }
+        const t2 = performance.now();
+        const secs = (t2 - start) / 1000;
+        const mbps = secs > 0 ? Math.round(((bytes * 8) / secs) / (1024 * 1024)) : null;
+        if (mountedRef.current) setDownloadMbps(mbps ?? null);
+      } catch {
+        if (mountedRef.current) setDownloadMbps(null);
+      }
+    }
+
+    // naive upload test: try posting small payload to httpbin.org (CORS dependent)
+    async function measureUpload() {
+      try {
+        const payload = new Uint8Array(256 * 1024); // 256 KB random payload
+        const start = performance.now();
+        const res = await fetch("https://httpbin.org/post", {
+          method: "POST",
+          body: payload,
+          mode: "cors",
+          cache: "no-store",
+        });
+        if (!mountedRef.current) return;
+        const end = performance.now();
+        if (!res.ok) {
+          setUploadMbps(null);
+          return;
+        }
+        const secs = (end - start) / 1000;
+        const mbps = secs > 0 ? Math.round(((payload.byteLength * 8) / secs) / (1024 * 1024)) : null;
+        if (mountedRef.current) setUploadMbps(mbps ?? null);
+      } catch {
+        // likely CORS block or network failure — set null
+        if (mountedRef.current) setUploadMbps(null);
+      }
+    }
+
+    // light CVE count: attempt to fetch a small feed from CIRCL (last N CVEs)
+    async function fetchCveCount() {
+      try {
+        const res = await fetch("https://cve.circl.lu/api/last"); // returns array of latest CVEs
+        if (!mountedRef.current) return;
+        if (!res.ok) {
+          setCveCount(null);
+          return;
+        }
+        const arr = await res.json();
+        // arr is array — show how many arrived in last feed as a quick indicator
+        if (Array.isArray(arr)) setCveCount(arr.length);
+        else setCveCount(null);
+      } catch {
+        setCveCount(null);
+      }
+    }
+
+    async function runAll() {
+      await Promise.all([fetchIp(), measureLatency(), measureDownload(), measureUpload(), fetchCveCount()]);
+    }
+
+    runAll();
+    const id = setInterval(runAll, INTERVAL);
+    return () => {
+      mountedRef.current = false;
+      clearInterval(id);
+    };
+  }, []);
+
+  // pretty string outputs with fallbacks
+  const ipText = ip ?? "—";
+  const speedText = downloadMbps !== null && downloadMbps !== undefined ? `${downloadMbps}` : "—";
+  const uploadText = uploadMbps !== null && uploadMbps !== undefined ? `${uploadMbps}` : "—";
+  const cveText = cveCount !== null && cveCount !== undefined ? `${cveCount}` : "—";
+  const latText = latencyMs !== null && latencyMs !== undefined ? `${latencyMs}` : "—";
+
+  return (
+    <div className="hidden md:inline-flex items-center px-3 py-1 rounded-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-xs text-slate-600 dark:text-slate-300">
+      <span className="mr-2 font-medium">IP:</span>
+      <span className="mr-3">{ipText}</span>
+      <span className="mx-2">|</span>
+      <span className="mr-1">Speed:</span>
+      <span className="mr-3">{speedText} Mbps ↓ / {uploadText} Mbps ↑</span>
+      <span className="mx-2">|</span>
+      <span className="mr-1">CVEs Today:</span>
+      <span className="mr-3">{cveText}</span>
+      <span className="mx-2">|</span>
+      <span className="mr-1">Latency:</span>
+      <span>{latText} ms</span>
+    </div>
+  );
+}
+
+/* -----------------------
    Component
    ----------------------- */
 
@@ -136,8 +294,16 @@ export default function Navigation() {
   const [megaOpen, setMegaOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [theme, setTheme] = useState<"light" | "dark">(() => (typeof window !== "undefined" && localStorage.getItem("site_theme") === "dark" ? "dark" : "light"));
-  const [notifCount, setNotifCount] = useState(2);
+// const [theme, setTheme] = useState<"light" | "dark">(() => (typeof window !== "undefined" && localStorage.getItem("site_theme") === "dark" ? "dark" : "light"));
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+  if (typeof window !== "undefined") {
+    const stored = localStorage.getItem("site_theme");
+    if (stored === "light" || stored === "dark") return stored as "light" | "dark";
+  }
+  return "dark"; // default to dark
+});
+
+const [notifCount, setNotifCount] = useState(2);
   const [bookmarked, setBookmarked] = useState(false);
 
   // refs for outside clicks
@@ -222,7 +388,13 @@ export default function Navigation() {
                 placeholder="Search tools, e.g., 'hash', 'CVE', 'PCAP'..."
                 className="flex-1 bg-transparent outline-none ml-2 text-sm text-slate-800 dark:text-slate-100"
                 aria-label="Search tools"
+                list="tool-suggestions"
               />
+              <datalist id="tool-suggestions">
+                {suggestions.map((s) => (
+                  <option key={s.slug} value={s.title} />
+                ))}
+              </datalist>
               {query ? (
                 <button onClick={() => setQuery("")} className="px-2 py-1 text-xs rounded hover:bg-slate-100 dark:hover:bg-slate-700">
                   Clear
@@ -231,45 +403,27 @@ export default function Navigation() {
                 <div className="text-xs text-slate-400 hidden sm:block">⌘K</div>
               )}
             </div>
-
             {/* suggestions dropdown */}
-            <div
-              className={`absolute left-0 right-0 mt-2 rounded-lg shadow-lg overflow-hidden bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 transition-opacity ${
-                suggestions.length ? "opacity-100" : "opacity-0 pointer-events-none"
-              }`}
-              role="listbox"
-            >
-              <div className="p-2">
-                {suggestions.length === 0 ? (
+            {suggestions.length === 0 && query && (
+              <div className="absolute left-0 right-0 mt-2 rounded-lg shadow-lg overflow-hidden bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 transition-opacity opacity-100">
+                <div className="p-2">
                   <div className="text-sm text-slate-500 px-2 py-3">No matches — try another term.</div>
-                ) : (
-                  suggestions.map((s) => (
-                    <Link
-                      key={s.slug}
-                      href={`/${s.slug}`}
-                      className="flex items-center justify-between gap-3 px-3 py-2 rounded hover:bg-slate-50 dark:hover:bg-slate-800"
-                      onClick={() => setQuery("")}
-                    >
-                      <div>
-                        <div className="font-medium text-slate-800 dark:text-slate-100">{s.title}</div>
-                        <div className="text-xs text-slate-500 dark:text-slate-400">{s.desc}</div>
-                      </div>
-                      <div className="text-xs text-slate-400">{s.slug}</div>
-                    </Link>
-                  ))
-                )}
+                </div>
+                <div className="border-t border-slate-100 dark:border-slate-800 p-2 text-center text-xs">
+                  <Link href="/tools" className="text-primary font-medium">
+                    View all tools
+                  </Link>
+                </div>
               </div>
-              <div className="border-t border-slate-100 dark:border-slate-800 p-2 text-center text-xs">
-                <Link href="/tools" className="text-primary font-medium">
-                  View all tools
-                </Link>
-              </div>
-            </div>
+            )}
           </div>
         </div>
 
         {/* Right: icon-only actions */}
         <div className="flex items-center gap-2">
+          {/* Live ticker injected here */}
+          <LiveTicker />
+
           {/* Categories mega */}
           <div className="relative" ref={megaRef}>
             <button
@@ -334,15 +488,15 @@ export default function Navigation() {
             <Link href="/contact" className="p-2 rounded hover:bg-slate-50" title="Contact" aria-label="Contact">
               <Mail className="w-5 h-5 text-rose-600" />
             </Link>
-             <Link href="/contact" className="p-2 rounded hover:bg-slate-50" title="Contact" aria-label="Contact">
-              <Mail className="w-5 h-5 text-rose-600" />
+             <Link href="/news" className="p-2 rounded hover:bg-slate-50" title="News" aria-label="News">
+              <Newspaper className="w-5 h-5 text-yellow-600" />
             </Link>
           </nav>
 
           {/* misc icons */}
           <button
             onClick={() => setNotifCount(0)}
-            className="p-2 rounded hover:bg-slate-50 relative"
+            className="p-2 rounded hover:bg-slate-50 relative hidden"
             aria-label="Notifications"
             title="Notifications"
           >
