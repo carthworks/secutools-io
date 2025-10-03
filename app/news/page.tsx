@@ -82,7 +82,9 @@ function saveCache(payload: { at: number; items: FeedItem[] }) {
   } catch {}
 }
 
-export default function NewsFeedSection({ max = 8 }: { max?: number }) {
+export default function NewsFeedSection(
+  { max = 8 }: Readonly<{ max?: number }>
+){
   const [items, setItems] = useState<FeedItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<number | null>(null);
