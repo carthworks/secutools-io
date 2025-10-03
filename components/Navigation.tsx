@@ -488,9 +488,9 @@ const [notifCount, setNotifCount] = useState(2);
             <Link href="/contact" className="p-2 rounded hover:bg-slate-50" title="Contact" aria-label="Contact">
               <Mail className="w-5 h-5 text-rose-600" />
             </Link>
-             <Link href="/news" className="p-2 rounded hover:bg-slate-50" title="News" aria-label="News">
+             {/* <Link href="/news" className="p-2 rounded hover:bg-slate-50" title="News" aria-label="News">
               <Newspaper className="w-5 h-5 text-yellow-600" />
-            </Link>
+            </Link> */}
           </nav>
 
           {/* misc icons */}
