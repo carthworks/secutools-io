@@ -48,7 +48,7 @@ const categories: Category[] = [
       { slug: "port", title: "Port Check", desc: "TCP reachability", isPublish: true },
       { slug: "headers", title: "HTTP Headers", desc: "CORS & CSP overview", isPublish: true },
       { slug: "cidr", title: "CIDR Calculator", desc: "Subnet ranges, broadcast, network size", isPublish: true },
-      { slug: "asn", title: "ASN Lookup", desc: "Find ASN / ISP from IP (offline dataset)", isPublish: false },
+      { slug: "asn", title: "ASN Lookup", desc: "Find ASN / ISP from IP (offline dataset)", isPublish: true },
       { slug: "network-tool", title: "Network-tool", desc: "IPv4/IPv6 utilities, MAC helpers, and quick math — client-side", isPublish: true },
     ],
   },
@@ -74,7 +74,7 @@ const categories: Category[] = [
       { slug: "timestamp", title: "Timestamp Converter", desc: "Unix ↔ Human time", isPublish: true },
       { slug: "subdomain", title: "Subdomain Finder", desc: "Dictionary-based", isPublish: true },
       { slug: "json-xml", title: "JSON/XML Formatter", desc: "Beautify and validate structured data", isPublish: true },
-      { slug: "regex", title: "Regex Tester", desc: "Build and test regex patterns", isPublish: false },
+      { slug: "regex", title: "Regex Tester", desc: "Build and test regex patterns", isPublish: true },
     ],
   },
   {
