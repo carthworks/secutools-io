@@ -1,8 +1,24 @@
-﻿"use client";
+﻿// File: components/Navigation.tsx
+"use client";
 
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Menu, X, ChevronDown } from "lucide-react";
+import {
+  Menu,
+  X,
+  ChevronDown,
+  Home,
+  Info,
+  Mail,
+  Search as IconSearch,
+  Bell,
+  Bookmark,
+  Sun,
+  Moon,
+  User,
+  LogOut,
+  Star,
+} from "lucide-react";
 import {
   Key,
   Network,
@@ -10,22 +26,15 @@ import {
   FileSearch,
   FlaskConical,
   Cloud,
-  Star,
-  StarOff,
-  ExternalLink,
   Code,
-  type LucideIcon,
-  
 } from "lucide-react";
 
 /* -----------------------
-  Types & data (icons typed)
+   Data + Types
    ----------------------- */
 
 type Tool = { slug: string; title: string; desc: string };
 type Category = { title: string; icon: any; color: string; tools: Tool[] };
-
-
 
 const categories: Category[] = [
   {
@@ -103,278 +112,351 @@ const categories: Category[] = [
     title: "Learning",
     icon: Code,
     color: "bg-green-50",
-    tools: [
-      { slug: "tips", title: "Daily Security Tips", desc: "Flashcards & rotating advice" },
-    ],
+    tools: [{ slug: "tips", title: "Daily Security Tips", desc: "Flashcards & rotating advice" }],
   },
 ];
 
 /* -----------------------
-  Component
+   Helpers
+   ----------------------- */
+
+const allTools = categories.flatMap((c) => c.tools.map((t) => ({ ...t, category: c.title })));
+function searchTools(q: string) {
+  const s = q.trim().toLowerCase();
+  if (!s) return [];
+  return allTools.filter(
+    (t) => t.title.toLowerCase().includes(s) || t.desc.toLowerCase().includes(s) || t.slug.toLowerCase().includes(s)
+  );
+}
+
+/* -----------------------
+   Component
    ----------------------- */
 
 export default function Navigation() {
-  const [isOpen, setIsOpen] = useState(false);
+  // ui state
+  const [megaOpen, setMegaOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const menuRef = useRef<HTMLDivElement | null>(null);
+  const [theme, setTheme] = useState<"light" | "dark">(() => (typeof window !== "undefined" && localStorage.getItem("site_theme") === "dark" ? "dark" : "light"));
+  const [notifCount, setNotifCount] = useState(2);
+  const [bookmarked, setBookmarked] = useState(false);
 
-  // close on outside click
+  // refs for outside clicks
+  const megaRef = useRef<HTMLDivElement | null>(null);
+  const searchRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    // dark mode sync
+    if (theme === "dark") document.documentElement.classList.add("dark");
+    else document.documentElement.classList.remove("dark");
+    try { localStorage.setItem("site_theme", theme); } catch {}
+  }, [theme]);
+
+  // outside click closes mega
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
-      if (!menuRef.current) return;
-      if (!menuRef.current.contains(e.target as Node)) {
-        setIsOpen(false);
-      }
+      if (!megaRef.current) return;
+      if (!megaRef.current.contains(e.target as Node)) setMegaOpen(false);
     }
     document.addEventListener("mousedown", onDocClick);
     return () => document.removeEventListener("mousedown", onDocClick);
   }, []);
 
-  // close on Escape
+  // esc handling
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") {
-        setIsOpen(false);
+        setMegaOpen(false);
         setMobileOpen(false);
+        setQuery("");
       }
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // flatten tools for search
-  const allTools: (Tool & { category: string })[] = categories.flatMap((c) =>
-    c.tools.map((t) => ({ ...t, category: c.title }))
-  );
+  // derived
+  const suggestions = query ? searchTools(query).slice(0, 6) : [];
 
-  const filtered = query
-    ? allTools.filter(
-        (t) =>
-          t.title.toLowerCase().includes(query.toLowerCase()) ||
-          t.desc.toLowerCase().includes(query.toLowerCase()) ||
-          t.slug.toLowerCase().includes(query.toLowerCase())
-      )
-    : null;
+  // small handlers
+  function toggleTheme() {
+    setTheme((t) => (t === "light" ? "dark" : "light"));
+  }
+  function toggleBookmark() {
+    setBookmarked((b) => !b);
+  }
 
   return (
-    <header className="border-b border-slate-200 bg-black/80 backdrop-blur text-white sticky top-0 z-30">
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <Link href="/" className="font-semibold text-lg flex items-center gap-2">
-            <span className="text-primary text-white">SecuTools.io</span>
+    <header className="sticky top-0 z-50 border-b bg-white/70 backdrop-blur-md dark:bg-slate-900/80">
+      <div className="container mx-auto px-4 py-3 flex items-center gap-4">
+        {/* Left: Brand + hamburger */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setMobileOpen(true)}
+            className="sm:hidden p-2 rounded-md border hover:bg-slate-50 dark:hover:bg-slate-800"
+            aria-label="Open menu"
+            title="Open menu"
+          >
+            <Menu className="w-5 h-5 text-slate-700 dark:text-slate-200" />
+          </button>
+
+          <Link href="/" className="flex items-center gap-3">
+            <div className="rounded-md bg-gradient-to-tr from-indigo-600 to-emerald-400 p-2 shadow-md">
+              <Star className="w-5 h-5 text-white" />
+            </div>
+            <div className="hidden sm:block">
+              <div className="text-lg font-semibold text-slate-900 dark:text-white">SecuTools.io</div>
+              <div className="text-xs text-slate-500 dark:text-slate-300 -mt-0.5">Fast · Privacy-friendly · Open</div>
+            </div>
           </Link>
         </div>
 
-        {/* Desktop nav */}
-        <nav className="hidden sm:flex items-center gap-4 text-sm text-white-700">
-          {/* Categories dropdown */}
-          <div className="relative" ref={menuRef}>
-            <button
-              aria-haspopup="true"
-              aria-expanded={isOpen}
-              onClick={() => setIsOpen((s) => !s)}
-              className="inline-flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-100 transition"
+        {/* Center: Live search */}
+        <div className="flex-1 max-w-2xl mx-4">
+          <div className="relative">
+            <div className="flex items-center bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 shadow-sm">
+              <IconSearch className="w-4 h-4 text-slate-400" />
+              <input
+                ref={searchRef}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search tools, e.g., 'hash', 'CVE', 'PCAP'..."
+                className="flex-1 bg-transparent outline-none ml-2 text-sm text-slate-800 dark:text-slate-100"
+                aria-label="Search tools"
+              />
+              {query ? (
+                <button onClick={() => setQuery("")} className="px-2 py-1 text-xs rounded hover:bg-slate-100 dark:hover:bg-slate-700">
+                  Clear
+                </button>
+              ) : (
+                <div className="text-xs text-slate-400 hidden sm:block">⌘K</div>
+              )}
+            </div>
+
+            {/* suggestions dropdown */}
+            <div
+              className={`absolute left-0 right-0 mt-2 rounded-lg shadow-lg overflow-hidden bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 transition-opacity ${
+                suggestions.length ? "opacity-100" : "opacity-0 pointer-events-none"
+              }`}
+              role="listbox"
             >
-              Tool Categories
-              <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+              <div className="p-2">
+                {suggestions.length === 0 ? (
+                  <div className="text-sm text-slate-500 px-2 py-3">No matches — try another term.</div>
+                ) : (
+                  suggestions.map((s) => (
+                    <Link
+                      key={s.slug}
+                      href={`/${s.slug}`}
+                      className="flex items-center justify-between gap-3 px-3 py-2 rounded hover:bg-slate-50 dark:hover:bg-slate-800"
+                      onClick={() => setQuery("")}
+                    >
+                      <div>
+                        <div className="font-medium text-slate-800 dark:text-slate-100">{s.title}</div>
+                        <div className="text-xs text-slate-500 dark:text-slate-400">{s.desc}</div>
+                      </div>
+                      <div className="text-xs text-slate-400">{s.slug}</div>
+                    </Link>
+                  ))
+                )}
+              </div>
+              <div className="border-t border-slate-100 dark:border-slate-800 p-2 text-center text-xs">
+                <Link href="/tools" className="text-primary font-medium">
+                  View all tools
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right: icon-only actions */}
+        <div className="flex items-center gap-2">
+          {/* Categories mega */}
+          <div className="relative" ref={megaRef}>
+            <button
+              onClick={() => setMegaOpen((s) => !s)}
+              aria-expanded={megaOpen}
+              className="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800 text-sm border"
+            >
+              Categories
+              <ChevronDown className={`w-4 h-4 transition-transform ${megaOpen ? "rotate-180" : ""}`} />
             </button>
 
-            {isOpen && (
-              <div
-                role="menu"
-                aria-label="Tool categories"
-                className="absolute left-0 mt-2 w-[560px] max-w-[90vw] bg-white border border-slate-200 rounded-lg shadow-lg z-40"
-              >
-                {/* Search inside dropdown */}
-                <div className="p-3 border-b border-slate-100">
-                  <div className="flex gap-2">
-                    <input
-                      value={query}
-                      onChange={(e) => setQuery(e.target.value)}
-                      placeholder="Search tools (name, description)..."
-                      className="flex-1 bg-slate-50 border border-slate-200 rounded px-3 py-2 text-sm focus:outline-none"
-                      autoFocus
-                    />
-                    <button onClick={() => setQuery("")} className="px-3 py-2 rounded hover:bg-slate-100">
-                      Clear
-                    </button>
-                  </div>
-                  <div className="mt-2 text-xs text-slate-400">Tip: press Esc to close</div>
-                </div>
-
-                {/* Results container: vertical scroll */}
-                <div className="p-4 max-h-[420px] overflow-y-auto">
-                  {/* if user is typing show filtered list; otherwise show grouped categories */}
-                  {filtered ? (
-                    <div className="grid gap-3">
-                      {filtered.length === 0 && <div className="text-sm text-slate-500">No matching tools</div>}
-                      {filtered.map((t) => (
-                        <Link
-                          key={t.slug}
-                          href={`/${t.slug}`}
-                          onClick={() => setIsOpen(false)}
-                          className="block p-2 rounded hover:bg-slate-50 transition"
-                        >
-                          <div className="flex items-center justify-between gap-3">
-                            <div>
-                              <div className="font-medium text-slate-800">{t.title}</div>
-                              <div className="text-xs text-slate-500">{t.desc}</div>
-                            </div>
-                            <div className="text-xs text-slate-400">{t.category}</div>
+            {megaOpen && (
+              <div className="absolute right-0 mt-2 w-[680px] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-lg shadow-2xl p-4 z-50">
+                <div className="grid grid-cols-3 gap-4">
+                  {categories.map((c) => {
+                    const Icon = c.icon;
+                    return (
+                      <div key={c.title} className="p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 rounded bg-slate-100 dark:bg-slate-800">
+                            <Icon className="w-5 h-5 text-slate-700 dark:text-slate-100" />
                           </div>
-                        </Link>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-2 gap-4">
-                      {categories.map((category, idx) => {
-                        const Icon = category.icon;
-                        return (
-                          <div key={idx}>
-                            <div className="flex items-center gap-2 mb-2">
-                              <Icon className="w-4 h-4 text-slate-600" />
-                              <h4 className="text-sm font-semibold text-slate-800">{category.title}</h4>
-                              <span className="ml-2 text-xs text-slate-400">({category.tools.length})</span>
-                            </div>
-
-                            <div className="flex flex-col gap-1">
-                              {category.tools.map((tool) => (
-                                <Link
-                                  key={tool.slug}
-                                  href={`/${tool.slug}`}
-                                  onClick={() => setIsOpen(false)}
-                                  className="block rounded px-2 py-1 hover:bg-slate-50 transition"
-                                >
-                                  <div className="text-xs text-slate-700 font-medium">{tool.title}</div>
-                                  <div className="text-xxs text-slate-400">{tool.desc}</div>
-                                </Link>
-                              ))}
-                            </div>
+                          <div>
+                            <div className="font-medium text-slate-800 dark:text-slate-100">{c.title}</div>
+                            <div className="text-xs text-slate-500 dark:text-slate-400">{c.tools.length} tools</div>
                           </div>
-                        );
-                      })}
-                    </div>
-                  )}
+                        </div>
+                        <div className="mt-3 grid gap-1 text-sm">
+                          {c.tools.slice(0, 4).map((t) => (
+                            <Link
+                              key={t.slug}
+                              href={`/${t.slug}`}
+                              className="block rounded px-2 py-1 hover:bg-slate-50 dark:hover:bg-slate-800"
+                              onClick={() => setMegaOpen(false)}
+                            >
+                              <div className="font-medium text-slate-700 dark:text-slate-100">{t.title}</div>
+                              <div className="text-xs text-slate-400">{t.desc}</div>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-
-                <div className="p-3 border-t border-slate-100 text-center">
-                  <Link
-                    href="/tools"
-                    onClick={() => setIsOpen(false)}
-                    className="inline-block text-sm font-medium text-primary hover:underline"
-                  >
-                    View All Tools
+                <div className="mt-4 text-center">
+                  <Link href="/tools" onClick={() => setMegaOpen(false)} className="inline-flex items-center gap-2 px-4 py-2 rounded bg-indigo-600 text-white">
+                    Explore all tools
                   </Link>
                 </div>
               </div>
             )}
           </div>
 
-          <Link className="hover:text-slate-900" href="/about">About</Link>
-          <Link className="hover:text-slate-900" href="/contact">Contact</Link>
-          <a className="hover:text-slate-900" href="https://owasp.org/www-project-top-ten/" target="_blank" rel="noreferrer">OWASP</a>
-        </nav>
+          {/* Icon-only colorful compact nav */}
+          <nav className="flex items-center gap-2">
+            <Link href="/" className="p-2 rounded hover:bg-slate-50" title="Home" aria-label="Home">
+              <Home className="w-5 h-5 text-sky-600" />
+            </Link>
+            <Link href="/about" className="p-2 rounded hover:bg-slate-50" title="About" aria-label="About">
+              <Info className="w-5 h-5 text-emerald-600" />
+            </Link>
+            <Link href="/contact" className="p-2 rounded hover:bg-slate-50" title="Contact" aria-label="Contact">
+              <Mail className="w-5 h-5 text-rose-600" />
+            </Link>
+          </nav>
 
-        {/* Mobile Nav: menu button */}
-        <div className="sm:hidden">
+          {/* misc icons */}
           <button
-            aria-label="Open menu"
-            onClick={() => setMobileOpen(true)}
-            className="p-2 rounded border"
+            onClick={() => setNotifCount(0)}
+            className="p-2 rounded hover:bg-slate-50 relative"
+            aria-label="Notifications"
+            title="Notifications"
           >
-            <Menu className="w-5 h-5" />
+            <Bell className="w-5 h-5 text-slate-700 dark:text-slate-200" />
+            {notifCount > 0 && <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-xs rounded-full px-1.5">{notifCount}</span>}
           </button>
+
+          <button
+            onClick={toggleBookmark}
+            className="p-2 rounded hover:bg-slate-50"
+            aria-pressed={bookmarked}
+            title={bookmarked ? "Bookmarked" : "Bookmark"}
+          >
+            <Bookmark className={`w-5 h-5 ${bookmarked ? "text-amber-500" : "text-slate-700 dark:text-slate-200"}`} />
+          </button>
+
+          <button onClick={toggleTheme} className="p-2 rounded hover:bg-slate-50" aria-label="Toggle theme" title="Toggle theme">
+            {theme === "light" ? <Moon className="w-5 h-5 text-slate-700" /> : <Sun className="w-5 h-5 text-yellow-400" />}
+          </button>
+
+          {/* profile */}
+          <div className="relative hidden">
+            <details className="relative">
+              <summary className="list-none cursor-pointer p-1 rounded-full hover:bg-slate-50 dark:hover:bg-slate-800">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white font-semibold">
+                  A
+                </div>
+              </summary>
+              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded shadow-md overflow-hidden z-40">
+                <div className="p-3">
+                  <div className="font-medium">Alex Parker</div>
+                  <div className="text-xs text-slate-500">SecOps · London</div>
+                </div>
+                <div className="border-t border-slate-100 dark:border-slate-800">
+                  <Link href="/profile" className="flex items-center gap-2 px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800">
+                    <User className="w-4 h-4" /> Profile
+                  </Link>
+                  <Link href="/bookmarks" className="flex items-center gap-2 px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800">
+                    <Star className="w-4 h-4" /> Bookmarks
+                  </Link>
+                  <Link href="/logout" className="flex items-center gap-2 px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800">
+                    <LogOut className="w-4 h-4" /> Sign out
+                  </Link>
+                </div>
+              </div>
+            </details>
+          </div>
         </div>
       </div>
 
-      {/* Mobile drawer */}
+      {/* Mobile Drawer */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-50 bg-black/40 sm:hidden" role="dialog" aria-modal="true">
-          <div className="absolute right-0 top-0 h-full w-[92vw] max-w-sm bg-white shadow-lg p-4 overflow-y-auto">
+        <div className="fixed inset-0 z-60 sm:hidden">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setMobileOpen(false)} />
+          <div className="absolute right-0 top-0 h-full w-[92vw] max-w-sm bg-white dark:bg-slate-900 p-4 overflow-y-auto shadow-xl">
             <div className="flex items-center justify-between mb-4">
-              <div className="font-semibold">Tools</div>
-              <button onClick={() => setMobileOpen(false)} aria-label="Close menu" className="p-2 rounded">
+              <div className="font-semibold">Menu</div>
+              <button onClick={() => setMobileOpen(false)} className="p-2 rounded">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="mb-3">
-              <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search tools..."
-                className="w-full bg-slate-50 border border-slate-200 rounded px-3 py-2 text-sm"
-              />
+              <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 rounded px-3 py-2">
+                <IconSearch className="w-4 h-4 text-slate-400" />
+                <input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search tools..."
+                  className="flex-1 bg-transparent outline-none text-sm"
+                />
+              </div>
             </div>
 
             <div className="space-y-3">
-              {(query ? allToolsFilter(categories, query) : categories).map((c: any, i: number) => {
-                // mobile: if query provided, c is tool; otherwise c is category
-                if (query) {
-                  // c is Tool-like object
-                  return (
-                    <Link key={c.slug} href={`/${c.slug}`} onClick={() => setMobileOpen(false)} className="block p-2 rounded hover:bg-slate-50">
-                      <div className="font-medium">{c.title}</div>
-                      <div className="text-xs text-slate-500">{c.desc}</div>
-                    </Link>
-                  );
-                } else {
+              <nav className="flex gap-2">
+                <Link href="/" className="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-50">
+                  <Home className="w-5 h-5 text-sky-600" /> Home
+                </Link>
+                <Link href="/about" className="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-50">
+                  <Info className="w-5 h-5 text-emerald-600" /> About
+                </Link>
+              </nav>
+
+              <div>
+                <div className="text-xs font-medium mb-2">Categories</div>
+                {categories.map((c) => {
                   const Icon = c.icon;
                   return (
-                    <div key={i}>
+                    <div key={c.title} className="mb-3">
                       <div className="flex items-center gap-2 mb-2">
                         <Icon className="w-4 h-4 text-slate-600" />
                         <div className="font-medium">{c.title}</div>
                       </div>
-                      <div className="flex flex-col gap-1">
-                        {c.tools.map((t: Tool) => (
-                          <Link key={t.slug} href={`/${t.slug}`} onClick={() => setMobileOpen(false)} className="block px-2 py-1 rounded hover:bg-slate-50">
-                            <div className="text-sm">{t.title}</div>
-                            <div className="text-xs text-slate-500">{t.desc}</div>
+                      <div className="pl-6">
+                        {c.tools.map((t) => (
+                          <Link key={t.slug} href={`/${t.slug}`} className="block px-2 py-1 text-sm rounded hover:bg-slate-50" onClick={() => setMobileOpen(false)}>
+                            {t.title}
                           </Link>
                         ))}
                       </div>
                     </div>
                   );
-                }
-              })}
-            </div>
+                })}
+              </div>
 
-            <div className="mt-6">
-              <Link href="/tools" onClick={() => setMobileOpen(false)} className="block text-center text-sm font-medium text-primary">
-                View All Tools
-              </Link>
+              <div className="pt-3 border-t border-slate-100">
+                <Link href="/tools" onClick={() => setMobileOpen(false)} className="block text-center px-3 py-2 rounded bg-indigo-600 text-white">
+                  Browse all tools
+                </Link>
+              </div>
             </div>
           </div>
         </div>
       )}
     </header>
   );
-}
-
-/* -----------------------
-  Helpers
-   ----------------------- */
-
-/**
- * Helper used inside mobile branch to provide a simplified flat list when query is set.
- * We return an array of tool-like objects so mobile rendering can reuse blocks.
- */
-function allToolsFilter(cats: Category[], q: string) {
-  const query = q.trim().toLowerCase();
-  if (!query) return cats;
-  const matched: (Tool & { category: string })[] = [];
-  for (const c of cats) {
-    for (const t of c.tools) {
-      if (
-        t.title.toLowerCase().includes(query) ||
-        t.desc.toLowerCase().includes(query) ||
-        t.slug.toLowerCase().includes(query)
-      ) {
-        matched.push({ ...t, category: c.title });
-      }
-    }
-  }
-  return matched;
 }
