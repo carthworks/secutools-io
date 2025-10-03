@@ -70,6 +70,7 @@ const categories: Category[] = [
     icon: FileSearch,
     color: "bg-teal-50",
     tools: [
+	  { slug: "device-info", title: "Device Info", desc: "Format JSON, Apache, Nginx", isPublish: true },
       { slug: "logs", title: "Log Beautifier", desc: "Format JSON, Apache, Nginx", isPublish: true },
       { slug: "pcap", title: "PCAP Decoder", desc: "View timestamps, sizes, hex", isPublish: true },
       { slug: "timestamp", title: "Timestamp Converter", desc: "Unix ↔ Human time", isPublish: true },
@@ -235,7 +236,7 @@ export default function HomePage() {
   const allTags = useMemo(() => {
     const s = new Set<string>();
     allToolsFlat.forEach((t) => toolTags(t.slug).forEach((tg) => s.add(tg)));
-    return Array.from(s).sort();
+    return Array.from(s).sort((a, b) => a.localeCompare(b));
   }, [allToolsFlat]);
 
   function toggleFavorite(slug: string) {
@@ -303,7 +304,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen px-4 sm:px-8 lg:px-20 py-8 space-y-8">
+    <div className="min-h-screen px-4 sm:px-2 lg:px-2 py-8 space-y-8">
       {/* Top bar: title + controls */}
       <div className="flex items-center gap-4">
         <h1 className="text-2xl sm:text-3xl font-semibold">Cybersecurity Handy Tools</h1>
@@ -450,7 +451,7 @@ export default function HomePage() {
             {filteredCategories.map((cat) => (
               <div
                 key={cat.title}
-                ref={(el) => (categoryRefs.current[cat.title] = el)}
+                ref={(el) => { categoryRefs.current[cat.title] = el; }}
                 className={`rounded-lg p-4 shadow-sm ${cat.color} border bg-opacity-60`}
               >
                 <div className="flex items-center gap-3">
@@ -541,7 +542,7 @@ export default function HomePage() {
           </section>
 
           {/* Learning resources */}
-          <section>
+          <section className="hidden">
             <div className="rounded-lg border p-4 bg-white shadow-sm">
               <div className="flex items-center justify-between">
                 <div>
@@ -570,15 +571,15 @@ export default function HomePage() {
 
           {/* News section revamp */}
           <section>
-            <div className="rounded-lg border p-4 bg-white shadow-sm">
+            <div className="rounded-lg border p-4 bg-white shadow-sm hidden">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold">Latest Security News</h3>
                 <div className="text-sm text-slate-500">Source & date highlighted</div>
               </div>
 
-              <div className="mt-3 grid md:grid-cols-1 gap-4">
+              {/* <div className="mt-3 grid md:grid-cols-1 gap-4">
                 <NewsFeedSection />
-              </div>
+              </div> */}
             </div>
           </section>
 

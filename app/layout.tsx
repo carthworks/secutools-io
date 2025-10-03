@@ -1,6 +1,7 @@
 ﻿// File: app/layout.tsx (or wherever your RootLayout lives)
 import "./globals.css";
 import Navigation from "@/components/Navigation";
+import { Home, Link } from "lucide-react";
 import type { ReactNode } from "react";
 
 export const metadata = {
@@ -80,7 +81,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <meta name="theme-color" content="#0f172a" />
         <meta name="description" content={metadata.description} />
         <meta name="keywords" content={metadata.keywords} />
-        <meta name="author" content="SecuTools" />
+        <meta name="author" content="tkarthikeyan@gmail.com" />
         <meta name="robots" content="index,follow" />
         <link rel="canonical" href={siteUrl} />
 
@@ -122,6 +123,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               ⚡ Built for learning. No tracking. All processing runs client-side unless a checker needs a public API.
             </p>
             <div className="flex gap-4">
+                    <a href="/" className="hover:bg-slate-50" title="Home" aria-label="Home">
+                              {/* <Home className="w-5 h-5 text-sky-600" /> */}
+                              Home
+                    </a>
               <a href="/about" className="hover:text-slate-700">About</a>
               <a href="/privacy" className="hover:text-slate-700">Privacy</a>
               <a href="https://github.com/carthworks" target="_blank" rel="noreferrer" className="hover:text-slate-700">GitHub</a>
