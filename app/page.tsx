@@ -34,9 +34,12 @@ const categories: Category[] = [
     tools: [
       { slug: "hash", title: "Hash Tools", desc: "MD5, SHA1, SHA256, SHA512", isPublish: true },
       { slug: "jwt", title: "JWT Decoder", desc: "Decode and verify JWTs", isPublish: true },
+      { slug: "jwt-cracker", title: "JWT Cracker", desc: "Test weak signing keys", isPublish: false },
       { slug: "password", title: "Password Utilities", desc: "Strength checker and generator", isPublish: true },
       { slug: "hash-id", title: "Hash Identifier", desc: "Detect type of hash string", isPublish: true },
       { slug: "obfuscator", title: "String Obfuscator", desc: "ROT13, Caesar, XOR, Base conversions", isPublish: true },
+      { slug: "cert-parser", title: "Certificate Parser", desc: "PEM/DER certificate details", isPublish: false },
+      { slug: "hash-collision", title: "Hash Collision Demo", desc: "Visualize MD5/SHA1 collisions", isPublish: false },
     ],
   },
   {
@@ -51,6 +54,10 @@ const categories: Category[] = [
       { slug: "cidr", title: "CIDR Calculator", desc: "Subnet ranges, broadcast, network size", isPublish: true },
       { slug: "asn", title: "ASN Lookup", desc: "Find ASN / ISP from IP (offline dataset)", isPublish: true },
       { slug: "network-tool", title: "Network-tool", desc: "IPv4/IPv6 utilities, MAC helpers, and quick math — client-side", isPublish: true },
+      { slug: "traceroute", title: "Traceroute", desc: "Visualize packet hops", isPublish: false },
+      { slug: "ping", title: "Ping Tester", desc: "Measure ICMP/HTTP latency", isPublish: false },
+      { slug: "dnssec", title: "DNSSEC Validator", desc: "Check DNSSEC and zone configs", isPublish: false },
+      { slug: "smtp", title: "SMTP Tester", desc: "Check mail relay and SMTP banner", isPublish: false },
     ],
   },
   {
@@ -63,6 +70,8 @@ const categories: Category[] = [
       { slug: "cve-feed", title: "CVE Feed Viewer", desc: "Browse latest CVEs from NVD", isPublish: true },
       { slug: "threat", title: "Threat Intel Check", desc: "VirusTotal/AbuseIPDB", isPublish: true },
       { slug: "whois", title: "WHOIS / RDAP", desc: "Ownership & registration", isPublish: true },
+      { slug: "email-analyzer", title: "Email Header Analyzer", desc: "Trace spoofing & spam origins", isPublish: false },
+      { slug: "exploitdb", title: "Exploit Lookup", desc: "Map CVEs to ExploitDB entries", isPublish: false },
     ],
   },
   {
@@ -70,13 +79,16 @@ const categories: Category[] = [
     icon: FileSearch,
     color: "bg-teal-50",
     tools: [
-	  { slug: "device-info", title: "Device Info", desc: "Format JSON, Apache, Nginx", isPublish: true },
+      { slug: "device-info", title: "Device Info", desc: "Format JSON, Apache, Nginx", isPublish: true },
       { slug: "logs", title: "Log Beautifier", desc: "Format JSON, Apache, Nginx", isPublish: true },
       { slug: "pcap", title: "PCAP Decoder", desc: "View timestamps, sizes, hex", isPublish: true },
       { slug: "timestamp", title: "Timestamp Converter", desc: "Unix ↔ Human time", isPublish: true },
       { slug: "subdomain", title: "Subdomain Finder", desc: "Dictionary-based", isPublish: true },
       { slug: "json-xml", title: "JSON/XML Formatter", desc: "Beautify and validate structured data", isPublish: true },
       { slug: "regex", title: "Regex Tester", desc: "Build and test regex patterns", isPublish: true },
+      { slug: "exif", title: "EXIF Viewer", desc: "Inspect metadata in images", isPublish: false },
+      { slug: "pdf-macro", title: "PDF/Doc Macro Extractor", desc: "Detect embedded macros/scripts", isPublish: false },
+      { slug: "hex-editor", title: "Hex Editor", desc: "Inspect binary data inline", isPublish: false },
     ],
   },
   {
@@ -87,6 +99,9 @@ const categories: Category[] = [
       { slug: "payloads", title: "XSS/SQLi Payloads", desc: "Encoders and test payloads", isPublish: true },
       { slug: "cheatsheets", title: "Cheatsheets", desc: "OWASP Top 10, MITRE ATT&CK", isPublish: true },
       { slug: "wordlist", title: "Wordlist Generator", desc: "Custom password/wordlists", isPublish: true },
+      { slug: "xxe", title: "XXE Payload Generator", desc: "XML external entity injection payloads", isPublish: false },
+      { slug: "jwt-fuzzer", title: "JWT Fuzzer", desc: "Tweak claims and signatures", isPublish: false },
+      { slug: "command-injection", title: "Command Injection Tester", desc: "Common OS injection payloads", isPublish: false },
     ],
   },
   {
@@ -98,15 +113,23 @@ const categories: Category[] = [
       { slug: "url-trace", title: "URL Unshortener & Redirect Tracer", desc: "Expand and trace redirects", isPublish: false },
       { slug: "cvss", title: "CVE Severity Calculator", desc: "Compute CVSS scores", isPublish: true },
       { slug: "aws-s3", title: "AWS S3 Checker", desc: "Test for public/misconfigured buckets", isPublish: false },
+      { slug: "cors-check", title: "CORS Tester", desc: "Detect misconfigured Access-Control headers", isPublish: false },
+      { slug: "clickjack", title: "Clickjacking Tester", desc: "Frame-busting & X-Frame-Options check", isPublish: false },
+      { slug: "csrf", title: "CSRF Token Inspector", desc: "Check CSRF token presence & randomness", isPublish: false },
     ],
   },
   {
     title: "Learning",
     icon: Code,
     color: "bg-green-50",
-    tools: [{ slug: "tips", title: "Daily Security Tips", desc: "Flashcards & rotating advice", isPublish: true }],
+    tools: [
+      { slug: "tips", title: "Daily Security Tips", desc: "Flashcards & rotating advice", isPublish: true },
+      { slug: "ctf-mini", title: "CTF Mini Challenges", desc: "Small interactive labs & puzzles", isPublish: false },
+      { slug: "vuln-demos", title: "Vulnerability Demos", desc: "Learn XSS, SQLi, SSRF interactively", isPublish: false },
+    ],
   },
 ];
+
 
 /* ---------- helpers ---------- */
 const FAVORITES_KEY = "secu_favs_v1";
