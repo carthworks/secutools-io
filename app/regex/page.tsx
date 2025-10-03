@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Copy, Download, Share2, FileText, File, Check, X, Flash, Zap } from "lucide-react";
+import React, { useMemo, useRef, useState } from "react";
+import { Copy, Share2, X } from "lucide-react";
 
 /**
  * RegexTester component
@@ -59,6 +59,7 @@ export default function RegexTester() {
       }
       return out;
     } catch (e) {
+      console.error("Regex match error:", e);
       return [];
     }
   }, [regex, testText]);
@@ -123,7 +124,8 @@ export default function RegexTester() {
         await (navigator as any).share(payload);
         return;
       } catch (e) {
-        // fall through to copy
+        console.error("Share failed:", e);
+        alert("Sharing failed. Pattern copied to clipboard instead.");
       }
     }
     await navigator.clipboard.writeText(`Pattern: /${pattern}/\nText:\n${testText}`);
@@ -141,7 +143,7 @@ export default function RegexTester() {
       .replace(/(\\\\w|\\\\d|\\\\s|\\\\b|\\\\W|\\\\D|\\\\S)/g, "<span class='token-escape'>$1</span>")
       .replace(/(\[.*?\])/g, "<span class='token-class'>$1</span>")
       .replace(/(\{\d+,?\d*\}|\*|\+|\?)/g, "<span class='token-quant'>$1</span>")
-      .replace(/(\.|\^|\$|\|)/g, "<span class='token-meta'>$1</span>");
+      .replace(/([.^$|])/g, "<span class='token-meta'>$1</span>");
     return tokens;
   }
 
@@ -168,9 +170,10 @@ export default function RegexTester() {
               </div>
             </div>
 
-            <label className="block mt-4 text-xs font-medium text-slate-600 dark:text-slate-300">Pattern</label>
+            <label htmlFor="regex-pattern-input" className="block mt-4 text-xs font-medium text-slate-600 dark:text-slate-300">Pattern</label>
             <div className="mt-2">
               <input
+                id="regex-pattern-input"
                 value={pattern}
                 onChange={(e) => setPattern(e.target.value)}
                 className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded font-mono text-sm"
