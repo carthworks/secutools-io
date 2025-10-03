@@ -22,9 +22,6 @@ import StableIcon from "@/components/StableIcon";
 type Tool = { slug: string; title: string; desc: string; isPublish: boolean };
 type Category = { title: string; icon: any; color: string; tools: Tool[] };
 
-const NewsFeedSection = dynamic(() => import("@/components/NewsFeedSection"), {
-  ssr: false,
-});
 
 const categories: Category[] = [
   {
@@ -601,14 +598,11 @@ export default function HomePage() {
                 <div className="text-sm text-slate-500">Source & date highlighted</div>
               </div>
 
-              {/* <div className="mt-3 grid md:grid-cols-1 gap-4">
-                <NewsFeedSection />
-              </div> */}
+           
             </div>
           </section>
 
           {/* Optional network tools preview */}
-          {/* <section> <NetworkTools/> </section> */}
         </main>
       </div>
     </div>
