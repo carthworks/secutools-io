@@ -71,7 +71,8 @@ const categories: Category[] = [
       { slug: "threat", title: "Threat Intel Check", desc: "VirusTotal/AbuseIPDB", isPublish: true },
       { slug: "whois", title: "WHOIS / RDAP", desc: "Ownership & registration", isPublish: true },
       { slug: "email-analyzer", title: "Email Header Analyzer", desc: "Trace spoofing & spam origins", isPublish: false },
-      { slug: "exploitdb", title: "Exploit Lookup", desc: "Map CVEs to ExploitDB entries", isPublish: false },
+	  { slug: "qr-code-check", title: "QR Code Security Analyzer", desc: "Scan with your camera or upload a QR code image. The tool decodes and flags risky URLs", isPublish: true },
+	  
     ],
   },
   {
