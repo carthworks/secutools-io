@@ -83,6 +83,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <meta name="keywords" content={metadata.keywords} />
         <meta name="author" content="tkarthikeyan@gmail.com" />
         <meta name="robots" content="index,follow" />
+        <meta name="developer" content="Karthikeyan T" />
         <link rel="canonical" href={siteUrl} />
 
         {/* Open Graph */}

@@ -18,8 +18,6 @@ import {
   User,
   LogOut,
   Star,
-} from "lucide-react";
-import {
   Key,
   Network,
   Search,
@@ -334,6 +332,9 @@ export default function Navigation() {
               <Info className="w-5 h-5 text-emerald-600" />
             </Link>
             <Link href="/contact" className="p-2 rounded hover:bg-slate-50" title="Contact" aria-label="Contact">
+              <Mail className="w-5 h-5 text-rose-600" />
+            </Link>
+             <Link href="/contact" className="p-2 rounded hover:bg-slate-50" title="Contact" aria-label="Contact">
               <Mail className="w-5 h-5 text-rose-600" />
             </Link>
           </nav>
