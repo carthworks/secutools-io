@@ -346,7 +346,6 @@ export default function DeviceInfo() {
   const summary = useMemo(() => {
     if (!info) return "No device data collected yet.";
     const lines: string[] = [];
-    const ua = info.userAgent ?? "";
     lines.push(`${info.viewport?.width ?? "?"}×${info.viewport?.height ?? "?"} viewport`);
     if (info.devicePixelRatio) lines.push(`${info.devicePixelRatio} DPR`);
     if (info.platform) lines.push(String(info.platform));
