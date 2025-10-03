@@ -119,11 +119,11 @@ function getPreferences(win: Window | undefined, nav: Navigator) {
       : null;
   let timeZone = null;
   try {
-    timeZone = Intl?.DateTimeFormat?.resolvedOptions?.().timeZone ?? null;
+    timeZone = typeof Intl !== "undefined" ? new Intl.DateTimeFormat().resolvedOptions().timeZone ?? null : null;
   } catch {
     timeZone = null;
   }
-  const locale = Intl?.DateTimeFormat?.resolvedOptions?.().locale ?? (nav.language ?? null);
+  const locale = typeof Intl !== "undefined" ? new Intl.DateTimeFormat().resolvedOptions().locale ?? (nav.language ?? null) : (nav.language ?? null);
   return { prefersReducedMotion, prefersDark, timeZone, locale };
 }
 
@@ -461,7 +461,15 @@ export default function DeviceInfo() {
                 <div className="text-sm">{info?.connection?.effectiveType ?? "unknown"} {info?.connection?.saveData ? "· Save-Data" : ""}</div>
 
                 <div className="text-xs text-slate-500 mt-2">Touch</div>
-                <div className="text-sm">{info ? (info.maxTouchPoints > 0 ? `Supports touch (${info.maxTouchPoints})` : "No touch") : "—"}</div>
+                {(() => {
+                  let touchInfo = "—";
+                  if (info) {
+                    touchInfo = info.maxTouchPoints > 0
+                      ? `Supports touch (${info.maxTouchPoints})`
+                      : "No touch";
+                  }
+                  return <div className="text-sm">{touchInfo}</div>;
+                })()}
               </div>
 
               {/* Quick metadata */}
