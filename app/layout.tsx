@@ -3,6 +3,7 @@ import "./globals.css";
 import Navigation from "@/components/Navigation";
 import { Home, Link } from "lucide-react";
 import type { ReactNode } from "react";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 export const metadata = {
   title: "Cybersecurity Handy Tools",
@@ -115,6 +116,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
 
       <body className="bg-white text-slate-800">
+        <SpeedInsights/>
         <Navigation />
         <main className="container-page py-8">{children}</main>
 
