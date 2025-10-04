@@ -17,8 +17,9 @@ import {
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import StableIcon from "@/components/StableIcon";
+// import PasswordStrengthTicker from "@/components/PasswordStrengthTicker";
 
-
+import PasswordStrengthTicker from "./password-strength/page";
 type Tool = { slug: string; title: string; desc: string; isPublish: boolean };
 type Category = { title: string; icon: any; color: string; tools: Tool[] };
 
@@ -345,6 +346,7 @@ export default function HomePage() {
       <div className="grid md:grid-cols-4 gap-6">
         {/* Sidebar (md+) */}
         <aside className="hidden md:block col-span-1 sticky top-24 h-fit">
+    
           <div className="rounded-lg border p-4 bg-white shadow-sm">
             <div className="flex items-center justify-between">
               <div className="font-medium">Categories</div>
@@ -381,6 +383,9 @@ export default function HomePage() {
                 })}
               </div>
             </div>
+                {/* <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 to-indigo-100 dark:from-slate-900 dark:to-slate-800 p-6"> */}
+    
+    {/* </main> */}
 
             <div className="mt-4 border-t pt-3">
               <div className="text-sm font-medium">Favorites</div>
@@ -408,6 +413,7 @@ export default function HomePage() {
         <main className="md:col-span-3 space-y-6">
           {/* Search + top controls */}
           <section className="rounded-lg border bg-white p-4 shadow-sm">
+                    <PasswordStrengthTicker />
             <div className="flex gap-3 items-center">
               <div className="relative flex-1">
                 <input
