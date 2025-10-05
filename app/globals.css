@@ -78,8 +78,7 @@ body {
 		--chart-5: 340 75% 55%;
 	}
 } 
- 
-@layer base {
+ @layer base {
   * {
     @apply border-border;
 	}
@@ -87,3 +86,19 @@ body {
     @apply bg-background text-foreground;
 	}
 }
+
+aside  .bg-slate-50:hover {
+    --tw-bg-opacity: 1;
+    background-color: rgb(161 200 239);
+    background-image: linear-gradient(to top right, #4f46e5, #34d399);
+    color: #fff;
+}
+
+
+/* aside:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(161 200 239 / var(--tw-bg-opacity)); 
+  background-image: linear-gradient(to top right, #4f46e5, #34d399);
+  color: #fff;
+  transition: background 0.4s ease, color 0.3s ease;
+} */

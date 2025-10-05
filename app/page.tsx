@@ -85,7 +85,7 @@ const categories: Category[] = [
       { slug: "subdomain", title: "Subdomain Finder", desc: "Dictionary-based", isPublish: true },
       { slug: "json-xml", title: "JSON/XML Formatter", desc: "Beautify and validate structured data", isPublish: true },
       { slug: "regex", title: "Regex Tester", desc: "Build and test regex patterns", isPublish: true },
-      { slug: "exif", title: "EXIF Viewer", desc: "Inspect metadata in images", isPublish: false },
+      { slug: "exif", title: "EXIF Viewer", desc: "Inspect metadata in images", isPublish: true },
       { slug: "pdf-macro", title: "PDF/Doc Macro Extractor", desc: "Detect embedded macros/scripts", isPublish: false },
       { slug: "hex-editor", title: "Hex Editor", desc: "Inspect binary data inline", isPublish: false },
     ],
@@ -125,6 +125,7 @@ const categories: Category[] = [
       { slug: "tips", title: "Daily Security Tips", desc: "Flashcards & rotating advice", isPublish: true },
       { slug: "ctf-mini", title: "CTF Mini Challenges", desc: "Small interactive labs & puzzles", isPublish: false },
       { slug: "vuln-demos", title: "Vulnerability Demos", desc: "Learn XSS, SQLi, SSRF interactively", isPublish: false },
+      { slug: "tts", title: "Text → Voice (TTS)", desc: "Convert text into spoken audio in the browser. Play, pause, tweak voice/pitch/rate, and export text (audio export requires server-side TTS).", isPublish: true },
     ],
   },
 ];
