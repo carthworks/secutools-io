@@ -6,6 +6,10 @@ import type { ReactNode } from "react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
 
+import dynamic from "next/dynamic";
+const ViewTicker = dynamic(() => import("../components/ViewTicker"), { ssr: false });
+
+
 export const metadata = {
   title: "Cybersecurity Handy Tools",
   description: "Free, privacy-friendly tools and utilities for security students and professionals — ASN lookup, CVE lookup, hash tools, network analysis, and more.",
@@ -138,8 +142,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               <a href="/about" className="hover:text-slate-700">About</a>
               <a href="/privacy" className="hover:text-slate-700">Privacy</a>
               <a href="https://github.com/carthworks" target="_blank" rel="noreferrer" className="hover:text-slate-700">GitHub</a>
+              <ViewTicker />
             </div>
+
+
           </div>
+                      <div className="mt-3 sm:mt-0 w-full">
+
+</div>
         </footer>
       </body>
     </html>
