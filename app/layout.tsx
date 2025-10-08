@@ -134,6 +134,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <div className="container-page py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
             <p>
               ⚡ Built for learning. No tracking. All processing runs client-side unless a checker needs a public API.
+               <ViewTicker />
             </p>
             <div className="flex gap-4">
               <a href="/" className="hover:bg-slate-50" title="Home" aria-label="Home">
@@ -142,14 +143,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               <a href="/about" className="hover:text-slate-700">About</a>
               <a href="/privacy" className="hover:text-slate-700">Privacy</a>
               <a href="https://github.com/carthworks" target="_blank" rel="noreferrer" className="hover:text-slate-700">GitHub</a>
-              <ViewTicker />
+             
             </div>
 
 
           </div>
-                      <div className="mt-3 sm:mt-0 w-full">
+                      {/* <div className="mt-3 sm:mt-0 w-full">
 
-</div>
+</div> */}
         </footer>
       </body>
     </html>
