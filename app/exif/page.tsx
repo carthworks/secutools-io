@@ -95,15 +95,23 @@ function parseIFD(view: DataView, tiffStart: number, ifdOffset: number, little: 
 
     const typeByteLen = (() => {
       switch (type) {
-        case 1: return 1; // BYTE
-        case 2: return 1; // ASCII
-        case 3: return 2; // SHORT
-        case 4: return 4; // LONG
-        case 5: return 8; // RATIONAL
-        case 7: return 1; // UNDEFINED
-        default: return 1;
+        case 1:
+          return 1; // BYTE
+        case 2:
+          return 1; // ASCII
+        case 3:
+          return 2; // SHORT
+        case 4:
+          return 4; // LONG
+        case 5:
+          return 8; // RATIONAL
+        case 7:
+          return 1; // UNDEFINED
+        default:
+          return 1;
       }
     })();
+
     const valueByteLength = count * typeByteLen;
     let valuePointer = 0;
     if (valueByteLength <= 4) {
@@ -116,31 +124,51 @@ function parseIFD(view: DataView, tiffStart: number, ifdOffset: number, little: 
     let value: any = null;
     try {
       if (type === 2) {
+        // ASCII
         value = getString(view, valuePointer, count);
       } else if (type === 3) {
+        // SHORT
         if (count === 1) value = readUshort(view, valuePointer, little);
         else {
           const arr: number[] = [];
-          for (let j = 0; j < count; j++) arr.push(readUshort(view, valuePointer + j * 2, little));
+          for (let j = 0; j < count; j++) {
+            arr.push(readUshort(view, valuePointer + j * 2, little));
+          }
           value = arr;
         }
       } else if (type === 4) {
+        // LONG
         if (count === 1) value = readUint(view, valuePointer, little);
         else {
           const arr: number[] = [];
-          for (let j = 0; j < count; j++) arr.push(readUint(view, valuePointer + j * 4, little));
+          for (let j = 0; j < count; j++) {
+            arr.push(readUint(view, valuePointer + j * 4, little));
+          }
           value = arr;
         }
       } else if (type === 5) {
-        if (count === 1) value = readRational(view, valuePointer, little);
-        else {
+        // RATIONAL (numerator/denominator)
+        if (count === 1) {
+          value = readRational(view, valuePointer, little); // may be number | null
+        } else {
+          // ensure count and valuePointer are numbers (they are), then safely read rationals
           const arr: number[] = [];
-          for (let j = 0; j < count; j++) arr.push(readRational(view, valuePointer + j * 8, little));
+          for (let j = 0; j < count; j++) {
+            const offset = valuePointer + j * 8; // number
+            const v = readRational(view, offset, little); // number | null
+            if (v != null) {
+              arr.push(v);
+            }
+            // if you prefer to keep array length stable, push(v ?? 0) instead
+          }
           value = arr;
         }
       } else {
-        const arr = [];
-        for (let j = 0; j < Math.min(valueByteLength, 256); j++) arr.push(view.getUint8(valuePointer + j));
+        // OTHER / UNDEFINED / BYTE array
+        const arr: number[] = [];
+        for (let j = 0; j < Math.min(valueByteLength, 256); j++) {
+          arr.push(view.getUint8(valuePointer + j));
+        }
         value = arr;
       }
     } catch {
@@ -151,6 +179,7 @@ function parseIFD(view: DataView, tiffStart: number, ifdOffset: number, little: 
   const nextIFDOffset = readUint(view, dirStart + 2 + entries * 12, little); // unused here
   return { tags, nextIFDOffset };
 }
+
 
 /* Tag dictionaries */
 const TAGS: Record<number, string> = {
@@ -437,7 +466,9 @@ export default function ExifViewerMetadata() {
           filename = decodeURIComponent(p.pathname.split("/").pop() || "");
         } catch {}
       }
-      await processArrayBuffer(ab, { name: filename, size: ab.byteLength, mime: contentType, created: null });
+      // option 2: omit created field
+await processArrayBuffer(ab, { name: filename, size: ab.byteLength, mime: contentType });
+
     } catch (err: any) {
       setError(
         `Failed to fetch image. Remote host must permit cross-origin reads (CORS). (${err?.message ?? err})`

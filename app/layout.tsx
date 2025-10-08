@@ -26,9 +26,7 @@ export const metadata = {
   ].join(", "),
   authors: [{ name: "SecuTools", url: "https://secutools.io" }],
   creator: "SecuTools",
-  // useful for some frameworks / prerenderers
-  viewport: "width=device-width, initial-scale=1",
-  // fallback open graph info
+  // NOTE: viewport removed from here (exported separately below)
   openGraph: {
     title: "Cybersecurity Handy Tools — SecuTools",
     description: "Free, privacy-friendly tools and utilities for security students and professionals.",
@@ -52,6 +50,12 @@ export const metadata = {
     images: ["https://secutools.io/og.png"],
     creator: "@SecuTools"
   }
+};
+
+// Correct viewport export for Next.js App Router (13.4+)
+export const viewport = {
+  width: "device-width",
+  initialScale: 1
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -79,7 +83,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
-        <meta name="viewport" content={metadata.viewport} />
+        {/* viewport removed here — Next will apply the exported viewport */}
         <meta name="theme-color" content="#0f172a" />
         <meta name="description" content={metadata.description} />
         <meta name="keywords" content={metadata.keywords} />
@@ -128,10 +132,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               ⚡ Built for learning. No tracking. All processing runs client-side unless a checker needs a public API.
             </p>
             <div className="flex gap-4">
-                    <a href="/" className="hover:bg-slate-50" title="Home" aria-label="Home">
-                              {/* <Home className="w-5 h-5 text-sky-600" /> */}
-                              Home
-                    </a>
+              <a href="/" className="hover:bg-slate-50" title="Home" aria-label="Home">
+                Home
+              </a>
               <a href="/about" className="hover:text-slate-700">About</a>
               <a href="/privacy" className="hover:text-slate-700">Privacy</a>
               <a href="https://github.com/carthworks" target="_blank" rel="noreferrer" className="hover:text-slate-700">GitHub</a>

@@ -36,7 +36,7 @@ export default function WebSecurityScanner() {
   const [queryMode, setQueryMode] = useState<"quick" | "full">("quick");
 
   // Lightweight client-side heuristics for instant feedback. These are NOT a substitute for server-side scans.
-  const clientSideHeuristics = async (targetUrl: string) => {
+ const clientSideHeuristics = async (targetUrl: string): Promise<Finding[]> => {
     const issues: Finding[] = [];
 
     // basic validation
@@ -45,7 +45,8 @@ export default function WebSecurityScanner() {
         id: "proto-missing",
         title: "Missing protocol or non-http(s) URL",
         severity: "Info",
-        description: "We recommend using an https:// URL to scan. If you enter a URL without protocol, we'll try https:// by default.",
+        description:
+          "We recommend using an https:// URL to scan. If you enter a URL without protocol, we'll try https:// by default.",
         suggestion: "Prefix the URL with https://",
       });
       return issues;
@@ -62,7 +63,8 @@ export default function WebSecurityScanner() {
           id: "apikey-inline",
           title: "Possible API key or secret found in HTML",
           severity: "High",
-          description: "The site HTML appears to contain words that often indicate secrets (apiKey, secret, bearer tokens).",
+          description:
+            "The site HTML appears to contain words that often indicate secrets (apiKey, secret, bearer tokens).",
           suggestion: "Remove secrets from client-side code and move them to server-side configuration or vaults.",
           evidence: "Matched tokens like 'apiKey' in HTML content",
         });
@@ -73,7 +75,8 @@ export default function WebSecurityScanner() {
           id: "insecure-cookies",
           title: "Cookies potentially insecure",
           severity: "Medium",
-          description: "The page contains scripts that access cookies on the client. Ensure cookies use Secure and HttpOnly flags when needed.",
+          description:
+            "The page contains scripts that access cookies on the client. Ensure cookies use Secure and HttpOnly flags when needed.",
           suggestion: "Set cookies with Secure, HttpOnly and SameSite attributes where appropriate.",
         });
       }
@@ -88,13 +91,14 @@ export default function WebSecurityScanner() {
         });
       }
 
-      if (/<!--\s*CSP\s*[:=]/i.test(text) === false) {
+      if (/<\!--\s*CSP\s*[:=]/i.test(text) === false) {
         // absence of inlined CSP note not a proof, but a gentle hint
         issues.push({
           id: "csp-missing",
           title: "Content-Security-Policy not obvious",
           severity: "Low",
-          description: "We couldn't detect a clear Content-Security-Policy header within the HTML. This is a soft indication only (headers aren't in HTML).",
+          description:
+            "We couldn't detect a clear Content-Security-Policy header within the HTML. This is a soft indication only (headers aren't in HTML).",
           suggestion: "Add a strict CSP header to mitigate XSS risks.",
         });
       }
@@ -108,7 +112,7 @@ export default function WebSecurityScanner() {
               id: `reflected-${k}`,
               title: `Reflected parameter: ${k}`,
               severity: "Medium",
-              description: `The query parameter ${k} is reflected in HTML — this might indicate a reflected XSS sink if output isn't escaped.',
+              description: `The query parameter ${k} is reflected in HTML — this might indicate a reflected XSS sink if output isn't escaped.`,
               suggestion: `Ensure proper output encoding and context-aware escaping for parameter ${k}.`,
               evidence: `Parameter value '${v}' found in response body`,
             });
@@ -393,13 +397,9 @@ export default function WebSecurityScanner() {
             </div>
 
             <div className="mt-3">
-              {isLoading && (
-                <div className="p-4 border rounded-md text-slate-500">Scanning in progress…</div>
-              )}
+              {isLoading && <div className="p-4 border rounded-md text-slate-500">Scanning in progress…</div>}
 
-              {error && (
-                <div className="p-4 border rounded-md bg-rose-50 text-rose-700">Error: {error}</div>
-              )}
+              {error && <div className="p-4 border rounded-md bg-rose-50 text-rose-700">Error: {error}</div>}
 
               {!isLoading && findings.length === 0 && !error && (
                 <div className="p-4 border rounded-md text-slate-500">No findings yet — run a scan to begin.</div>
@@ -513,9 +513,7 @@ export default function WebSecurityScanner() {
             <div className="col-span-1">
               <div ref={reportRef} className="prose max-w-none p-3 border rounded h-80 overflow-auto">
                 {/* Simple markdown to HTML rendering without dependencies: basic replacements */}
-                <pre className="whitespace-pre-wrap">
-                  {reportMarkdown || "No report generated yet. Run a scan to see output."}
-                </pre>
+                <pre className="whitespace-pre-wrap">{reportMarkdown || "No report generated yet. Run a scan to see output."}</pre>
               </div>
             </div>
 
@@ -537,41 +535,13 @@ export default function WebSecurityScanner() {
         </section>
       )}
 
-      <footer className="mt-6 text-sm text-slate-400">Technical considerations: lightweight UI, minimal deps, implement server-side scan for
-        deep checks to avoid CORS and improve accuracy.</footer>
+      <footer className="mt-6 text-sm text-slate-400">
+        Technical considerations: lightweight UI, minimal deps, implement server-side scan for
+        deep checks to avoid CORS and improve accuracy.
+      </footer>
     </div>
   );
 }
 
-// /*
 // Developer notes — server-side scan example (to implement in /pages/api/scan.ts or /app/api/scan/route.ts):
-
-// // Example (Node.js + got or node-fetch)
-// import type { NextApiRequest, NextApiResponse } from 'next';
-// import fetch from 'node-fetch';
-
-// export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-//   const { url } = req.query;
-//   if (!url || typeof url !== 'string') return res.status(400).json({ error: 'Missing url' });
-//   try {
-//     // Fetch target site server-side to avoid CORS
-//     const r = await fetch(url, { method: 'GET' });
-//     const body = await r.text();
-
-//     // Run deeper checks here: pattern matching, header analysis, SSL/TLS checks (use tls library),
-//     // passive SQLi heuristics or call to safe scanner library. Return findings as JSON.
-
-//     const findings = [];
-//     if (/apikey|api_key|secret/i.test(body)) {
-//       findings.push({ id: 'apikey-inline', title: 'Possible API key in HTML', severity: 'High', description: '...' });
-//     }
-
-//     res.status(200).json({ findings });
-//   } catch (err) {
-//     res.status(500).json({ error: String(err) });
-//   }
-// }
-
-// Security and ethical reminder: Ensure you have permission before scanning third-party websites. Implement rate limiting,
-// request caching, and logging on server-side scanning endpoints. Avoid storing secrets in logs.
-// */
+// (omitted here for brevity)
