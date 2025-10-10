@@ -2,24 +2,21 @@
 "use client";
 import React, { useMemo, useRef, useState, useEffect, useCallback } from "react";
 import { Copy, Download, Share2, CheckCircle, AlertTriangle, Printer } from "lucide-react";
-import Section from "@/components/Section"; // Ensure this component exists or replace with a div
+import Section from "@/components/Section";
 
-// Types
 type Mode = "auto" | "json" | "xml";
 type Message = { type: "ok" | "warn" | "err"; text: string };
 type ParseResult<T> = { ok: true; obj: T; error: null } | { ok: false; obj: null; error: string };
 
-// Constants
-const MAX_INPUT_SIZE = 1_000_000; // 1MB limit for input
+const MAX_INPUT_SIZE = 1_000_000;
 const MESSAGE_TIMEOUT = 1500;
 
-// Helpers
+// Helpers (same as before)
 async function copyText(text: string): Promise<void> {
   if (typeof navigator === "undefined") throw new Error("Navigator unavailable");
   if (navigator.clipboard?.writeText) {
     return navigator.clipboard.writeText(text);
   }
-  // Fallback: Create textarea for copying
   const textarea = document.createElement("textarea");
   textarea.value = text;
   textarea.style.position = "fixed";
@@ -28,9 +25,6 @@ async function copyText(text: string): Promise<void> {
   textarea.focus();
   textarea.select();
   try {
-    // execCommand may be deprecated in some browsers but keep as fallback
-    // defensive check without optional chaining call syntax to satisfy some linters
-    // (document.execCommand is available in many legacy browsers)
     // eslint-disable-next-line deprecation/deprecation
     if (!document.execCommand || !document.execCommand("copy")) throw new Error("Copy command failed");
   } finally {
@@ -45,7 +39,6 @@ function downloadBlob(content: string, filename: string, mime = "text/plain") {
   a.href = url;
   a.download = filename;
   a.click();
-  // revoke after a tick to allow click to start download in all browsers
   setTimeout(() => URL.revokeObjectURL(url), 500);
 }
 
@@ -65,25 +58,22 @@ function printHtml(title: string, htmlBody: string) {
           <style>
             body { font-family: system-ui, Arial; color: #0f172a; padding: 20px; }
             pre { white-space: pre-wrap; background: #f8fafc; padding: 12px; border-radius: 6px; overflow: auto; }
+            h1 { font-size: 18px; margin-bottom: 8px; }
           </style>
         </head>
         <body>${htmlBody}</body>
       </html>
     `);
     doc.close();
-    // wait for iframe to load then print
     iframe.onload = () => {
       try {
         iframe.contentWindow?.focus();
         iframe.contentWindow?.print();
       } finally {
-        // cleanup
         setTimeout(() => {
           try {
             if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
-          } catch {
-            /* ignore cleanup errors */
-          }
+          } catch {}
         }, 1000);
       }
     };
@@ -169,7 +159,6 @@ function tryParseJSON(input: string): ParseResult<unknown> {
   }
 }
 
-// <-- FIX: return shape uses `obj` (not `doc`) to match ParseResult<T> -->
 function tryParseXML(input: string): ParseResult<Document> {
   try {
     const parser = new DOMParser();
@@ -219,8 +208,11 @@ export default function JsonXmlFormatter(): JSX.Element {
   const [message, setMessage] = useState<Message | null>(null);
   const [lineWrap, setLineWrap] = useState(true);
   const previewRef = useRef<HTMLDivElement | null>(null);
-  // <-- FIX: browser timeout returns number, avoid NodeJS.Timeout -->
   const messageTimeoutRef = useRef<number | null>(null);
+
+  // New: tab for right-side view
+  type Tab = "beautify" | "minify" | "xmlformat";
+  const [tab, setTab] = useState<Tab>("beautify");
 
   const detected = useMemo<"json" | "xml" | null>(() => {
     const t = input.trim();
@@ -233,41 +225,82 @@ export default function JsonXmlFormatter(): JSX.Element {
     return angle > colon ? "xml" : "json";
   }, [input, mode]);
 
-  const { formatted, valid, error } = useMemo(() => {
+  const parseResults = useMemo(() => {
     const raw = input.trim();
-    if (!raw) return { formatted: "", valid: false, error: null };
-    if (raw.length > MAX_INPUT_SIZE) {
-      return { formatted: "", valid: false, error: "Input exceeds size limit (1MB)" };
-    }
+    if (!raw) return { json: null as ParseResult<unknown> | null, xml: null as ParseResult<Document> | null, error: null as string | null };
+    if (raw.length > MAX_INPUT_SIZE) return { json: null, xml: null, error: "Input exceeds size limit (1MB)" };
+    const j = tryParseJSON(raw);
+    const x = tryParseXML(raw);
+    return { json: j, xml: x, error: null as string | null };
+  }, [input]);
+
+  // derive formatted strings for each tab
+  const beautified = useMemo(() => {
+    const raw = input.trim();
+    if (!raw) return "";
     if (detected === "json") {
-      const res = tryParseJSON(raw);
-      if (!res.ok) return { formatted: raw, valid: false, error: res.error };
+      const r = parseResults.json;
+      if (!r || !r.ok) return raw;
       try {
-        const pretty = JSON.stringify(res.obj, null, 2);
-        return { formatted: pretty, valid: true, error: null };
-      } catch (e) {
-        return { formatted: raw, valid: false, error: String(e) };
+        return JSON.stringify(r.obj, null, 2);
+      } catch {
+        return raw;
+      }
+    } else {
+      const r = parseResults.xml;
+      if (!r || !r.ok) return raw;
+      try {
+        const serializer = new XMLSerializer();
+        const rawXml = serializer.serializeToString(r.obj!);
+        return formatXml(rawXml);
+      } catch {
+        return raw;
       }
     }
-    const res = tryParseXML(raw);
-    if (!res.ok) return { formatted: raw, valid: false, error: res.error };
+  }, [input, detected, parseResults]);
+
+  const minified = useMemo(() => {
+    const raw = input.trim();
+    if (!raw) return "";
+    if (detected === "json") {
+      const r = parseResults.json;
+      if (!r || !r.ok) return raw.replace(/\s+/g, " ");
+      try {
+        return JSON.stringify(r.obj);
+      } catch {
+        return raw.replace(/\s+/g, " ");
+      }
+    } else {
+      // naive xml minify: remove newlines and collapse spaces between tags/text
+      return raw.replace(/>\s+</g, "><").replace(/\s{2,}/g, " ").replace(/^\s+|\s+$/g, "");
+    }
+  }, [input, detected, parseResults]);
+
+  const xmlFormattedOnly = useMemo(() => {
+    if (detected !== "xml") return "";
+    const r = parseResults.xml;
+    if (!r || !r.ok) return "";
     try {
       const serializer = new XMLSerializer();
-      // <-- use res.obj (Document) -->
-      const rawXml = serializer.serializeToString(res.obj!);
-      const formattedXml = formatXml(rawXml);
-      return { formatted: formattedXml, valid: true, error: null };
-    } catch (err) {
-      return { formatted: raw, valid: false, error: String(err) };
+      const rawXml = serializer.serializeToString(r.obj!);
+      return formatXml(rawXml);
+    } catch {
+      return "";
     }
-  }, [input, detected]);
+  }, [input, detected, parseResults]);
 
-  const highlightedHtml = useMemo(() => {
-    if (!formatted) return `<pre class='text-xs text-slate-600'>No preview</pre>`;
-    return `<pre class="text-sm leading-relaxed">${
-      detected === "json" ? highlightJSON(formatted) : highlightXML(formatted)
-    }</pre>`;
-  }, [formatted, detected]);
+  // Build HTML for preview (highlighted)
+  const previewHtml = useMemo(() => {
+    // choose source based on tab & detected
+    let content = "";
+    if (tab === "beautify") content = beautified;
+    else if (tab === "minify") content = minified;
+    else content = xmlFormattedOnly || minified;
+
+    if (!content) return `<pre class='text-xs text-slate-600'>No preview</pre>`;
+
+    return `<pre class="text-sm leading-relaxed">${detected === "json" ? highlightJSON(content) : highlightXML(content)}</pre>`;
+  }, [tab, beautified, minified, xmlFormattedOnly, detected]);
 
   const setTimedMessage = useCallback((msg: Message) => {
     if (messageTimeoutRef.current !== null) {
@@ -281,145 +314,100 @@ export default function JsonXmlFormatter(): JSX.Element {
     }, MESSAGE_TIMEOUT);
   }, []);
 
+  // Actions act on current tab output
+  const getCurrentOutput = useCallback(() => {
+    if (tab === "beautify") return beautified;
+    if (tab === "minify") return minified;
+    return xmlFormattedOnly || minified;
+  }, [tab, beautified, minified, xmlFormattedOnly]);
+
   const handleCopy = useCallback(async () => {
-    if (!formatted) return;
+    const out = getCurrentOutput();
+    if (!out) return setTimedMessage({ type: "err", text: "Nothing to copy" });
     try {
-      await copyText(formatted);
+      await copyText(out);
       setTimedMessage({ type: "ok", text: "Copied to clipboard" });
     } catch {
       setTimedMessage({ type: "err", text: "Copy failed" });
     }
-  }, [formatted, setTimedMessage]);
+  }, [getCurrentOutput, setTimedMessage]);
 
-  const handleMinify = useCallback(() => {
-    if (!input.trim()) return;
-    if (detected === "json") {
-      const r = tryParseJSON(input);
-      if (!r.ok) {
-        setTimedMessage({ type: "err", text: `Invalid JSON: ${r.error}` });
-        return;
+  const handleExport = useCallback((kind: "txt" | "md" | "json") => {
+    const out = getCurrentOutput();
+    if (!out) return setTimedMessage({ type: "err", text: "Nothing to export" });
+    try {
+      const detectedExt = detected === "json" ? "json" : "xml";
+      if (kind === "json") {
+        downloadBlob(out, `formatted.${detectedExt}`, detected === "json" ? "application/json" : "application/xml");
+      } else if (kind === "md") {
+        const md = `# ${detected === "json" ? "JSON" : "XML"} - ${tab}\n\n\`\`\`${detectedExt}\n${out}\n\`\`\``;
+        downloadBlob(md, `formatted_${tab}.md`, "text/markdown");
+      } else {
+        downloadBlob(out, `formatted_${tab}.txt`, "text/plain");
       }
-      try {
-        setInput(JSON.stringify(r.obj));
-        setTimedMessage({ type: "ok", text: "JSON minified" });
-      } catch (e) {
-        setTimedMessage({ type: "err", text: `Minify failed: ${String(e)}` });
-      }
-    } else {
-      try {
-        const s = input.replace(/\r?\n/g, "").replace(/\s{2,}/g, " ");
-        setInput(s);
-        setTimedMessage({ type: "ok", text: "XML minified" });
-      } catch (e) {
-        setTimedMessage({ type: "err", text: `Minify failed: ${String(e)}` });
-      }
+      setTimedMessage({ type: "ok", text: "Export started" });
+    } catch {
+      setTimedMessage({ type: "err", text: "Export failed" });
     }
-  }, [input, detected, setTimedMessage]);
-
-  const handleBeautify = useCallback(() => {
-    if (!input.trim()) return;
-    if (detected === "json") {
-      const r = tryParseJSON(input);
-      if (!r.ok) {
-        setTimedMessage({ type: "err", text: `Invalid JSON: ${r.error}` });
-        return;
-      }
-      try {
-        setInput(JSON.stringify(r.obj, null, 2));
-        setTimedMessage({ type: "ok", text: "JSON beautified" });
-      } catch (e) {
-        setTimedMessage({ type: "err", text: `Beautify failed: ${String(e)}` });
-      }
-    } else {
-      const r = tryParseXML(input);
-      if (!r.ok) {
-        setTimedMessage({ type: "err", text: `Invalid XML: ${r.error}` });
-        return;
-      }
-      try {
-        const serializer = new XMLSerializer();
-        const raw = serializer.serializeToString(r.obj!);
-        setInput(formatXml(raw));
-        setTimedMessage({ type: "ok", text: "XML formatted" });
-      } catch (e) {
-        setTimedMessage({ type: "err", text: `Format failed: ${String(e)}` });
-      }
-    }
-  }, [input, detected, setTimedMessage]);
-
-  const handleValidate = useCallback(() => {
-    if (!input.trim()) return;
-    if (detected === "json") {
-      const r = tryParseJSON(input);
-      setTimedMessage(r.ok ? { type: "ok", text: "Valid JSON" } : { type: "err", text: `Invalid JSON: ${r.error}` });
-    } else {
-      const r = tryParseXML(input);
-      setTimedMessage(r.ok ? { type: "ok", text: "Valid XML" } : { type: "err", text: `Invalid XML: ${r.error}` });
-    }
-  }, [input, detected, setTimedMessage]);
-
-  const handleExport = useCallback(
-    (kind: "txt" | "md" | "json") => {
-      if (!formatted) return;
-      try {
-        const title = detected === "json" ? "JSON Formatter" : "XML Formatter";
-        if (kind === "json") {
-          downloadBlob(formatted, `formatted.${detected}`, detected === "json" ? "application/json" : "application/xml");
-        } else if (kind === "md") {
-          const md = `# ${title}\n\n\`\`\`${detected}\n${formatted}\n\`\`\``;
-          downloadBlob(md, "formatted.md", "text/markdown");
-        } else {
-          downloadBlob(formatted, "formatted.txt", "text/plain");
-        }
-        setTimedMessage({ type: "ok", text: "Export started" });
-      } catch {
-        setTimedMessage({ type: "err", text: "Export failed" });
-      }
-    },
-    [formatted, detected, setTimedMessage]
-  );
+  }, [getCurrentOutput, setTimedMessage, detected, tab]);
 
   const handleShare = useCallback(async () => {
-    if (!formatted) return;
+    const out = getCurrentOutput();
+    if (!out) return setTimedMessage({ type: "err", text: "Nothing to share" });
     const title = detected === "json" ? "JSON formatter result" : "XML formatter result";
-    const shareText = `${title}\n\n${formatted}`;
     try {
       if (navigator.share) {
-        await navigator.share({ title, text: shareText });
+        await navigator.share({ title, text: out });
+        setTimedMessage({ type: "ok", text: "Shared" });
       } else {
-        await copyText(shareText);
+        await copyText(out);
         setTimedMessage({ type: "ok", text: "Copied share text to clipboard" });
       }
     } catch {
       setTimedMessage({ type: "err", text: "Share failed" });
     }
-  }, [formatted, detected, setTimedMessage]);
+  }, [getCurrentOutput, detected, setTimedMessage]);
 
   const handlePrint = useCallback(() => {
-    if (!formatted) return;
+    const out = getCurrentOutput();
+    if (!out) return setTimedMessage({ type: "err", text: "Nothing to print" });
     try {
-      printHtml("Formatted Output", `<h1>${(detected ?? "DATA").toUpperCase()} Preview</h1><pre>${escapeForHtml(formatted)}</pre>`);
+      const title = `${(detected ?? "DATA").toUpperCase()} - ${tab}`;
+      printHtml(title, `<h1>${title}</h1><pre>${escapeForHtml(out)}</pre>`);
       setTimedMessage({ type: "ok", text: "Print initiated" });
     } catch {
       setTimedMessage({ type: "err", text: "Print failed" });
     }
-  }, [formatted, detected, setTimedMessage]);
+  }, [getCurrentOutput, detected, tab, setTimedMessage]);
+
+  const handleBeautifyCmd = useCallback(() => {
+    // convenience: set input to beautified content (only for json/xml)
+    if (!beautified) return setTimedMessage({ type: "err", text: "Nothing to beautify" });
+    setInput(beautified);
+    setTimedMessage({ type: "ok", text: "Beautified applied to input" });
+  }, [beautified, setTimedMessage]);
+
+  const handleMinifyCmd = useCallback(() => {
+    if (!minified) return setTimedMessage({ type: "err", text: "Nothing to minify" });
+    setInput(minified);
+    setTimedMessage({ type: "ok", text: "Minified applied to input" });
+  }, [minified, setTimedMessage]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
       e.preventDefault();
-      handleBeautify();
+      handleBeautifyCmd();
     }
-  }, [handleBeautify]);
+  }, [handleBeautifyCmd]);
 
-  // Update preview innerHTML instead of using dangerouslySetInnerHTML
+  // place preview HTML into DOM safely (we escape content in highlight functions)
   useEffect(() => {
     if (!previewRef.current) return;
-    // highlightedHtml is constructed using escapeForHtml first, so it's safe for innerHTML
-    previewRef.current.innerHTML = highlightedHtml;
-  }, [highlightedHtml]);
+    previewRef.current.innerHTML = previewHtml;
+    // preserve wrapping class (lineWrap toggle handled via parent classes)
+  }, [previewHtml]);
 
-  // Cleanup timeout on unmount
+  // cleanup on unmount
   useEffect(() => {
     return () => {
       if (messageTimeoutRef.current !== null) {
@@ -429,18 +417,30 @@ export default function JsonXmlFormatter(): JSX.Element {
     };
   }, []);
 
+  const detectedStatus = useMemo(() => {
+    // determine validity for small status badge
+    if (!input.trim()) return { detected: null as null | "json" | "xml", valid: false, error: null as string | null };
+    if (input.length > MAX_INPUT_SIZE) return { detected: null, valid: false, error: "Input exceeds size limit (1MB)" };
+    if (detected === "json") {
+      const r = parseResults.json;
+      return { detected, valid: !!r && r.ok, error: r && !r.ok ? r.error : null };
+    }
+    const r = parseResults.xml;
+    return { detected, valid: !!r && r.ok, error: r && !r.ok ? r.error : null };
+  }, [input, detected, parseResults]);
+
   return (
     <div className="space-y-8">
       <Section
         title="JSON / XML Formatter"
-        subtitle="Beautify, validate, and preview structured data (client-side)"
+        subtitle="Beautify, minify, and preview structured data (client-side) — colorful JSON on the right"
       >
         <p className="text-sm text-slate-600 max-w-2xl">
-          Paste JSON or XML into the editor. The tool auto-detects the format, validates it, and shows a syntax-highlighted preview.
-          Use the buttons to beautify, minify, validate, copy, export, or share results. Formatting runs entirely in your browser — no data is sent to a server.
+          Paste JSON or XML on the left. Use tabs on the right to view <strong>Beautify</strong>, <strong>Minify</strong> or <strong>XML Format</strong>. Buttons operate on the current tab's output.
         </p>
 
         <div className="mt-4 grid gap-4 md:grid-cols-2">
+          {/* Left: input */}
           <div>
             <label htmlFor="input-area" className="sr-only">Input JSON or XML data</label>
             <textarea
@@ -448,32 +448,46 @@ export default function JsonXmlFormatter(): JSX.Element {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder='Paste JSON ({"foo":123}) or XML (<root>...</root>) here — Ctrl/Cmd+Enter to beautify'
-              className="w-full min-h-[220px] border rounded p-3 font-mono text-sm bg-white focus:ring-2 focus:ring-indigo-500"
+              placeholder='Paste JSON ({"foo":123}) or XML (<root>...</root>) here — Ctrl/Cmd+Enter to apply beautify'
+              className="w-full min-h-[420px] border rounded p-3 font-mono text-sm bg-white focus:ring-2 focus:ring-indigo-500"
               aria-label="Input JSON or XML data"
             />
 
             <div className="flex items-center gap-2 mt-3 flex-wrap">
               <button
-                onClick={handleBeautify}
+                onClick={handleBeautifyCmd}
                 className="px-3 py-1 border rounded bg-emerald-50 hover:bg-emerald-100 text-emerald-700 flex items-center gap-2"
-                aria-label="Beautify input data"
+                aria-label="Apply beautify to input"
               >
-                <CheckCircle className="w-4 h-4" /> Beautify
+                <CheckCircle className="w-4 h-4" /> Apply Beautify
               </button>
               <button
-                onClick={handleMinify}
+                onClick={handleMinifyCmd}
                 className="px-3 py-1 border rounded bg-slate-50 hover:bg-slate-100 flex items-center gap-2"
-                aria-label="Minify input data"
+                aria-label="Apply minify to input"
               >
-                Minify
+                Minify Input
               </button>
               <button
-                onClick={handleValidate}
-                className="px-3 py-1 border rounded bg-indigo-50 hover:bg-indigo-100 text-indigo-700 flex items-center gap-2"
-                aria-label="Validate input data"
+                onClick={() => setTab("beautify")}
+                className={`px-3 py-1 border rounded text-xs ${tab === "beautify" ? "bg-indigo-50 text-indigo-700" : "bg-white"}`}
+                aria-label="Select beautify tab"
               >
-                Validate
+                Beautify tab
+              </button>
+              <button
+                onClick={() => setTab("minify")}
+                className={`px-3 py-1 border rounded text-xs ${tab === "minify" ? "bg-indigo-50 text-indigo-700" : "bg-white"}`}
+                aria-label="Select minify tab"
+              >
+                Minify tab
+              </button>
+              <button
+                onClick={() => setTab("xmlformat")}
+                className={`px-3 py-1 border rounded text-xs ${tab === "xmlformat" ? "bg-indigo-50 text-indigo-700" : "bg-white"}`}
+                aria-label="Select xml format tab"
+              >
+                XML Format tab
               </button>
 
               <div className="border-l pl-3 ml-auto flex items-center gap-2">
@@ -493,15 +507,15 @@ export default function JsonXmlFormatter(): JSX.Element {
             </div>
 
             <div className="mt-2 text-sm">
-              {detected ? (
-                <span className={`inline-flex items-center gap-2 text-xs px-2 py-1 rounded ${valid ? "bg-green-100 text-green-800" : "bg-amber-100 text-amber-800"}`}>
-                  {valid ? <CheckCircle className="w-3 h-3" /> : <AlertTriangle className="w-3 h-3" />}
-                  {detected.toUpperCase()} — {valid ? "Valid" : "Invalid / Preview"}
+              {detectedStatus.detected ? (
+                <span className={`inline-flex items-center gap-2 text-xs px-2 py-1 rounded ${detectedStatus.valid ? "bg-green-100 text-green-800" : "bg-amber-100 text-amber-800"}`}>
+                  {detectedStatus.valid ? <CheckCircle className="w-3 h-3" /> : <AlertTriangle className="w-3 h-3" />}
+                  {detectedStatus.detected.toUpperCase()} — {detectedStatus.valid ? "Valid" : "Invalid / Preview"}
                 </span>
               ) : (
                 <span className="text-xs text-slate-400">No data</span>
               )}
-              {error && <div className="mt-2 text-xs text-amber-700">Error: {error}</div>}
+              {detectedStatus.error && <div className="mt-2 text-xs text-amber-700">Error: {detectedStatus.error}</div>}
               {message && (
                 <div className={`mt-2 text-sm ${message.type === "err" ? "text-rose-600" : "text-emerald-600"}`} role="alert">
                   {message.text}
@@ -510,9 +524,10 @@ export default function JsonXmlFormatter(): JSX.Element {
             </div>
           </div>
 
+          {/* Right: tabbed preview */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <div className="text-sm font-medium">Preview</div>
+              <div className="text-sm font-medium">Preview — <span className="text-xs text-slate-500 ml-2">{tab.toUpperCase()}</span></div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleCopy}
@@ -561,12 +576,12 @@ export default function JsonXmlFormatter(): JSX.Element {
 
             <div
               ref={previewRef}
-              className={`w-full min-h-[220px] border rounded p-3 text-sm bg-slate-50 overflow-auto ${lineWrap ? "whitespace-pre-wrap" : "whitespace-pre"} font-mono`}
-              // preview innerHTML is updated in useEffect (safer, and avoids dangerouslySetInnerHTML)
+              className={`w-full min-h-[420px] border rounded p-3 text-sm bg-slate-50 overflow-auto ${lineWrap ? "whitespace-pre-wrap" : "whitespace-pre"} font-mono`}
               aria-live="polite"
               role="region"
               aria-label="Formatted output preview"
             />
+
             <div className="mt-2 flex items-center justify-between">
               <div className="text-xs text-slate-500">Rendered locally — no data sent to server</div>
               <label className="flex items-center gap-1 text-xs">
