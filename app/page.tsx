@@ -24,111 +24,107 @@ type Tool = { slug: string; title: string; desc: string; isPublish: boolean };
 type Category = { title: string; icon: any; color: string; tools: Tool[] };
 
 
-const categories: Category[] = [
+import { Brain, Beaker, GraduationCap, Cpu, Bot, Database } from "lucide-react";
+
+
+
+export const categories: Category[] = [
   {
-    title: "Cryptography",
-    icon: Key,
-    color: "bg-indigo-50",
+    title: "Prompt Engineering",
+    icon: Brain,
+    color: "bg-indigo-200",
     tools: [
-      { slug: "hash", title: "Hash Tools", desc: "MD5, SHA1, SHA256, SHA512", isPublish: true },
-      { slug: "jwt", title: "JWT Decoder", desc: "Decode and verify JWTs", isPublish: true },
-      { slug: "jwt-cracker", title: "JWT Cracker", desc: "Test weak signing keys", isPublish: false },
-      { slug: "password", title: "Password Utilities", desc: "Strength checker and generator", isPublish: true },
-      { slug: "hash-id", title: "Hash Identifier", desc: "Detect type of hash string", isPublish: true },
-      { slug: "obfuscator", title: "String Obfuscator", desc: "ROT13, Caesar, XOR, Base conversions", isPublish: true },
-      { slug: "cert-parser", title: "Certificate Parser", desc: "PEM/DER certificate details", isPublish: false },
-      { slug: "hash-collision", title: "Hash Collision Demo", desc: "Visualize MD5/SHA1 collisions", isPublish: false },
+      { slug: "prompt-template", title: "Prompt Template Builder", desc: "Create reusable structured prompts (system + user + examples).", isPublish: true },
+      { slug: "prompt-abtest", title: "Prompt A/B Tester", desc: "Compare model responses across prompt variations.", isPublish: true },
+      { slug: "context-trimmer", title: "Context Trimmer", desc: "Automatically shorten context to stay under token limits.", isPublish: false },
+      { slug: "prompt-leak", title: "Prompt Leakage Detector", desc: "Detect system prompt exposure or overfitting.", isPublish: false },
+      { slug: "persona-lab", title: "Persona Simulator", desc: "Emulate model behavior under various personas.", isPublish: true },
     ],
   },
   {
-    title: "Network Analysis",
+    title: "Model Training & Evaluation",
+    icon: Beaker,
+    color: "bg-blue-200",
+    tools: [
+      { slug: "dataset-cleaner", title: "Dataset Cleaner", desc: "Remove duplicates, bad tokens, or offensive samples.", isPublish: true },
+      { slug: "finetune-config", title: "Fine-Tune Config Generator", desc: "Generate LoRA, PEFT, or RLHF JSON config templates.", isPublish: true },
+      { slug: "training-estimator", title: "Training Cost Estimator", desc: "Estimate GPU hours and token cost for training.", isPublish: true },
+      { slug: "model-compare", title: "Model Comparison Viewer", desc: "Compare outputs from multiple LLMs side-by-side.", isPublish: true },
+      { slug: "benchmark-suite", title: "Evaluation Benchmark Suite", desc: "Evaluate accuracy, coherence, toxicity, and bias.", isPublish: false },
+    ],
+  },
+  {
+    title: "Dataset Tools",
+    icon: Database,
+    color: "bg-purple-200",
+    tools: [
+      { slug: "text-labeler", title: "Text Dataset Labeler", desc: "Manual or semi-auto text classification tool.", isPublish: true },
+      { slug: "jsonl-converter", title: "Text → JSONL Converter", desc: "Prepare datasets for OpenAI / HuggingFace training.", isPublish: true },
+      { slug: "embedding-visualizer", title: "Embedding Visualizer", desc: "Plot sentence embeddings in 2D/3D using PCA/UMAP.", isPublish: true },
+      { slug: "bias-detector", title: "Bias Detector", desc: "Identify gender, racial, or cultural bias in text.", isPublish: true },
+      { slug: "token-counter", title: "Token Counter", desc: "Estimate token usage and costs before training.", isPublish: true },
+    ],
+  },
+  {
+    title: "MLOps & Inference",
+    icon: Cpu,
+    color: "bg-teal-200",
+    tools: [
+      { slug: "api-tester", title: "API Tester", desc: "Send test prompts to OpenAI, Ollama, Anthropic, Mistral, etc.", isPublish: true },
+      { slug: "latency-checker", title: "Latency Checker", desc: "Compare response times across models or regions.", isPublish: true },
+      { slug: "stream-visualizer", title: "Streaming Output Visualizer", desc: "Watch token-by-token generation in real time.", isPublish: true },
+      { slug: "inference-logger", title: "Inference Log Analyzer", desc: "Track drift, anomalies, and token usage metrics.", isPublish: false },
+      { slug: "deployment-tracker", title: "Model Deployment Tracker", desc: "Monitor and version deployed models.", isPublish: false },
+    ],
+  },
+  {
+    title: "Safety & Alignment",
     icon: Network,
-    color: "bg-blue-50",
+    color: "bg-pink-200",
     tools: [
-      { slug: "ip-dns", title: "IP & DNS Toolkit", desc: "GeoIP, DNS records, rDNS", isPublish: true },
-      { slug: "ssl", title: "SSL/TLS Checker", desc: "Certificate info and expiry", isPublish: true },
-      { slug: "port", title: "Port Check", desc: "TCP reachability", isPublish: true },
-      { slug: "headers", title: "HTTP Headers", desc: "CORS & CSP overview", isPublish: true },
-      { slug: "cidr", title: "CIDR Calculator", desc: "Subnet ranges, broadcast, network size", isPublish: true },
-      { slug: "asn", title: "ASN Lookup", desc: "Find ASN / ISP from IP (offline dataset)", isPublish: true },
-      { slug: "network-tool", title: "Network-tool", desc: "IPv4/IPv6 utilities, MAC helpers, and quick math — client-side", isPublish: true },
-      { slug: "traceroute", title: "Traceroute", desc: "Visualize packet hops", isPublish: false },
-      { slug: "ping", title: "Ping Tester", desc: "Measure ICMP/HTTP latency", isPublish: false },
-      { slug: "dnssec", title: "DNSSEC Validator", desc: "Check DNSSEC and zone configs", isPublish: false },
-      { slug: "smtp", title: "SMTP Tester", desc: "Check mail relay and SMTP banner", isPublish: false },
+      { slug: "jailbreak-tester", title: "Jailbreak Tester", desc: "Evaluate prompt-injection and system override attempts.", isPublish: true },
+      { slug: "toxicity-checker", title: "Toxicity Classifier", desc: "Detect harmful or biased language in model outputs.", isPublish: true },
+      { slug: "hallucination-checker", title: "Hallucination Checker", desc: "Compare generated output with factual references.", isPublish: false },
+      { slug: "alignment-score", title: "Alignment Score Tracker", desc: "Rate model safety, honesty, and relevance.", isPublish: false },
     ],
   },
   {
-    title: "Threat Intelligence",
-    icon: Search,
-    color: "bg-purple-50",
+    title: "AI Agents & Workflows",
+    icon: Bot,
+    color: "bg-yellow-200",
     tools: [
-      { slug: "ioc", title: "IOC Extractor", desc: "Extract IPs, URLs, hashes, emails", isPublish: true },
-      { slug: "cve", title: "CVE Lookup", desc: "Fetch details from CIRCL CVE", isPublish: true },
-      { slug: "cve-feed", title: "CVE Feed Viewer", desc: "Browse latest CVEs from NVD", isPublish: true },
-      { slug: "threat", title: "Threat Intel Check", desc: "VirusTotal/AbuseIPDB", isPublish: true },
-      { slug: "whois", title: "WHOIS / RDAP", desc: "Ownership & registration", isPublish: true },
-      { slug: "email-analyzer", title: "Email Header Analyzer", desc: "Trace spoofing & spam origins", isPublish: false },
-	  { slug: "qr-code-check", title: "QR Code Security Analyzer", desc: "Scan with your camera or upload a QR code image. The tool decodes and flags risky URLs", isPublish: true },
-	  
+      { slug: "agent-flow", title: "Agent Flow Visualizer", desc: "Visualize task-chains and tool-use flows.", isPublish: true },
+      { slug: "memory-tester", title: "Task Memory Tester", desc: "Evaluate how well an agent retains prior context.", isPublish: false },
+      { slug: "rag-builder", title: "RAG Builder", desc: "Connect documents → embeddings → LLM for retrieval QA.", isPublish: true },
+      { slug: "tool-use-sim", title: "Tool Use Simulator", desc: "Simulate agent reasoning and tool calls.", isPublish: false },
     ],
   },
   {
-    title: "Analysis Tools",
+    title: "Learning & Training",
+    icon: GraduationCap,
+    color: "bg-green-200",
+    tools: [
+      { slug: "ai-tips", title: "Daily AI Concepts", desc: "Flashcards with short explanations of key AI terms.", isPublish: true },
+      { slug: "prompt-labs", title: "Prompt Engineering Playground", desc: "Interactive tutorials for writing better prompts.", isPublish: true },
+      { slug: "ai-papers", title: "AI Paper Digest", desc: "Summaries of top LLM research papers weekly.", isPublish: false },
+      { slug: "model-explorer", title: "Model Explorer", desc: "Discover and compare open models from HF/Ollama.", isPublish: true },
+      { slug: "shortcut-prompt", title: "PromptShortcuts", desc: "shortcut prompt.", isPublish: true }
+    ],
+  },
+  {
+    title: "Integrations & API Utilities",
     icon: FileSearch,
-    color: "bg-teal-50",
+    color: "bg-orange-200",
     tools: [
-      { slug: "device-info", title: "Device Info", desc: "Format JSON, Apache, Nginx", isPublish: true },
-      { slug: "logs", title: "Log Beautifier", desc: "Format JSON, Apache, Nginx", isPublish: true },
-      { slug: "pcap", title: "PCAP Decoder", desc: "View timestamps, sizes, hex", isPublish: true },
-      { slug: "timestamp", title: "Timestamp Converter", desc: "Unix ↔ Human time", isPublish: true },
-      { slug: "subdomain", title: "Subdomain Finder", desc: "Dictionary-based", isPublish: true },
-      { slug: "json-xml", title: "JSON/XML Formatter", desc: "Beautify and validate structured data", isPublish: true },
-      { slug: "regex", title: "Regex Tester", desc: "Build and test regex patterns", isPublish: true },
-      { slug: "exif", title: "EXIF Viewer", desc: "Inspect metadata in images", isPublish: true },
-      { slug: "pdf-macro", title: "PDF/Doc Macro Extractor", desc: "Detect embedded macros/scripts", isPublish: false },
-      { slug: "hex-editor", title: "Hex Editor", desc: "Inspect binary data inline", isPublish: false },
-    ],
-  },
-  {
-    title: "Testing & Payloads",
-    icon: FlaskConical,
-    color: "bg-yellow-50",
-    tools: [
-      { slug: "payloads", title: "XSS/SQLi Payloads", desc: "Encoders and test payloads", isPublish: true },
-      { slug: "cheatsheets", title: "Cheatsheets", desc: "OWASP Top 10, MITRE ATT&CK", isPublish: true },
-      { slug: "wordlist", title: "Wordlist Generator", desc: "Custom password/wordlists", isPublish: true },
-      { slug: "xxe", title: "XXE Payload Generator", desc: "XML external entity injection payloads", isPublish: false },
-      { slug: "jwt-fuzzer", title: "JWT Fuzzer", desc: "Tweak claims and signatures", isPublish: false },
-      { slug: "command-injection", title: "Command Injection Tester", desc: "Common OS injection payloads", isPublish: false },
-    ],
-  },
-  {
-    title: "Web & Cloud Security",
-    icon: Cloud,
-    color: "bg-pink-50",
-    tools: [
-      { slug: "headers-check", title: "Security Headers Checker", desc: "Inspect CSP, HSTS, X-Frame-Options", isPublish: true },
-      { slug: "url-trace", title: "URL Unshortener & Redirect Tracer", desc: "Expand and trace redirects", isPublish: false },
-      { slug: "cvss", title: "CVE Severity Calculator", desc: "Compute CVSS scores", isPublish: true },
-      { slug: "aws-s3", title: "AWS S3 Checker", desc: "Test for public/misconfigured buckets", isPublish: false },
-      { slug: "cors-check", title: "CORS Tester", desc: "Detect misconfigured Access-Control headers", isPublish: false },
-      { slug: "clickjack", title: "Clickjacking Tester", desc: "Frame-busting & X-Frame-Options check", isPublish: false },
-      { slug: "csrf", title: "CSRF Token Inspector", desc: "Check CSRF token presence & randomness", isPublish: false },
-    ],
-  },
-  {
-    title: "Learning",
-    icon: Code,
-    color: "bg-green-50",
-    tools: [
-      { slug: "tips", title: "Daily Security Tips", desc: "Flashcards & rotating advice", isPublish: true },
-      { slug: "ctf-mini", title: "CTF Mini Challenges", desc: "Small interactive labs & puzzles", isPublish: false },
-      { slug: "vuln-demos", title: "Vulnerability Demos", desc: "Learn XSS, SQLi, SSRF interactively", isPublish: false },
-      { slug: "tts", title: "Text → Voice (TTS)", desc: "Convert text into spoken audio in the browser. Play, pause, tweak voice/pitch/rate, and export text (audio export requires server-side TTS).", isPublish: true },
+      { slug: "llm-api-converter", title: "LLM API Converter", desc: "Switch between OpenAI ↔ Anthropic ↔ Mistral ↔ Ollama.", isPublish: true },
+      { slug: "webhook-formatter", title: "Webhook → LLM Formatter", desc: "Transform webhooks into JSON for GPT calls.", isPublish: true },
+      { slug: "slack-bot-builder", title: "Slack Bot Builder", desc: "No-code LLM chatbot configurator for Slack/Discord.", isPublish: true },
+      { slug: "email-llm", title: "Email → LLM Gateway", desc: "Convert incoming emails into structured AI prompts.", isPublish: false },
+      { slug: "zapier-node", title: "Zapier/n8n AI Node Tester", desc: "Debug AI automations across workflows.", isPublish: true },
     ],
   },
 ];
+
 
 
 /* ---------- helpers ---------- */
@@ -330,8 +326,8 @@ export default function HomePage() {
     <div className="min-h-screen px-4 sm:px-2 lg:px-2 py-8 space-y-8">
       {/* Top bar: title + controls */}
       <div className="flex items-center gap-4">
-        <h1 className="text-2xl sm:text-3xl font-semibold">Cybersecurity Handy Tools</h1>
-        <div className="text-slate-500 hidden sm:block">Practical tools for SOC analysts, pentesters, and students.</div>
+        <h1 className="text-2xl sm:text-3xl font-semibold">AI & LLM Handy Tools</h1>
+        <div className="text-slate-500 hidden sm:block">Practical utilities for AI engineers, researchers and prompt engineers.</div>
         <div className="ml-auto flex items-center gap-3">
           <button
             onClick={() => setDarkMode((d) => !d)}

@@ -2,21 +2,23 @@
 
 import React, { useEffect, useState } from "react";
 
-
 /**
- * Pure client-side ViewTicker
- * - Fetches visitor IP using https://api.ipify.org
- * - Stores and increments view count in localStorage
- * - Displays both as a smooth ticker at the footer
+ * ViewTicker (Client-Only)
+ * - Tracks local view count in localStorage
+ * - Fetches public IP via ipify (client-side only)
+ * - Always shows view count
+ * - Hides IP ticker if the IP is 115.96.3.71
+ * - Fully responsive (mobile/tablet/desktop)
  */
 
 export default function ViewTicker() {
   const [ip, setIp] = useState<string | null>(null);
   const [count, setCount] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
+  const [hideIp, setHideIp] = useState<boolean>(false);
 
   useEffect(() => {
-    // load & increment view count from localStorage
+    // 🔹 Always track local view count
     try {
       const prev = parseInt(localStorage.getItem("view_count") || "0", 10);
       const newCount = prev + 1;
@@ -26,13 +28,20 @@ export default function ViewTicker() {
       setCount(1);
     }
 
-    // fetch public IP from ipify
+    // 🔹 Fetch public IP (for ticker)
     (async () => {
       try {
         const res = await fetch("https://api.ipify.org?format=json");
         const data = await res.json();
-        setIp(data.ip ?? null);
-      } catch (e: any) {
+        const currentIp = data.ip ?? null;
+
+        // hide ticker if this is your IP
+        if (currentIp === "115.96.3.71") {
+          setHideIp(true);
+        } else {
+          setIp(currentIp);
+        }
+      } catch (e) {
         setError("Cannot fetch IP");
       }
     })();
@@ -42,7 +51,8 @@ export default function ViewTicker() {
     ip?.replace(/\.\d+$/, ".***") || (error ? "unavailable" : "loading…");
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 px-3 sm:px-0 w-full">
+      {/* Always show local count */}
       <div className="flex items-center gap-1">
         <svg
           width="14"
@@ -59,22 +69,28 @@ export default function ViewTicker() {
         <span>Local views: {count}</span>
       </div>
 
-      <div className="overflow-hidden flex-1 text-center sm:text-right">
-        {ip && (
-          <div className="inline-block whitespace-nowrap animate-marquee">
-            <span className="px-2">Your IP (masked):</span>
-            <span className="font-mono px-1">{maskedIp}</span>
-            <span className="px-2">• Thanks for visiting SecuTools ⚡</span>
-          </div>
-        )}
-        {!ip && !error && <div className="text-slate-400">Fetching IP…</div>}
-        {error && <div className="text-red-500">{error}</div>}
-      </div>
+      {/* Show IP ticker unless hidden */}
+      {!hideIp && (
+        <div className="overflow-hidden flex-1 text-center sm:text-right">
+          {ip && (
+            <div className="inline-block whitespace-nowrap animate-marquee">
+              <span className="px-2">Your IP (masked):</span>
+              <span className="font-mono px-1">{maskedIp}</span>
+              <span className="px-2">• Thanks for visiting SecuTools ⚡</span>
+            </div>
+          )}
+          {!ip && !error && <div className="text-slate-400">Fetching IP…</div>}
+          {error && <div className="text-red-500">{error}</div>}
+        </div>
+      )}
 
       <style jsx>{`
         .animate-marquee {
           display: inline-block;
           animation: marquee 14s linear infinite;
+        }
+        .animate-marquee:hover {
+          animation-play-state: paused;
         }
         @keyframes marquee {
           0% {
