@@ -39,7 +39,6 @@ export const categories: Category[] = [
       { slug: "context-trimmer", title: "Context Trimmer", desc: "Automatically shorten context to stay under token limits.", isPublish: false },
       { slug: "prompt-leak", title: "Prompt Leakage Detector", desc: "Detect system prompt exposure or overfitting.", isPublish: false },
       { slug: "persona-lab", title: "Persona Simulator", desc: "Emulate model behavior under various personas.", isPublish: true },
-
       { slug: "hash", title: "Hash Tools", desc: "MD5, SHA1, SHA256, SHA512", isPublish: true },
       { slug: "jwt", title: "JWT Decoder", desc: "Decode and verify JWTs", isPublish: true },
       { slug: "jwt-cracker", title: "JWT Cracker", desc: "Test weak signing keys", isPublish: false },
@@ -48,7 +47,7 @@ export const categories: Category[] = [
       { slug: "obfuscator", title: "String Obfuscator", desc: "ROT13, Caesar, XOR, Base conversions", isPublish: true },
       { slug: "cert-parser", title: "Certificate Parser", desc: "PEM/DER certificate details", isPublish: true },
       { slug: "hash-collision", title: "Hash Collision Demo", desc: "Visualize MD5/SHA1 collisions", isPublish: false }
-    ],
+    ]
   },
   {
     title: "Model Training & Evaluation",
@@ -125,38 +124,7 @@ export const categories: Category[] = [
       { slug: "prompt-labs", title: "Prompt Engineering Playground", desc: "Interactive tutorials for writing better prompts.", isPublish: true },
       { slug: "ai-papers", title: "AI Paper Digest", desc: "Summaries of top LLM research papers weekly.", isPublish: false },
       { slug: "model-explorer", title: "Model Explorer", desc: "Discover and compare open models from HF/Ollama.", isPublish: true },
-      { slug: "shortcut-prompt", title: "PromptShortcuts", desc: "shortcut prompt.", isPublish: true }
-    ],
-  },
-  {
-    title: "Integrations & API Utilities",
-    icon: FileSearch,
-    color: "bg-orange-200",
-    tools: [
-      { slug: "llm-api-converter", title: "LLM API Converter", desc: "Switch between OpenAI ↔ Anthropic ↔ Mistral ↔ Ollama.", isPublish: true },
-      { slug: "webhook-formatter", title: "Webhook → LLM Formatter", desc: "Transform webhooks into JSON for GPT calls.", isPublish: true },
-      { slug: "slack-bot-builder", title: "Slack Bot Builder", desc: "No-code LLM chatbot configurator for Slack/Discord.", isPublish: true },
-      { slug: "email-llm", title: "Email → LLM Gateway", desc: "Convert incoming emails into structured AI prompts.", isPublish: false },
-      { slug: "zapier-node", title: "Zapier/n8n AI Node Tester", desc: "Debug AI automations across workflows.", isPublish: true },
-      { slug: "device-info", title: "Device Info", desc: "Format JSON, Apache, Nginx", isPublish: true },
-      { slug: "logs", title: "Log Beautifier", desc: "Format JSON, Apache, Nginx", isPublish: true },
-      { slug: "pcap", title: "PCAP Decoder", desc: "View timestamps, sizes, hex", isPublish: true },
-      { slug: "timestamp", title: "Timestamp Converter", desc: "Unix ↔ Human time", isPublish: true },
-      { slug: "subdomain", title: "Subdomain Finder", desc: "Dictionary-based", isPublish: true },
-      { slug: "json-xml", title: "JSON/XML Formatter", desc: "Beautify and validate structured data", isPublish: true },
-      { slug: "regex", title: "Regex Tester", desc: "Build and test regex patterns", isPublish: true },
-      { slug: "exif", title: "EXIF Viewer", desc: "Inspect metadata in images", isPublish: true },
-      { slug: "pdf-macro", title: "PDF/Doc Macro Extractor", desc: "Detect embedded macros/scripts", isPublish: false },
-      { slug: "hex-editor", title: "Hex Editor", desc: "Inspect binary data inline", isPublish: false },
-    ],
-  },
-  {
-    title: "Testing & Payloads",
-    icon: FlaskConical,
-    color: "bg-yellow-50",
-    tools: [
-      { slug: "payloads", title: "XSS/SQLi Payloads", desc: "Encoders and test payloads", isPublish: true },
-      { slug: "cheatsheets", title: "Cheatsheets", desc: "OWASP Top 10, MITRE ATT&CK", isPublish: true },
+      { slug: "shortcut-prompt", title: "PromptShortcuts", desc: "shortcut prompt.", isPublish: true },
       { slug: "wordlist", title: "Wordlist Generator", desc: "Custom password/wordlists", isPublish: true },
       { slug: "xxe", title: "XXE Payload Generator", desc: "XML external entity injection payloads", isPublish: false },
       { slug: "jwt-fuzzer", title: "JWT Fuzzer", desc: "Tweak claims and signatures", isPublish: false },
@@ -476,8 +444,8 @@ export default function HomePage() {
         <main className="md:col-span-3 space-y-6">
           {/* Search + top controls */}
           <section className="rounded-lg border bg-white p-4 shadow-sm">
-            <PasswordStrengthTicker />
-            <div className="flex gap-3 items-center">
+            <div className="flex gap-3
+             items-center">
               <div className="relative flex-1">
                 <input
                   ref={searchRef}
