@@ -1,6 +1,6 @@
+"use client";
 // app/tts/page.tsx
 import dynamic from "next/dynamic";
-import React from "react";
 
 // Dynamically import the client-only component
 const TextToVoiceClient = dynamic(() => import("../../components/TextToVoice"), {

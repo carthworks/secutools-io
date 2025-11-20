@@ -25,7 +25,7 @@ import {
   FlaskConical,
   Cloud,
   Code,
-  Newspaper 
+  Newspaper
 } from "lucide-react";
 
 /* -----------------------
@@ -46,6 +46,7 @@ const categories: Category[] = [
       { slug: "password", title: "Password Utilities", desc: "Strength checker and generator" },
       { slug: "hash-id", title: "Hash Identifier", desc: "Detect type of hash string" },
       { slug: "obfuscator", title: "String Obfuscator", desc: "ROT13, Caesar, XOR, Base conversions" },
+      { slug: "hash-collision", title: "Hash Collision Demo", desc: "Visualize MD5/SHA1 collisions" },
     ],
   },
   {
@@ -294,16 +295,17 @@ export default function Navigation() {
   const [megaOpen, setMegaOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [query, setQuery] = useState("");
-// const [theme, setTheme] = useState<"light" | "dark">(() => (typeof window !== "undefined" && localStorage.getItem("site_theme") === "dark" ? "dark" : "light"));
-  const [theme, setTheme] = useState<"light" | "dark">(() => {
-  if (typeof window !== "undefined") {
-    const stored = localStorage.getItem("site_theme");
-    if (stored === "light" || stored === "dark") return stored as "light" | "dark";
-  }
-  return "dark"; // default to dark
-});
+  // const [theme, setTheme] = useState<"light" | "dark">(() => (typeof window !== "undefined" && localStorage.getItem("site_theme") === "dark" ? "dark" : "light"));
+  const [theme, setTheme] = useState<"light" | "dark">("dark");
 
-const [notifCount, setNotifCount] = useState(2);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("site_theme");
+      if (stored === "light") setTheme("light");
+    }
+  }, []);
+
+  const [notifCount, setNotifCount] = useState(2);
   const [bookmarked, setBookmarked] = useState(false);
 
   // refs for outside clicks
@@ -314,7 +316,6 @@ const [notifCount, setNotifCount] = useState(2);
     // dark mode sync
     if (theme === "dark") document.documentElement.classList.add("dark");
     else document.documentElement.classList.remove("dark");
-    try { localStorage.setItem("site_theme", theme); } catch {}
   }, [theme]);
 
   // outside click closes mega
@@ -345,7 +346,11 @@ const [notifCount, setNotifCount] = useState(2);
 
   // small handlers
   function toggleTheme() {
-    setTheme((t) => (t === "light" ? "dark" : "light"));
+    setTheme((t) => {
+      const next = t === "light" ? "dark" : "light";
+      try { localStorage.setItem("site_theme", next); } catch { }
+      return next;
+    });
   }
   function toggleBookmark() {
     setBookmarked((b) => !b);
@@ -488,7 +493,7 @@ const [notifCount, setNotifCount] = useState(2);
             <Link href="/contact" className="p-2 rounded hover:bg-slate-50" title="Contact" aria-label="Contact">
               <Mail className="w-5 h-5 text-rose-600" />
             </Link>
-             {/* <Link href="/news" className="p-2 rounded hover:bg-slate-50" title="News" aria-label="News">
+            {/* <Link href="/news" className="p-2 rounded hover:bg-slate-50" title="News" aria-label="News">
               <Newspaper className="w-5 h-5 text-yellow-600" />
             </Link> */}
           </nav>

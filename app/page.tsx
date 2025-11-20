@@ -1,28 +1,31 @@
-// File: app/(public)/page.tsx
 "use client";
-import { useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
+
 import {
+  Cloud,
+  Code,
+  ExternalLink,
+  FileSearch,
+  FlaskConical,
+  Info,
   Key,
   Network,
   Search,
-  FileSearch,
-  FlaskConical,
-  Cloud,
   Star,
   StarOff,
-  ExternalLink,
-  Code,
-  Info,
 } from "lucide-react";
 import dynamic from "next/dynamic";
-import StableIcon from "@/components/StableIcon";
-// import PasswordStrengthTicker from "@/components/PasswordStrengthTicker";
+import Link from "next/link";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import PasswordStrengthTicker from "./password-strength/page";
+
+const PasswordStrengthTicker = dynamic(() => import("./password-strength/page"), { ssr: false });
+
+/* ----------------------------- Types & Constants ---------------------------- */
 type Tool = { slug: string; title: string; desc: string; isPublish: boolean };
 type Category = { title: string; icon: any; color: string; tools: Tool[] };
 
+const FAVORITES_KEY = "secu_favs_v1";
+const RECENT_KEY = "secu_recent_v1";
 
 const categories: Category[] = [
   {
@@ -37,7 +40,7 @@ const categories: Category[] = [
       { slug: "hash-id", title: "Hash Identifier", desc: "Detect type of hash string", isPublish: true },
       { slug: "obfuscator", title: "String Obfuscator", desc: "ROT13, Caesar, XOR, Base conversions", isPublish: true },
       { slug: "cert-parser", title: "Certificate Parser", desc: "PEM/DER certificate details", isPublish: true },
-      { slug: "hash-collision", title: "Hash Collision Demo", desc: "Visualize MD5/SHA1 collisions", isPublish: false },
+      { slug: "hash-collision", title: "Hash Collision Demo", desc: "Visualize MD5/SHA1 collisions", isPublish: true },
     ],
   },
   {
@@ -69,8 +72,7 @@ const categories: Category[] = [
       { slug: "threat", title: "Threat Intel Check", desc: "VirusTotal/AbuseIPDB", isPublish: true },
       { slug: "whois", title: "WHOIS / RDAP", desc: "Ownership & registration", isPublish: true },
       { slug: "email-analyzer", title: "Email Header Analyzer", desc: "Trace spoofing & spam origins", isPublish: true },
-	  { slug: "qr-code-check", title: "QR Code Security Analyzer", desc: "Scan with your camera or upload a QR code image. The tool decodes and flags risky URLs", isPublish: true },
-	  
+      { slug: "qr-code-check", title: "QR Code Security Analyzer", desc: "Scan with your camera or upload a QR code image. The tool decodes and flags risky URLs", isPublish: true },
     ],
   },
   {
@@ -124,21 +126,16 @@ const categories: Category[] = [
     tools: [
       { slug: "tips", title: "Daily Security Tips", desc: "Flashcards & rotating advice", isPublish: true },
       { slug: "prompt-shortcut", title: "Prompt Shortcuts", desc: "prompt-shortcut", isPublish: true },
-      // { slug: "ctf-mini", title: "CTF Mini Challenges", desc: "Small interactive labs & puzzles", isPublish: false },
-      // { slug: "vuln-demos", title: "Vulnerability Demos", desc: "Learn XSS, SQLi, SSRF interactively", isPublish: false },
       { slug: "tts", title: "Text → Voice (TTS)", desc: "Convert text into spoken audio in the browser. Play, pause, tweak voice/pitch/rate, and export text (audio export requires server-side TTS).", isPublish: true },
     ],
   },
 ];
 
-
-/* ---------- helpers ---------- */
-const FAVORITES_KEY = "secu_favs_v1";
-const RECENT_KEY = "secu_recent_v1";
-
+/* ------------------------------- Helpers -------------------------------- */
 function loadJSON<T>(key: string): T | null {
   try {
-    const raw = typeof window !== "undefined" ? localStorage.getItem(key) : null;
+    if (typeof window === "undefined") return null;
+    const raw = localStorage.getItem(key);
     if (!raw) return null;
     return JSON.parse(raw) as T;
   } catch {
@@ -148,7 +145,7 @@ function loadJSON<T>(key: string): T | null {
 function saveJSON(key: string, value: any) {
   try {
     if (typeof window !== "undefined") localStorage.setItem(key, JSON.stringify(value));
-  } catch {}
+  } catch { }
 }
 
 function toolTags(slug: string) {
@@ -175,15 +172,26 @@ function toolTags(slug: string) {
   return tags;
 }
 
-/* ---------- component ---------- */
-export default function HomePage() {
-  // search + UI state
+/* ------------------------- Small presentational components ------------------------- */
+function RenderIcon({ icon: IconComp, className = "w-5 h-5" }: { icon: any; className?: string }) {
+  // Render placeholder on server to avoid SSR/CSR SVG markup mismatches (hydration errors)
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const Comp = IconComp as any;
+  if (!mounted) return <span className={`${className} inline-block`} aria-hidden />;
+  return <Comp className={className} aria-hidden />;
+}
+
+function Kbd({ children }: { children: React.ReactNode }) {
+  return <kbd className="bg-slate-100 border rounded px-2 py-0.5 text-xs">{children}</kbd>;
+}
+
+/* ------------------------------- Main component ------------------------------- */
+export default function HomePage(): JSX.Element {
   const [mounted, setMounted] = useState(false);
   const [query, setQuery] = useState("");
-  const [favorites, setFavorites] = useState<string[]>([]); // load on mount
-  const [recent, setRecent] = useState<string[]>([]); // load on mount
-
-  // UI state
+  const [favorites, setFavorites] = useState<string[]>([]);
+  const [recent, setRecent] = useState<string[]>([]);
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>(() =>
     categories.reduce<Record<string, boolean>>((acc, c, idx) => {
       acc[c.title] = idx < 2;
@@ -191,37 +199,29 @@ export default function HomePage() {
     }, {})
   );
   const [activeTagFilters, setActiveTagFilters] = useState<string[]>([]);
-  const [darkMode, setDarkMode] = useState<boolean>(false); // hydrate on mount
+  const [darkMode, setDarkMode] = useState<boolean>(false);
 
   const searchRef = useRef<HTMLInputElement | null>(null);
   const categoryRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  // run on mount: load localStorage and set mounted
+  // mount
   useEffect(() => {
     setMounted(true);
 
-    try {
-      const favs = loadJSON<string[]>(FAVORITES_KEY) ?? [];
-      const rec = loadJSON<string[]>(RECENT_KEY) ?? [];
-      setFavorites(Array.isArray(favs) ? favs : []);
-      setRecent(Array.isArray(rec) ? rec : []);
-    } catch {
-      setFavorites([]);
-      setRecent([]);
-    }
+    const favs = loadJSON<string[]>(FAVORITES_KEY) ?? [];
+    const rec = loadJSON<string[]>(RECENT_KEY) ?? [];
+    setFavorites(Array.isArray(favs) ? favs : []);
+    setRecent(Array.isArray(rec) ? rec : []);
 
     try {
       const dm = typeof window !== "undefined" && localStorage.getItem("secu_dark") === "1";
       setDarkMode(Boolean(dm));
       if (dm) document.documentElement.classList.add("dark");
       else document.documentElement.classList.remove("dark");
-    } catch {
-      // ignore
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    } catch { }
   }, []);
 
-  // persist favorites/recent to localStorage when they change (safe: only runs client-side)
+  // persist
   useEffect(() => {
     if (!mounted) return;
     saveJSON(FAVORITES_KEY, favorites);
@@ -232,17 +232,16 @@ export default function HomePage() {
     saveJSON(RECENT_KEY, recent);
   }, [recent, mounted]);
 
-  // update dark mode class & persist
   useEffect(() => {
     if (!mounted) return;
     try {
       localStorage.setItem("secu_dark", darkMode ? "1" : "0");
       if (darkMode) document.documentElement.classList.add("dark");
       else document.documentElement.classList.remove("dark");
-    } catch {}
+    } catch { }
   }, [darkMode, mounted]);
 
-  // keyboard shortcut to focus search (Cmd/Ctrl+K)
+  // keyboard shortcut: focus search
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       const mod = e.ctrlKey || e.metaKey;
@@ -255,7 +254,6 @@ export default function HomePage() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // derive flat tools and tags
   const allToolsFlat: Tool[] = useMemo(() => categories.flatMap((c) => c.tools), []);
   const allTags = useMemo(() => {
     const s = new Set<string>();
@@ -263,31 +261,6 @@ export default function HomePage() {
     return Array.from(s).sort((a, b) => a.localeCompare(b));
   }, [allToolsFlat]);
 
-  function toggleFavorite(slug: string) {
-    setFavorites((prev) => {
-      const next = prev.includes(slug) ? prev.filter((s) => s !== slug) : [slug, ...prev];
-      return next.slice(0, 20);
-    });
-  }
-
-  function recordRecent(slug: string) {
-    setRecent((prev) => {
-      const next = [slug, ...prev.filter((s) => s !== slug)];
-      return next.slice(0, 12);
-    });
-  }
-
-  // RenderIcon: show a stable placeholder until mounted to avoid SVG markup mismatches
-  function RenderIcon({ icon: IconComp, className = "w-5 h-5" }: { icon: any; className?: string }) {
-    const Comp = IconComp as any;
-    if (!mounted) {
-      // placeholder preserves layout and size — avoids SSR/client mismatch
-      return <span className={`${className} inline-block`} aria-hidden />;
-    }
-    return <Comp className={className} aria-hidden />;
-  }
-
-  // filtering logic
   const filteredCategories = useMemo(
     () =>
       categories
@@ -296,8 +269,7 @@ export default function HomePage() {
           tools: cat.tools.filter((t) => {
             const q = (query || "").trim().toLowerCase();
             const matchesQuery =
-              q.length === 0 ||
-              [t.title, t.desc, cat.title].some((field) => String(field || "").toLowerCase().includes(q));
+              q.length === 0 || [t.title, t.desc, cat.title].some((field) => String(field || "").toLowerCase().includes(q));
             const tTags = toolTags(t.slug);
             const matchesTags = (activeTagFilters || []).length === 0 || activeTagFilters.every((f) => tTags.includes(f));
             return matchesQuery && matchesTags;
@@ -314,22 +286,36 @@ export default function HomePage() {
     .map((s) => allToolsFlat.find((t) => t.slug === s))
     .filter(Boolean) as Tool[];
 
-  function scrollToCategory(title: string) {
+  const toggleFavorite = useCallback((slug: string) => {
+    setFavorites((prev) => {
+      const next = prev.includes(slug) ? prev.filter((s) => s !== slug) : [slug, ...prev];
+      return next.slice(0, 20);
+    });
+  }, []);
+
+  const recordRecent = useCallback((slug: string) => {
+    setRecent((prev) => {
+      const next = [slug, ...prev.filter((s) => s !== slug)];
+      return next.slice(0, 12);
+    });
+  }, []);
+
+  const scrollToCategory = useCallback((title: string) => {
     const el = categoryRefs.current ? categoryRefs.current[title] : null;
     if (el && typeof el.scrollIntoView === "function") el.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
+  }, []);
 
-  function toggleCategory(title: string) {
+  const toggleCategory = useCallback((title: string) => {
     setOpenCategories((prev) => ({ ...prev, [title]: !prev[title] }));
-  }
+  }, []);
 
-  function toggleTagFilter(tag: string) {
+  const toggleTagFilter = useCallback((tag: string) => {
     setActiveTagFilters((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [tag, ...prev]));
-  }
+  }, []);
 
   return (
     <div className="min-h-screen px-4 sm:px-2 lg:px-2 py-8 space-y-8">
-      {/* Top bar: title + controls */}
+      {/* Top bar */}
       <div className="flex items-center gap-4">
         <h1 className="text-2xl sm:text-3xl font-semibold">Cybersecurity Handy Tools</h1>
         <div className="text-slate-500 hidden sm:block">Practical tools for SOC analysts, pentesters, and students.</div>
@@ -346,14 +332,14 @@ export default function HomePage() {
       </div>
 
       <div className="grid md:grid-cols-4 gap-6">
-        {/* Sidebar (md+) */}
+        {/* Sidebar */}
         <aside className="hidden md:block col-span-1 sticky top-24 h-fit">
-    
           <div className="rounded-lg border p-4 bg-white shadow-sm">
             <div className="flex items-center justify-between">
               <div className="font-medium">Categories</div>
               <div className="text-xs text-slate-500">Jump</div>
             </div>
+
             <div className="mt-3 space-y-2">
               {categories.map((c) => (
                 <button
@@ -385,9 +371,6 @@ export default function HomePage() {
                 })}
               </div>
             </div>
-                {/* <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 to-indigo-100 dark:from-slate-900 dark:to-slate-800 p-6"> */}
-    
-    {/* </main> */}
 
             <div className="mt-4 border-t pt-3">
               <div className="text-sm font-medium">Favorites</div>
@@ -413,9 +396,8 @@ export default function HomePage() {
 
         {/* Main column */}
         <main className="md:col-span-3 space-y-6">
-          {/* Search + top controls */}
           <section className="rounded-lg border bg-white p-4 shadow-sm">
-                    <PasswordStrengthTicker />
+            <PasswordStrengthTicker />
             <div className="flex gap-3 items-center">
               <div className="relative flex-1">
                 <input
@@ -429,7 +411,7 @@ export default function HomePage() {
                 />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 flex items-center gap-2">
                   <span className="hidden sm:inline">Press</span>
-                  <kbd className="bg-slate-100 border rounded px-2 py-0.5 text-xs">⌘K</kbd>
+                  <Kbd>⌘K</Kbd>
                 </div>
               </div>
 
@@ -455,7 +437,6 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Recently used (top) */}
             {recentResolved.length > 0 && (
               <div className="mt-3">
                 <div className="text-xs text-slate-500 mb-2">Recently Used</div>
@@ -475,12 +456,13 @@ export default function HomePage() {
             )}
           </section>
 
-          {/* Categories grid: two columns on md */}
           <section className="grid md:grid-cols-2 gap-6">
             {filteredCategories.map((cat) => (
               <div
                 key={cat.title}
-                ref={(el) => { categoryRefs.current[cat.title] = el; }}
+                ref={(el) => {
+                  categoryRefs.current[cat.title] = el;
+                }}
                 className={`rounded-lg p-4 shadow-sm ${cat.color} border bg-opacity-60`}
               >
                 <div className="flex items-center gap-3">
@@ -498,7 +480,6 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                {/* tools area (accordion-aware) */}
                 <div className={`mt-4 grid gap-3 ${openCategories[cat.title] ? "" : "hidden md:block"}`}>
                   {(cat.tools || []).map((t) => {
                     const tags = toolTags(t.slug);
@@ -560,7 +541,6 @@ export default function HomePage() {
                   })}
                 </div>
 
-                {/* Mobile: show collapsed if closed */}
                 {!openCategories[cat.title] && (
                   <div className="mt-2 md:hidden">
                     <div className="text-xs text-slate-500">Tap "Expand" to view tools</div>
@@ -569,48 +549,6 @@ export default function HomePage() {
               </div>
             ))}
           </section>
-
-          {/* Learning resources */}
-          <section className="hidden">
-            <div className="rounded-lg border p-4 bg-white shadow-sm">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-semibold">Learning Resources</h3>
-                  <p className="text-sm text-slate-600">Hand-picked tutorials and labs for hands-on cybersecurity practice.</p>
-                </div>
-                <div className="text-sm text-slate-500">Updated weekly</div>
-              </div>
-
-              <div className="mt-3 grid sm:grid-cols-2 gap-3">
-                <a href="https://owasp.org/Top10/" target="_blank" rel="noreferrer" className="p-3 border rounded hover:bg-slate-50">
-                  OWASP Top 10 <div className="text-xs text-slate-500">Web app risks</div>
-                </a>
-                <a href="https://portswigger.net/web-security" target="_blank" rel="noreferrer" className="p-3 border rounded hover:bg-slate-50">
-                  PortSwigger Web Security Academy <div className="text-xs text-slate-500">Free labs & tutorials</div>
-                </a>
-                <a href="https://tryhackme.com/" target="_blank" rel="noreferrer" className="p-3 border rounded hover:bg-slate-50">
-                  TryHackMe <div className="text-xs text-slate-500">Guided hands-on rooms</div>
-                </a>
-                <a href="https://attack.mitre.org/" target="_blank" rel="noreferrer" className="p-3 border rounded hover:bg-slate-50">
-                  MITRE ATT&CK <div className="text-xs text-slate-500">Tactics & techniques</div>
-                </a>
-              </div>
-            </div>
-          </section>
-
-          {/* News section revamp */}
-          <section>
-            <div className="rounded-lg border p-4 bg-white shadow-sm hidden">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold">Latest Security News</h3>
-                <div className="text-sm text-slate-500">Source & date highlighted</div>
-              </div>
-
-           
-            </div>
-          </section>
-
-          {/* Optional network tools preview */}
         </main>
       </div>
     </div>
