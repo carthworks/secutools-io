@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Bot,
   Cloud,
   Code,
   ExternalLink,
@@ -29,10 +30,15 @@ const RECENT_KEY = "secu_recent_v1";
 
 const categories: Category[] = [
   {
-    title: "Cryptography",
-    icon: Key,
-    color: "bg-indigo-50",
+    title: "Prompt Engineering",
+    icon: Brain,
+    color: "bg-indigo-200",
     tools: [
+      { slug: "prompt-template", title: "Prompt Template Builder", desc: "Create reusable structured prompts (system + user + examples).", isPublish: true },
+      { slug: "prompt-abtest", title: "Prompt A/B Tester", desc: "Compare model responses across prompt variations.", isPublish: true },
+      { slug: "context-trimmer", title: "Context Trimmer", desc: "Automatically shorten context to stay under token limits.", isPublish: false },
+      { slug: "prompt-leak", title: "Prompt Leakage Detector", desc: "Detect system prompt exposure or overfitting.", isPublish: false },
+      { slug: "persona-lab", title: "Persona Simulator", desc: "Emulate model behavior under various personas.", isPublish: true },
       { slug: "hash", title: "Hash Tools", desc: "MD5, SHA1, SHA256, SHA512", isPublish: true },
       { slug: "jwt", title: "JWT Decoder", desc: "Decode and verify JWTs", isPublish: true },
       { slug: "jwt-cracker", title: "JWT Cracker", desc: "Test weak signing keys", isPublish: false },
@@ -44,28 +50,25 @@ const categories: Category[] = [
     ],
   },
   {
-    title: "Network Analysis",
+    title: "Safety & Alignment",
     icon: Network,
-    color: "bg-blue-50",
+    color: "bg-pink-200",
     tools: [
-      { slug: "ip-dns", title: "IP & DNS Toolkit", desc: "GeoIP, DNS records, rDNS", isPublish: true },
-      { slug: "ssl", title: "SSL/TLS Checker", desc: "Certificate info and expiry", isPublish: true },
-      { slug: "port", title: "Port Check", desc: "TCP reachability", isPublish: true },
-      { slug: "headers", title: "HTTP Headers", desc: "CORS & CSP overview", isPublish: true },
-      { slug: "cidr", title: "CIDR Calculator", desc: "Subnet ranges, broadcast, network size", isPublish: true },
-      { slug: "asn", title: "ASN Lookup", desc: "Find ASN / ISP from IP (offline dataset)", isPublish: true },
-      { slug: "network-tool", title: "Network-tool", desc: "IPv4/IPv6 utilities, MAC helpers, and quick math — client-side", isPublish: true },
-      { slug: "traceroute", title: "Traceroute", desc: "Visualize packet hops", isPublish: false },
-      { slug: "ping", title: "Ping Tester", desc: "Measure ICMP/HTTP latency", isPublish: false },
-      { slug: "dnssec", title: "DNSSEC Validator", desc: "Check DNSSEC and zone configs", isPublish: false },
-      { slug: "smtp", title: "SMTP Tester", desc: "Check mail relay and SMTP banner", isPublish: false },
+      { slug: "jailbreak-tester", title: "Jailbreak Tester", desc: "Evaluate prompt-injection and system override attempts.", isPublish: true },
+      { slug: "toxicity-checker", title: "Toxicity Classifier", desc: "Detect harmful or biased language in model outputs.", isPublish: true },
+      { slug: "hallucination-checker", title: "Hallucination Checker", desc: "Compare generated output with factual references.", isPublish: false },
+      { slug: "alignment-score", title: "Alignment Score Tracker", desc: "Rate model safety, honesty, and relevance.", isPublish: false },
     ],
   },
   {
-    title: "Threat Intelligence",
-    icon: Search,
-    color: "bg-purple-50",
+    title: "AI Agents & Workflows",
+    icon: Bot,
+    color: "bg-yellow-200",
     tools: [
+      { slug: "agent-flow", title: "Agent Flow Visualizer", desc: "Visualize task-chains and tool-use flows.", isPublish: true },
+      { slug: "memory-tester", title: "Task Memory Tester", desc: "Evaluate how well an agent retains prior context.", isPublish: false },
+      { slug: "rag-builder", title: "RAG Builder", desc: "Connect documents → embeddings → LLM for retrieval QA.", isPublish: true },
+      { slug: "tool-use-sim", title: "Tool Use Simulator", desc: "Simulate agent reasoning and tool calls.", isPublish: false },
       { slug: "ioc", title: "IOC Extractor", desc: "Extract IPs, URLs, hashes, emails", isPublish: true },
       { slug: "cve", title: "CVE Lookup", desc: "Fetch details from CIRCL CVE", isPublish: true },
       { slug: "cve-feed", title: "CVE Feed Viewer", desc: "Browse latest CVEs from NVD", isPublish: true },
@@ -76,29 +79,15 @@ const categories: Category[] = [
     ],
   },
   {
-    title: "Analysis Tools",
-    icon: FileSearch,
-    color: "bg-teal-50",
+    title: "Learning & Training",
+    icon: GraduationCap,
+    color: "bg-green-200",
     tools: [
-      { slug: "device-info", title: "Device Info", desc: "Format JSON, Apache, Nginx", isPublish: true },
-      { slug: "logs", title: "Log Beautifier", desc: "Format JSON, Apache, Nginx", isPublish: true },
-      { slug: "pcap", title: "PCAP Decoder", desc: "View timestamps, sizes, hex", isPublish: true },
-      { slug: "timestamp", title: "Timestamp Converter", desc: "Unix ↔ Human time", isPublish: true },
-      { slug: "subdomain", title: "Subdomain Finder", desc: "Dictionary-based", isPublish: true },
-      { slug: "json-xml", title: "JSON/XML Formatter", desc: "Beautify and validate structured data", isPublish: true },
-      { slug: "regex", title: "Regex Tester", desc: "Build and test regex patterns", isPublish: true },
-      { slug: "exif", title: "EXIF Viewer", desc: "Inspect metadata in images", isPublish: true },
-      { slug: "pdf-macro", title: "PDF/Doc Macro Extractor", desc: "Detect embedded macros/scripts", isPublish: false },
-      { slug: "hex-editor", title: "Hex Editor", desc: "Inspect binary data inline", isPublish: false },
-    ],
-  },
-  {
-    title: "Testing & Payloads",
-    icon: FlaskConical,
-    color: "bg-yellow-50",
-    tools: [
-      { slug: "payloads", title: "XSS/SQLi Payloads", desc: "Encoders and test payloads", isPublish: true },
-      { slug: "cheatsheets", title: "Cheatsheets", desc: "OWASP Top 10, MITRE ATT&CK", isPublish: true },
+      { slug: "ai-tips", title: "Daily AI Concepts", desc: "Flashcards with short explanations of key AI terms.", isPublish: true },
+      { slug: "prompt-labs", title: "Prompt Engineering Playground", desc: "Interactive tutorials for writing better prompts.", isPublish: true },
+      { slug: "ai-papers", title: "AI Paper Digest", desc: "Summaries of top LLM research papers weekly.", isPublish: false },
+      { slug: "model-explorer", title: "Model Explorer", desc: "Discover and compare open models from HF/Ollama.", isPublish: true },
+      { slug: "shortcut-prompt", title: "PromptShortcuts", desc: "shortcut prompt.", isPublish: true },
       { slug: "wordlist", title: "Wordlist Generator", desc: "Custom password/wordlists", isPublish: true },
       { slug: "xxe", title: "XXE Payload Generator", desc: "XML external entity injection payloads", isPublish: false },
       { slug: "jwt-fuzzer", title: "JWT Fuzzer", desc: "Tweak claims and signatures", isPublish: false },
@@ -145,6 +134,7 @@ function loadJSON<T>(key: string): T | null {
 function saveJSON(key: string, value: any) {
   try {
     if (typeof window !== "undefined") localStorage.setItem(key, JSON.stringify(value));
+  } catch { }
   } catch { }
 }
 
@@ -239,6 +229,7 @@ export default function HomePage(): JSX.Element {
       if (darkMode) document.documentElement.classList.add("dark");
       else document.documentElement.classList.remove("dark");
     } catch { }
+    } catch { }
   }, [darkMode, mounted]);
 
   // keyboard shortcut: focus search
@@ -317,8 +308,8 @@ export default function HomePage(): JSX.Element {
     <div className="min-h-screen px-4 sm:px-2 lg:px-2 py-8 space-y-8">
       {/* Top bar */}
       <div className="flex items-center gap-4">
-        <h1 className="text-2xl sm:text-3xl font-semibold">Cybersecurity Handy Tools</h1>
-        <div className="text-slate-500 hidden sm:block">Practical tools for SOC analysts, pentesters, and students.</div>
+        <h1 className="text-2xl sm:text-3xl font-semibold">AI & LLM Handy Tools</h1>
+        <div className="text-slate-500 hidden sm:block">Practical utilities for AI engineers, researchers and prompt engineers.</div>
         <div className="ml-auto flex items-center gap-3">
           <button
             onClick={() => setDarkMode((d) => !d)}

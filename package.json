@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@peculiar/x509": "^1.14.0",
+    "@radix-ui/react-separator": "^1.1.7",
     "@radix-ui/react-slot": "^1.2.3",
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
@@ -26,7 +27,7 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-qr-reader-es6": "^2.2.1-2",
-    "shadcn": "^3.4.0",
+    "shadcn-ui": "^0.9.5",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^12.23.22",
     "tailwindcss-animate": "^1.0.7",
