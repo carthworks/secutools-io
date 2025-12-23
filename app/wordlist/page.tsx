@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useMemo, useState, useRef } from "react";
-import Link from "next/link";
+import Section from "@/components/Section";
 import {
   Copy,
   Download,
@@ -12,7 +12,15 @@ import {
   Check,
   AlertTriangle,
   ArrowDownCircle,
-  ChevronDown,
+  Sparkles,
+  Hash,
+  Type,
+  Key,
+  Shuffle as ShuffleIcon,
+  CheckCircle2,
+  XCircle,
+  BarChart3,
+  Zap,
 } from "lucide-react";
 
 /**
@@ -202,7 +210,13 @@ export default function WordlistGenerator(): JSX.Element {
   const [error, setError] = useState<string | null>(null);
   const [lastGenerated, setLastGenerated] = useState<string[] | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const showToast = (message: string, type: "success" | "error" = "success") => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
 
   // quick stats
   const stats = useMemo(() => {
@@ -275,6 +289,7 @@ export default function WordlistGenerator(): JSX.Element {
 
     setLastGenerated(out);
     setIsGenerating(false);
+    showToast(`Generated ${out.length.toLocaleString()} words successfully!`);
     // scroll preview into view on mobile
     containerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
   }
@@ -283,11 +298,10 @@ export default function WordlistGenerator(): JSX.Element {
     const text = (lastGenerated ?? []).join("\n");
     try {
       await navigator.clipboard.writeText(text);
-      // small visual confirmation (could be toast)
       setError(null);
-      alert("Copied to clipboard ✓");
+      showToast("Wordlist copied to clipboard!");
     } catch {
-      setError("Copy failed — your browser may restrict clipboard access.");
+      showToast("Copy failed — your browser may restrict clipboard access.", "error");
     }
   }
 
@@ -306,11 +320,13 @@ export default function WordlistGenerator(): JSX.Element {
   function exportAsTxt() {
     const content = (lastGenerated ?? []).join("\n");
     downloadBlob("wordlist.txt", content, "text/plain;charset=utf-8");
+    showToast("Exported as TXT file!");
   }
 
   function exportAsMd() {
     const content = ["# Wordlist export", "", ...((lastGenerated ?? []).map((w) => `- \`${w}\``))].join("\n");
     downloadBlob("wordlist.md", content, "text/markdown;charset=utf-8");
+    showToast("Exported as Markdown file!");
   }
 
   function printAsPdf() {
@@ -318,7 +334,7 @@ export default function WordlistGenerator(): JSX.Element {
     const content = (lastGenerated ?? []).join("\n");
     const win = window.open("", "_blank", "noopener,noreferrer");
     if (!win) {
-      setError("Popup blocked. Allow popups for PDF export.");
+      showToast("Popup blocked. Allow popups for PDF export.", "error");
       return;
     }
     const html = `
@@ -353,6 +369,7 @@ export default function WordlistGenerator(): JSX.Element {
           title: "Wordlist from SecuTools",
           text: content.slice(0, 10000), // limit
         });
+        showToast("Shared successfully!");
       } catch {
         // user canceled or share failed
       }
@@ -360,9 +377,9 @@ export default function WordlistGenerator(): JSX.Element {
       // fallback: download or copy
       try {
         await navigator.clipboard.writeText(content);
-        alert("Share unavailable — wordlist copied to clipboard.");
+        showToast("Share unavailable — wordlist copied to clipboard!");
       } catch {
-        setError("Share unavailable and clipboard write failed.");
+        showToast("Share unavailable and clipboard write failed.", "error");
       }
     }
   }
@@ -401,319 +418,474 @@ export default function WordlistGenerator(): JSX.Element {
   /* ---------- Render UI ---------- */
 
   return (
-    <section ref={containerRef} className="w-full max-w-5xl mx-auto p-4">
-      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-        <div>
-          <h2 className="text-lg font-semibold">Wordlist Generator</h2>
-          <p className="text-sm text-slate-600 dark:text-slate-300 max-w-xl">
-            Generate custom password/wordlists for learning and testing. Use patterns, preset sets, or custom
-            characters — copy or export results quickly.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleCopyAll}
-            className="inline-flex items-center gap-2 px-3 py-2 rounded border hover:bg-slate-50"
-            aria-label="Copy all"
-            title="Copy all lines"
-            disabled={!lastGenerated || lastGenerated.length === 0}
+    <div className="space-y-8">
+      {/* Toast Notification */}
+      {toast && (
+        <div className="fixed top-4 right-4 z-50 animate-in slide-in-from-top-2 duration-300">
+          <div
+            className={`px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 ${toast.type === "success"
+                ? "bg-green-600 text-white"
+                : "bg-red-600 text-white"
+              }`}
           >
-            <Copy className="w-4 h-4" /> Copy
-          </button>
-
-          <div className="relative inline-flex">
-            <button
-              onClick={exportAsTxt}
-              className="inline-flex items-center gap-2 px-3 py-2 rounded border hover:bg-slate-50"
-              aria-label="Export as text"
-              title="Export as .txt"
-              disabled={!lastGenerated || lastGenerated.length === 0}
-            >
-              <Download className="w-4 h-4" /> TXT
-            </button>
-            <button
-              onClick={exportAsMd}
-              className="inline-flex items-center gap-2 px-3 py-2 rounded border hover:bg-slate-50 ml-1"
-              aria-label="Export as markdown"
-              title="Export as .md"
-              disabled={!lastGenerated || lastGenerated.length === 0}
-            >
-              <FileText className="w-4 h-4" /> MD
-            </button>
-            <button
-              onClick={printAsPdf}
-              className="inline-flex items-center gap-2 px-3 py-2 rounded border hover:bg-slate-50 ml-1"
-              aria-label="Export as PDF"
-              title="Export as PDF (via print)"
-              disabled={!lastGenerated || lastGenerated.length === 0}
-            >
-              <ArrowDownCircle className="w-4 h-4" /> PDF
-            </button>
+            {toast.type === "success" ? (
+              <CheckCircle2 className="w-5 h-5" />
+            ) : (
+              <XCircle className="w-5 h-5" />
+            )}
+            <span className="font-medium">{toast.message}</span>
           </div>
-
-          <button
-            onClick={shareWordlist}
-            className="inline-flex items-center gap-2 px-3 py-2 rounded border hover:bg-slate-50 ml-2"
-            aria-label="Share"
-            title="Share"
-            disabled={!lastGenerated || lastGenerated.length === 0}
-          >
-            <Share2 className="w-4 h-4" />
-            Share
-          </button>
         </div>
-      </header>
+      )}
 
-      <form onSubmit={handleGenerate} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Controls */}
-        <div className="md:col-span-1 space-y-3">
-          <div className="rounded-lg border p-3 bg-white dark:bg-slate-800">
-            <label className="text-xs font-medium">Character set (editable)</label>
-            <input
-              value={charset}
-              onChange={(e) => setCharset(e.target.value)}
-              className="w-full mt-2 px-3 py-2 border rounded text-sm bg-transparent"
-              aria-label="Character set"
-            />
-            <div className="mt-2 flex gap-2 flex-wrap">
-              <button type="button" onClick={() => setCharset(PRESET_CHARSETS.letters)} className="text-xs px-2 py-1 rounded border">
-                letters
-              </button>
-              <button type="button" onClick={() => setCharset(PRESET_CHARSETS.lettersUpper)} className="text-xs px-2 py-1 rounded border">
-                LETTERS
-              </button>
-              <button type="button" onClick={() => setCharset(PRESET_CHARSETS.digits)} className="text-xs px-2 py-1 rounded border">
-                digits
-              </button>
-              <button type="button" onClick={() => setCharset(PRESET_CHARSETS.symbols)} className="text-xs px-2 py-1 rounded border">
-                symbols
-              </button>
-              <button type="button" onClick={() => setCharset(PRESET_CHARSETS.letters + PRESET_CHARSETS.digits)} className="text-xs px-2 py-1 rounded border">
-                letters+digits
-              </button>
+      <Section
+        title="Wordlist Generator"
+        subtitle="Generate custom password/wordlists for penetration testing and security research"
+      >
+        {/* Stats Dashboard */}
+        {lastGenerated && lastGenerated.length > 0 && (
+          <div className="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border border-blue-200 p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Hash className="w-5 h-5 text-blue-600" />
+                <span className="text-sm font-medium text-slate-700">Count</span>
+              </div>
+              <div className="text-2xl font-bold text-blue-900">{stats.count.toLocaleString()}</div>
+              <div className="text-xs text-slate-600 mt-1">words generated</div>
+            </div>
+
+            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg border border-purple-200 p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Zap className="w-5 h-5 text-purple-600" />
+                <span className="text-sm font-medium text-slate-700">Entropy</span>
+              </div>
+              <div className="text-2xl font-bold text-purple-900">{stats.avgEntropy}</div>
+              <div className="text-xs text-slate-600 mt-1">bits (average)</div>
+            </div>
+
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg border border-green-200 p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <BarChart3 className="w-5 h-5 text-green-600" />
+                <span className="text-sm font-medium text-slate-700">Size</span>
+              </div>
+              <div className="text-2xl font-bold text-green-900">
+                {(stats.bytes / 1024).toFixed(1)} KB
+              </div>
+              <div className="text-xs text-slate-600 mt-1">total file size</div>
+            </div>
+
+            <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-lg border border-orange-200 p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Sparkles className="w-5 h-5 text-orange-600" />
+                <span className="text-sm font-medium text-slate-700">Quality</span>
+              </div>
+              <div className="text-2xl font-bold text-orange-900">
+                {avoidDuplicates ? "High" : "Standard"}
+              </div>
+              <div className="text-xs text-slate-600 mt-1">
+                {avoidDuplicates ? "no duplicates" : "may have duplicates"}
+              </div>
             </div>
           </div>
+        )}
 
-          <div className="rounded-lg border p-3 bg-white dark:bg-slate-800">
-            <label className="text-xs font-medium">Pattern (optional)</label>
-            <input
-              value={pattern}
-              onChange={(e) => setPattern(e.target.value)}
-              placeholder="e.g. {l}{l}{d}{d}{d} or leave empty"
-              className="w-full mt-2 px-3 py-2 border rounded text-sm bg-transparent"
-              aria-label="Pattern"
-            />
-            <div className="mt-2 flex gap-2 flex-wrap text-xs">
-              <button type="button" onClick={() => quickExample("{l}{l}{l}{d}{d}{d}")} className="px-2 py-1 rounded border">
-                aaa111
-              </button>
-              <button type="button" onClick={() => quickExample("{l}{d}{d}{d}{s}")} className="px-2 py-1 rounded border">
-                a111!
-              </button>
-              <button type="button" onClick={() => quickExample("pass{d}{d}")} className="px-2 py-1 rounded border">
-                pass##
-              </button>
-            </div>
-            <div className="mt-2 text-xs text-slate-500">Tokens: {`{l} l-case {u} U-case {d} digit {s} symbol {c:xyz}`}</div>
-          </div>
-
-          <div className="rounded-lg border p-3 bg-white dark:bg-slate-800 space-y-2">
-            <label className="text-xs font-medium">Length</label>
-            <div className="flex items-center gap-2">
+        <form onSubmit={handleGenerate} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Controls */}
+          <div className="lg:col-span-1 space-y-4">
+            {/* Character Set */}
+            <div className="bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-2 mb-3">
+                <Type className="w-5 h-5 text-indigo-600" />
+                <label className="text-sm font-semibold text-slate-900">Character Set</label>
+              </div>
               <input
-                type="number"
-                value={fixedLength ?? ""}
-                onChange={(e) => setFixedLength(e.target.value ? Number(e.target.value) : null)}
-                className="w-24 px-2 py-1 border rounded text-sm bg-transparent"
-                aria-label="Fixed length"
-                placeholder="auto"
-                min={1}
+                value={charset}
+                onChange={(e) => setCharset(e.target.value)}
+                className="w-full px-3 py-2 border-2 border-slate-300 rounded-lg text-sm bg-transparent focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all"
+                aria-label="Character set"
+                placeholder="Enter custom characters"
               />
-              <div className="text-xs text-slate-500">leave empty to use pattern or variable lengths</div>
+              <div className="mt-3 flex gap-2 flex-wrap">
+                <button
+                  type="button"
+                  onClick={() => setCharset(PRESET_CHARSETS.letters)}
+                  className="text-xs px-3 py-1.5 rounded-lg border-2 border-slate-300 hover:border-blue-500 hover:bg-blue-50 transition-all font-medium"
+                >
+                  abc
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCharset(PRESET_CHARSETS.lettersUpper)}
+                  className="text-xs px-3 py-1.5 rounded-lg border-2 border-slate-300 hover:border-purple-500 hover:bg-purple-50 transition-all font-medium"
+                >
+                  ABC
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCharset(PRESET_CHARSETS.digits)}
+                  className="text-xs px-3 py-1.5 rounded-lg border-2 border-slate-300 hover:border-green-500 hover:bg-green-50 transition-all font-medium"
+                >
+                  123
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCharset(PRESET_CHARSETS.symbols)}
+                  className="text-xs px-3 py-1.5 rounded-lg border-2 border-slate-300 hover:border-orange-500 hover:bg-orange-50 transition-all font-medium"
+                >
+                  !@#
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCharset(PRESET_CHARSETS.letters + PRESET_CHARSETS.digits)}
+                  className="text-xs px-3 py-1.5 rounded-lg border-2 border-slate-300 hover:border-indigo-500 hover:bg-indigo-50 transition-all font-medium"
+                >
+                  abc123
+                </button>
+              </div>
             </div>
 
-            <label className="text-xs font-medium mt-2">Quantity</label>
-            <input
-              type="number"
-              value={quantity}
-              onChange={(e) => setQuantity(clamp(Number(e.target.value || 0), 1, SAFE_MAX))}
-              min={1}
-              max={SAFE_MAX}
-              className="w-full px-2 py-1 border rounded text-sm bg-transparent"
-              aria-label="Quantity"
-            />
-            <div className="text-xs text-slate-500">Max allowed: {SAFE_MAX.toLocaleString()}</div>
-
-            <div className="flex items-center gap-2 mt-2">
-              <label className="text-xs inline-flex items-center gap-2">
-                <input type="checkbox" checked={avoidDuplicates} onChange={(e) => setAvoidDuplicates(e.target.checked)} />
-                Avoid duplicates
-              </label>
-              <label className="text-xs inline-flex items-center gap-2">
-                <input type="checkbox" checked={shuffle} onChange={(e) => setShuffle(e.target.checked)} />
-                Shuffle
-              </label>
+            {/* Pattern */}
+            <div className="bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-2 mb-3">
+                <Key className="w-5 h-5 text-purple-600" />
+                <label className="text-sm font-semibold text-slate-900">Pattern (Optional)</label>
+              </div>
+              <input
+                value={pattern}
+                onChange={(e) => setPattern(e.target.value)}
+                placeholder="e.g. {l}{l}{d}{d}{d} or leave empty"
+                className="w-full px-3 py-2 border-2 border-slate-300 rounded-lg text-sm bg-transparent focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all font-mono"
+                aria-label="Pattern"
+              />
+              <div className="mt-3 flex gap-2 flex-wrap">
+                <button
+                  type="button"
+                  onClick={() => quickExample("{l}{l}{l}{d}{d}{d}")}
+                  className="text-xs px-3 py-1.5 rounded-lg bg-blue-50 border border-blue-200 hover:bg-blue-100 transition-all font-mono"
+                >
+                  aaa111
+                </button>
+                <button
+                  type="button"
+                  onClick={() => quickExample("{l}{d}{d}{d}{s}")}
+                  className="text-xs px-3 py-1.5 rounded-lg bg-purple-50 border border-purple-200 hover:bg-purple-100 transition-all font-mono"
+                >
+                  a111!
+                </button>
+                <button
+                  type="button"
+                  onClick={() => quickExample("pass{d}{d}")}
+                  className="text-xs px-3 py-1.5 rounded-lg bg-green-50 border border-green-200 hover:bg-green-100 transition-all font-mono"
+                >
+                  pass##
+                </button>
+              </div>
+              <div className="mt-2 text-xs text-slate-500 bg-slate-50 rounded p-2 font-mono">
+                Tokens: <span className="text-blue-600">{"{l}"}</span> lowercase{" "}
+                <span className="text-purple-600">{"{u}"}</span> uppercase{" "}
+                <span className="text-green-600">{"{d}"}</span> digit{" "}
+                <span className="text-orange-600">{"{s}"}</span> symbol
+              </div>
             </div>
 
-            <div className="mt-2">
-              <label className="text-xs font-medium">Case</label>
-              <select value={caseOption} onChange={(e) => setCaseOption(e.target.value as CaseOption)} className="w-full px-2 py-1 border rounded mt-1">
-                <option value="none">None</option>
-                <option value="lower">lowercase</option>
-                <option value="upper">UPPERCASE</option>
-                <option value="capitalize">Capitalize</option>
-              </select>
-            </div>
-
-            <div className="mt-3 flex gap-2">
-              <button
-                type="submit"
-                className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 rounded bg-indigo-600 text-white"
-                disabled={isGenerating}
-              >
-                {isGenerating ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />} Generate
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  // quick clear preview
-                  setLastGenerated(null);
-                  setError(null);
-                }}
-                className="px-3 py-2 rounded border"
-              >
-                Clear
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Preview */}
-        <div className="md:col-span-2 space-y-3">
-          <div className="rounded-lg border bg-white dark:bg-slate-800 p-3">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-3">
-                <div className="text-sm font-medium">Preview</div>
-                <div className="text-xs text-slate-500">real-time snapshot (first {previewLines} lines)</div>
-                {error && (
-                  <div className="flex items-center gap-1 text-rose-600 text-xs ml-3">
-                    <AlertTriangle className="w-4 h-4" />
-                    {error}
-                  </div>
-                )}
+            {/* Settings */}
+            <div className="bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow space-y-3">
+              <div className="flex items-center gap-2 mb-2">
+                <Sparkles className="w-5 h-5 text-green-600" />
+                <label className="text-sm font-semibold text-slate-900">Settings</label>
               </div>
 
-              <div className="flex items-center gap-2">
-                <div className="text-xs text-slate-500">Lines</div>
+              <div>
+                <label className="text-xs font-medium text-slate-700 mb-1 block">Length</label>
                 <input
                   type="number"
-                  value={previewLines}
-                  onChange={(e) => setPreviewLines(clamp(Number(e.target.value || 0), 1, 1000))}
-                  className="w-20 px-2 py-1 border rounded text-sm bg-transparent"
+                  value={fixedLength ?? ""}
+                  onChange={(e) => setFixedLength(e.target.value ? Number(e.target.value) : null)}
+                  className="w-full px-3 py-2 border-2 border-slate-300 rounded-lg text-sm bg-transparent focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all"
+                  aria-label="Fixed length"
+                  placeholder="auto (from pattern)"
+                  min={1}
                 />
+              </div>
+
+              <div>
+                <label className="text-xs font-medium text-slate-700 mb-1 block">Quantity</label>
+                <input
+                  type="number"
+                  value={quantity}
+                  onChange={(e) => setQuantity(clamp(Number(e.target.value || 0), 1, SAFE_MAX))}
+                  min={1}
+                  max={SAFE_MAX}
+                  className="w-full px-3 py-2 border-2 border-slate-300 rounded-lg text-sm bg-transparent focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all"
+                  aria-label="Quantity"
+                />
+                <div className="text-xs text-slate-500 mt-1">Max: {SAFE_MAX.toLocaleString()}</div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="text-xs inline-flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={avoidDuplicates}
+                    onChange={(e) => setAvoidDuplicates(e.target.checked)}
+                    className="w-4 h-4 text-indigo-600 rounded"
+                  />
+                  <span className="font-medium">Avoid duplicates</span>
+                </label>
+                <label className="text-xs inline-flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={shuffle}
+                    onChange={(e) => setShuffle(e.target.checked)}
+                    className="w-4 h-4 text-indigo-600 rounded"
+                  />
+                  <span className="font-medium">Shuffle results</span>
+                </label>
+              </div>
+
+              <div>
+                <label className="text-xs font-medium text-slate-700 mb-1 block">Case Transform</label>
+                <select
+                  value={caseOption}
+                  onChange={(e) => setCaseOption(e.target.value as CaseOption)}
+                  className="w-full px-3 py-2 border-2 border-slate-300 rounded-lg text-sm bg-white focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all"
+                >
+                  <option value="none">None</option>
+                  <option value="lower">lowercase</option>
+                  <option value="upper">UPPERCASE</option>
+                  <option value="capitalize">Capitalize</option>
+                </select>
+              </div>
+
+              <div className="pt-2 flex gap-2">
+                <button
+                  type="submit"
+                  className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold shadow-md hover:shadow-lg transition-all disabled:opacity-50"
+                  disabled={isGenerating}
+                >
+                  {isGenerating ? (
+                    <>
+                      <RefreshCw className="w-5 h-5 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-5 h-5" />
+                      Generate
+                    </>
+                  )}
+                </button>
+
                 <button
                   type="button"
-                  className="px-2 py-1 rounded border text-xs"
                   onClick={() => {
-                    // quick regenerate small preview without setting lastGenerated
-                    const small = generateWordlist({
-                      quantity: clamp(previewLines, 1, 200),
-                      pattern: pattern || null,
-                      fixedLength,
-                      charset,
-                      avoidDuplicates,
-                      shuffle,
-                      caseOption,
-                    });
-                    setLastGenerated(small);
+                    setLastGenerated(null);
+                    setError(null);
                   }}
+                  className="px-4 py-3 rounded-lg border-2 border-slate-300 hover:border-slate-400 hover:bg-slate-50 transition-all"
+                  title="Clear results"
                 >
-                  Quick preview
-                </button>
-              </div>
-            </div>
-
-            {/* preview box */}
-            <div className="overflow-auto border rounded bg-slate-50 dark:bg-slate-900 p-2" style={{ maxHeight: 420 }}>
-              <pre className="text-sm font-mono whitespace-pre-wrap">
-                {(lastGenerated ?? []).slice(0, previewLines).map((line, i) => (
-                  <div key={i} className="flex gap-3">
-                    <div className="text-slate-400 dark:text-slate-500 w-12 text-right select-none">{i + 1}</div>
-                    <div
-                      className="flex-1"
-                      // eslint-disable-next-line react/no-danger
-                      dangerouslySetInnerHTML={{ __html: highlightLine(line) }}
-                    />
-                  </div>
-                ))}
-
-                {(!lastGenerated || lastGenerated.length === 0) && (
-                  <div className="text-sm text-slate-500">No generated content yet — click Generate or use Quick preview.</div>
-                )}
-              </pre>
-            </div>
-
-            {/* stats + small actions */}
-            <div className="mt-3 flex items-center justify-between">
-              <div className="text-xs text-slate-600 dark:text-slate-300">
-                <div>Count: <strong>{stats.count}</strong></div>
-                <div>Avg entropy: <strong>{stats.avgEntropy}</strong></div>
-                <div>Size: <strong>{(stats.bytes / 1024).toFixed(2)} KB</strong></div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={handleCopyAll}
-                  className="px-2 py-1 rounded border text-xs"
-                  disabled={!lastGenerated || lastGenerated.length === 0}
-                >
-                  Copy all
-                </button>
-                <button
-                  type="button"
-                  onClick={exportAsTxt}
-                  className="px-2 py-1 rounded border text-xs"
-                  disabled={!lastGenerated || lastGenerated.length === 0}
-                >
-                  Download .txt
-                </button>
-                <button
-                  type="button"
-                  onClick={exportAsMd}
-                  className="px-2 py-1 rounded border text-xs"
-                  disabled={!lastGenerated || lastGenerated.length === 0}
-                >
-                  Download .md
-                </button>
-                <button
-                  type="button"
-                  onClick={printAsPdf}
-                  className="px-2 py-1 rounded border text-xs"
-                  disabled={!lastGenerated || lastGenerated.length === 0}
-                >
-                  Print / PDF
-                </button>
-                <button
-                  type="button"
-                  onClick={shareWordlist}
-                  className="px-2 py-1 rounded border text-xs"
-                  disabled={!lastGenerated || lastGenerated.length === 0}
-                >
-                  <Share2 className="w-4 h-4 inline" /> Share
+                  <XCircle className="w-5 h-5" />
                 </button>
               </div>
             </div>
           </div>
 
-          {/* short help / accessibility notes */}
-          <div className="rounded-lg border p-3 bg-white dark:bg-slate-800 text-sm text-slate-600 dark:text-slate-300">
-            <strong>Quick start:</strong> choose a charset or pattern, set length and quantity, then click <em>Generate</em>. Use Copy / Download to export. On mobile, use Share to copy the output. Avoid very large quantities to keep performance smooth.
+          {/* Preview */}
+          <div className="lg:col-span-2 space-y-4">
+            {/* Error Display */}
+            {error && (
+              <div className="p-4 rounded-lg bg-gradient-to-r from-red-50 to-rose-50 border-l-4 border-red-500">
+                <div className="flex items-start gap-3">
+                  <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <div className="font-semibold text-red-900">Validation Error</div>
+                    <div className="text-sm text-red-700 mt-1">{error}</div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Preview Box */}
+            <div className="bg-white rounded-lg border border-slate-200 overflow-hidden shadow-sm">
+              <div className="px-4 py-3 bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <FileText className="w-5 h-5 text-indigo-600" />
+                  <div>
+                    <div className="text-sm font-semibold text-slate-900">Live Preview</div>
+                    <div className="text-xs text-slate-500">
+                      Showing first {previewLines} lines
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    value={previewLines}
+                    onChange={(e) => setPreviewLines(clamp(Number(e.target.value || 0), 1, 1000))}
+                    className="w-20 px-2 py-1 border-2 border-slate-300 rounded text-sm bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                    min={1}
+                    max={1000}
+                  />
+                  <button
+                    type="button"
+                    className="px-3 py-1 rounded-lg bg-indigo-100 border border-indigo-300 hover:bg-indigo-200 text-indigo-700 text-xs font-medium transition-all"
+                    onClick={() => {
+                      const small = generateWordlist({
+                        quantity: clamp(previewLines, 1, 200),
+                        pattern: pattern || null,
+                        fixedLength,
+                        charset,
+                        avoidDuplicates,
+                        shuffle,
+                        caseOption,
+                      });
+                      setLastGenerated(small);
+                    }}
+                  >
+                    Quick preview
+                  </button>
+                </div>
+              </div>
+
+              <div
+                className="overflow-auto bg-slate-900 p-4"
+                style={{ maxHeight: 500 }}
+              >
+                <pre className="text-sm font-mono whitespace-pre-wrap">
+                  {(lastGenerated ?? []).slice(0, previewLines).map((line, i) => (
+                    <div key={i} className="flex gap-3 hover:bg-slate-800/50 px-2 py-0.5 rounded">
+                      <div className="text-slate-500 w-12 text-right select-none flex-shrink-0">
+                        {i + 1}
+                      </div>
+                      <div
+                        className="flex-1 text-green-400"
+                        // eslint-disable-next-line react/no-danger
+                        dangerouslySetInnerHTML={{ __html: highlightLine(line) }}
+                      />
+                    </div>
+                  ))}
+
+                  {(!lastGenerated || lastGenerated.length === 0) && (
+                    <div className="text-center py-12 text-slate-500">
+                      <Sparkles className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                      <div className="text-sm">No wordlist generated yet</div>
+                      <div className="text-xs mt-1">
+                        Configure settings and click Generate or Quick preview
+                      </div>
+                    </div>
+                  )}
+                </pre>
+              </div>
+
+              {/* Action Buttons */}
+              {lastGenerated && lastGenerated.length > 0 && (
+                <div className="px-4 py-3 bg-slate-50 border-t border-slate-200 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={handleCopyAll}
+                    className="px-3 py-2 bg-white border-2 border-slate-300 hover:border-blue-500 hover:bg-blue-50 rounded-lg flex items-center gap-2 text-sm font-medium transition-all"
+                  >
+                    <Copy className="w-4 h-4" />
+                    Copy All
+                  </button>
+                  <button
+                    type="button"
+                    onClick={exportAsTxt}
+                    className="px-3 py-2 bg-white border-2 border-slate-300 hover:border-green-500 hover:bg-green-50 rounded-lg flex items-center gap-2 text-sm font-medium transition-all"
+                  >
+                    <Download className="w-4 h-4" />
+                    TXT
+                  </button>
+                  <button
+                    type="button"
+                    onClick={exportAsMd}
+                    className="px-3 py-2 bg-white border-2 border-slate-300 hover:border-purple-500 hover:bg-purple-50 rounded-lg flex items-center gap-2 text-sm font-medium transition-all"
+                  >
+                    <FileText className="w-4 h-4" />
+                    Markdown
+                  </button>
+                  <button
+                    type="button"
+                    onClick={printAsPdf}
+                    className="px-3 py-2 bg-white border-2 border-slate-300 hover:border-orange-500 hover:bg-orange-50 rounded-lg flex items-center gap-2 text-sm font-medium transition-all"
+                  >
+                    <ArrowDownCircle className="w-4 h-4" />
+                    PDF
+                  </button>
+                  <button
+                    type="button"
+                    onClick={shareWordlist}
+                    className="px-3 py-2 bg-white border-2 border-slate-300 hover:border-indigo-500 hover:bg-indigo-50 rounded-lg flex items-center gap-2 text-sm font-medium transition-all"
+                  >
+                    <Share2 className="w-4 h-4" />
+                    Share
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Help Section */}
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border border-blue-200 p-4">
+              <div className="flex items-start gap-3">
+                <Sparkles className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                <div className="text-sm text-slate-700">
+                  <div className="font-semibold text-slate-900 mb-2">Quick Start Guide</div>
+                  <ul className="space-y-1 text-xs">
+                    <li className="flex items-start gap-2">
+                      <span className="text-blue-600 mt-0.5">•</span>
+                      <span>Choose a character set or use presets (abc, 123, !@#)</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-blue-600 mt-0.5">•</span>
+                      <span>
+                        Use patterns for structured words: <code className="bg-white px-1 rounded">{"{l}{l}{d}{d}"}</code> generates "ab12"
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-blue-600 mt-0.5">•</span>
+                      <span>Set quantity (max {SAFE_MAX.toLocaleString()}) and enable duplicate removal for quality</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-blue-600 mt-0.5">•</span>
+                      <span>Export as TXT, Markdown, or PDF for use in security tools</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </Section>
+
+      <Section title="Use Cases">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
+            <div className="text-2xl mb-2">🔐</div>
+            <h4 className="font-semibold text-slate-900 mb-1">Password Testing</h4>
+            <p className="text-sm text-slate-600">
+              Generate custom wordlists for password strength testing and brute-force simulations
+            </p>
+          </div>
+
+          <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+            <div className="text-2xl mb-2">🎯</div>
+            <h4 className="font-semibold text-slate-900 mb-1">Penetration Testing</h4>
+            <p className="text-sm text-slate-600">
+              Create targeted wordlists based on company names, patterns, or common conventions
+            </p>
+          </div>
+
+          <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+            <div className="text-2xl mb-2">📚</div>
+            <h4 className="font-semibold text-slate-900 mb-1">Security Research</h4>
+            <p className="text-sm text-slate-600">
+              Build specialized dictionaries for cryptographic analysis and security research
+            </p>
           </div>
         </div>
-      </form>
-    </section>
+      </Section>
+    </div>
   );
 }

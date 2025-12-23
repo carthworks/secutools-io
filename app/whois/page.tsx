@@ -9,6 +9,16 @@ import {
   Globe,
   AlertCircle,
   Shield,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  Server,
+  Lock,
+  ChevronDown,
+  ChevronUp,
+  Calendar,
+  Mail,
+  Info,
 } from "lucide-react";
 
 // --- Helpers to parse RDAP ---
@@ -134,6 +144,18 @@ function normalizeToDomain(input: string): { domain: string | null; reason?: str
   return { domain: null, reason: "Invalid domain format" };
 }
 
+// Format date to readable format
+function formatDate(date: Date | null): string {
+  if (!date) return "Unknown";
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+}
+
 // --- Component ---
 export default function WhoisPage() {
   const [query, setQuery] = useState("example.com");
@@ -141,6 +163,13 @@ export default function WhoisPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [inputError, setInputError] = useState<string | null>(null);
+  const [showRawJson, setShowRawJson] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+
+  const showToast = (message: string, type: "success" | "error" = "success") => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
 
   async function lookup(rawInput?: string) {
     setInputError(null);
@@ -153,7 +182,7 @@ export default function WhoisPage() {
     if (!domain) {
       setInputError(
         reason ||
-          "Invalid domain. Enter a bare domain like example.com (no protocol, no path). Example: 'example.com' or 'sub.example.co.uk'"
+        "Invalid domain. Enter a bare domain like example.com (no protocol, no path). Example: 'example.com' or 'sub.example.co.uk'"
       );
       return;
     }
@@ -167,8 +196,10 @@ export default function WhoisPage() {
       if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
       const json = await res.json();
       setData(json);
+      showToast("Domain information retrieved successfully!");
     } catch (err: any) {
       setError(err.message || "Lookup failed");
+      showToast(err.message || "Lookup failed", "error");
     } finally {
       setLoading(false);
     }
@@ -177,7 +208,7 @@ export default function WhoisPage() {
   function copyData() {
     if (!data) return;
     navigator.clipboard.writeText(JSON.stringify(data, null, 2));
-    alert("WHOIS data copied to clipboard ✅");
+    showToast("WHOIS data copied to clipboard!");
   }
 
   function exportFile(format: "json" | "txt") {
@@ -186,8 +217,8 @@ export default function WhoisPage() {
       format === "json"
         ? JSON.stringify(data, null, 2)
         : Object.entries(data)
-            .map(([k, v]) => `${k}: ${JSON.stringify(v)}`)
-            .join("\n");
+          .map(([k, v]) => `${k}: ${JSON.stringify(v)}`)
+          .join("\n");
 
     const blob = new Blob([content], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
@@ -196,6 +227,7 @@ export default function WhoisPage() {
     a.download = `whois-${query}.${format}`;
     a.click();
     URL.revokeObjectURL(url);
+    showToast(`Exported as ${format.toUpperCase()}`);
   }
 
   async function shareData() {
@@ -207,7 +239,8 @@ export default function WhoisPage() {
           title: `WHOIS: ${query}`,
           text,
         });
-      } catch {}
+        showToast("Shared successfully!");
+      } catch { }
     } else {
       copyData();
     }
@@ -216,23 +249,23 @@ export default function WhoisPage() {
   // --- Parsed summary ---
   const summary = data
     ? (() => {
-        const { created, updated, expires } = getRdapDates(data);
-        const expiryDays = daysTo(expires);
-        const ns = extractNameservers(data);
-        const dnssec = getDnssecIndicator(data);
-        return {
-          registrar: data?.registrar?.name || data?.name || "Unknown",
-          created,
-          updated,
-          expires,
-          expiryDays,
-          privacy: isPrivacyProxy(data),
-          abuse: getAbuseContact(data),
-          status: (data?.status || []).join(", ") || "Unknown",
-          nameservers: ns,
-          dnssec,
-        };
-      })()
+      const { created, updated, expires } = getRdapDates(data);
+      const expiryDays = daysTo(expires);
+      const ns = extractNameservers(data);
+      const dnssec = getDnssecIndicator(data);
+      return {
+        registrar: data?.registrar?.name || data?.name || "Unknown",
+        created,
+        updated,
+        expires,
+        expiryDays,
+        privacy: isPrivacyProxy(data),
+        abuse: getAbuseContact(data),
+        status: (data?.status || []).join(", ") || "Unknown",
+        nameservers: ns,
+        dnssec,
+      };
+    })()
     : null;
 
   // small heuristic security score (0-100)
@@ -260,267 +293,467 @@ export default function WhoisPage() {
 
   const securityScore = summary ? computeSecurityScore(summary) : null;
 
+  // Get score color
+  const getScoreColor = (score: number | null) => {
+    if (score === null) return "text-slate-400";
+    if (score >= 80) return "text-green-600";
+    if (score >= 60) return "text-yellow-600";
+    if (score >= 40) return "text-orange-600";
+    return "text-red-600";
+  };
+
+  const getScoreBgColor = (score: number | null) => {
+    if (score === null) return "from-slate-400 to-slate-500";
+    if (score >= 80) return "from-green-500 to-emerald-600";
+    if (score >= 60) return "from-yellow-500 to-amber-600";
+    if (score >= 40) return "from-orange-500 to-red-500";
+    return "from-red-600 to-rose-700";
+  };
+
   return (
     <div className="space-y-8">
+      {/* Toast Notification */}
+      {toast && (
+        <div className="fixed top-4 right-4 z-50 animate-in slide-in-from-top-2 duration-300">
+          <div
+            className={`px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 ${toast.type === "success"
+                ? "bg-green-600 text-white"
+                : "bg-red-600 text-white"
+              }`}
+          >
+            {toast.type === "success" ? (
+              <CheckCircle2 className="w-5 h-5" />
+            ) : (
+              <XCircle className="w-5 h-5" />
+            )}
+            <span className="font-medium">{toast.message}</span>
+          </div>
+        </div>
+      )}
+
       <Section
         title="WHOIS / RDAP Lookup"
         subtitle="Check domain registration, ownership, registrar, and expiry details"
       >
-        <div className="flex gap-2">
-          <input
-            value={query}
-            onChange={(e) => {
-              setQuery(e.target.value);
-              setInputError(null);
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") lookup();
-            }}
-            placeholder="Enter domain (example.com)"
-            className={`flex-1 bg-white border rounded p-2 ${
-              inputError ? "border-red-400" : "border-slate-300"
-            }`}
-            aria-invalid={!!inputError}
-            aria-describedby="domain-help"
-          />
+        {/* Search Input */}
+        <div className="flex gap-3">
+          <div className="flex-1 relative">
+            <input
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setInputError(null);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") lookup();
+              }}
+              placeholder="Enter domain (e.g., example.com)"
+              className={`w-full bg-white border-2 rounded-lg px-4 py-3 pr-10 transition-all focus:outline-none focus:ring-2 ${inputError
+                  ? "border-red-400 focus:ring-red-200"
+                  : "border-slate-300 focus:border-blue-500 focus:ring-blue-200"
+                }`}
+              aria-invalid={!!inputError}
+              aria-describedby="domain-help"
+            />
+            <Globe className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+          </div>
           <button
             onClick={() => lookup()}
             disabled={loading}
-            className="px-3 py-1 rounded bg-primary bg-blue-400 text-white font-medium flex items-center gap-1"
+            className="px-6 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold flex items-center gap-2 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
               <>
-                <RefreshCw className="w-4 h-4 animate-spin" /> Checking...
+                <RefreshCw className="w-5 h-5 animate-spin" />
+                <span>Checking...</span>
               </>
             ) : (
               <>
-                <Globe className="w-4 h-4" /> Lookup
+                <Shield className="w-5 h-5" />
+                <span>Lookup</span>
               </>
             )}
           </button>
         </div>
 
+        {/* Input Error */}
         {inputError && (
-          <div className="mt-3 p-2 rounded bg-red-50 border border-red-200 text-red-700 text-sm">
-            <div className="flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 mt-0.5" />
+          <div className="mt-4 p-4 rounded-lg bg-gradient-to-r from-red-50 to-rose-50 border-l-4 border-red-500">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
               <div>
-                <div className="font-medium">Invalid domain</div>
-                <div className="text-xs mt-1">
-                  {inputError}
-                  <div className="mt-1">
-                    Examples: <code className="bg-slate-100 px-1 rounded">example.com</code>,{" "}
-                    <code className="bg-slate-100 px-1 rounded">sub.example.co.uk</code>
-                  </div>
+                <div className="font-semibold text-red-900">Invalid Domain Format</div>
+                <div className="text-sm text-red-700 mt-1">{inputError}</div>
+                <div className="mt-2 flex gap-2 flex-wrap">
+                  <code className="bg-white px-2 py-1 rounded text-xs text-red-800 border border-red-200">
+                    example.com
+                  </code>
+                  <code className="bg-white px-2 py-1 rounded text-xs text-red-800 border border-red-200">
+                    sub.example.co.uk
+                  </code>
                 </div>
               </div>
             </div>
           </div>
         )}
 
+        {/* API Error */}
         {error && (
-          <div className="mt-3 p-2 rounded bg-red-50 border border-red-200 text-red-700 text-sm">
-            ❌ {error}
+          <div className="mt-4 p-4 rounded-lg bg-gradient-to-r from-red-50 to-rose-50 border-l-4 border-red-500">
+            <div className="flex items-center gap-3">
+              <XCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+              <div className="font-medium text-red-900">{error}</div>
+            </div>
           </div>
         )}
 
-        {/* Mini Dashboard */}
+        {/* Results Dashboard */}
         {summary && (
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Big summary card */}
-            <div className="col-span-1 md:col-span-2 bg-slate-50 border border-slate-200 rounded p-4">
-              <div className="flex items-start justify-between">
-                <div>
-                  <div className="text-sm text-slate-500">Domain</div>
-                  <div className="text-xl font-semibold">{query}</div>
-                  <div className="text-sm text-slate-600 mt-1">{summary.registrar}</div>
+          <div className="mt-6 space-y-6">
+            {/* Security Score Header */}
+            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 p-6">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-100/50 to-purple-100/50 rounded-full blur-3xl -z-0" />
+
+              <div className="relative z-10 flex items-center justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <Globe className="w-8 h-8 text-blue-600" />
+                    <div>
+                      <div className="text-sm font-medium text-slate-600">Domain Information</div>
+                      <div className="text-2xl font-bold text-slate-900">{query}</div>
+                    </div>
+                  </div>
+                  <div className="text-sm text-slate-600 mt-1">
+                    <span className="font-medium">Registrar:</span> {summary.registrar}
+                  </div>
                 </div>
 
-                <div className="text-right">
-                  <div className="text-xs text-slate-500">Security score</div>
-                  <div className="text-2xl font-bold">{securityScore ?? "—"}</div>
+                <div className="text-center">
+                  <div className="text-sm font-medium text-slate-600 mb-2">Security Score</div>
+                  <div
+                    className={`text-5xl font-bold bg-gradient-to-br ${getScoreBgColor(
+                      securityScore
+                    )} bg-clip-text text-transparent`}
+                  >
+                    {securityScore ?? "—"}
+                  </div>
                   <div className="text-xs text-slate-500 mt-1">
-                    {summary.privacy ? "Privacy/Proxy detected" : "No privacy proxy"}
+                    {summary.privacy ? "🔒 Privacy Protected" : "🔓 Public Registration"}
                   </div>
                 </div>
               </div>
+            </div>
 
-              <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-                <div className="p-2 bg-white rounded border">
-                  <div className="font-semibold">Status</div>
-                  <div className="mt-1">{summary.status}</div>
+            {/* Main Info Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+              {/* Registration Dates */}
+              <div className="bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow">
+                <div className="flex items-center gap-2 mb-3">
+                  <Calendar className="w-5 h-5 text-blue-600" />
+                  <h3 className="font-semibold text-slate-900">Registration Dates</h3>
                 </div>
-
-                <div className="p-2 bg-white rounded border">
-                  <div className="font-semibold">Abuse contact</div>
-                  <div className="mt-1">
-                    {summary.abuse ? (
-                      <a className="text-primary underline" href={`mailto:${summary.abuse}`}>
-                        {summary.abuse}
-                      </a>
-                    ) : (
-                      <span className="text-slate-500">Not found</span>
-                    )}
+                <div className="space-y-3">
+                  <div>
+                    <div className="text-xs text-slate-500 mb-1">Created</div>
+                    <div className="text-sm font-medium text-slate-900">
+                      {formatDate(summary.created)}
+                    </div>
                   </div>
-                </div>
-
-                <div className="p-2 bg-white rounded border">
-                  <div className="font-semibold">Created</div>
-                  <div className="mt-1">{summary.created?.toISOString() || "Unknown"}</div>
-                </div>
-
-                <div className="p-2 bg-white rounded border">
-                  <div className="font-semibold">Updated</div>
-                  <div className="mt-1">{summary.updated?.toISOString() || "Unknown"}</div>
-                </div>
-
-                <div className="p-2 bg-white rounded border col-span-2">
-                  <div className="font-semibold">Expiry</div>
-                  <div className="mt-1 flex items-center gap-2">
-                    <div>{summary.expires?.toISOString() || "Unknown"}</div>
+                  <div>
+                    <div className="text-xs text-slate-500 mb-1">Last Updated</div>
+                    <div className="text-sm font-medium text-slate-900">
+                      {formatDate(summary.updated)}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-slate-500 mb-1">Expires</div>
+                    <div className="text-sm font-medium text-slate-900">
+                      {formatDate(summary.expires)}
+                    </div>
                     {summary.expiryDays !== null && (
                       <div
-                        className={`ml-2 px-2 py-0.5 rounded text-xs ${
-                          summary.expiryDays <= 30
+                        className={`mt-2 inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${summary.expiryDays <= 0
                             ? "bg-red-100 text-red-700"
-                            : summary.expiryDays <= 90
-                            ? "bg-yellow-100 text-yellow-700"
-                            : "bg-green-100 text-green-700"
-                        }`}
+                            : summary.expiryDays <= 30
+                              ? "bg-red-100 text-red-700"
+                              : summary.expiryDays <= 90
+                                ? "bg-yellow-100 text-yellow-700"
+                                : "bg-green-100 text-green-700"
+                          }`}
                       >
+                        <Clock className="w-3 h-3" />
                         {summary.expiryDays <= 0
                           ? "Expired"
-                          : `Expires in ${summary.expiryDays} days`}
+                          : `${summary.expiryDays} days left`}
                       </div>
                     )}
                   </div>
                 </div>
+              </div>
 
-                <div className="p-2 bg-white rounded border">
-                  <div className="font-semibold">DNSSEC</div>
-                  <div className="mt-1">{summary.dnssec ? "Enabled" : "Unknown / Not enabled"}</div>
+              {/* Status & Contact */}
+              <div className="bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow">
+                <div className="flex items-center gap-2 mb-3">
+                  <Info className="w-5 h-5 text-purple-600" />
+                  <h3 className="font-semibold text-slate-900">Status & Contact</h3>
                 </div>
-
-                <div className="p-2 bg-white rounded border">
-                  <div className="font-semibold">Nameservers</div>
-                  <div className="mt-1 text-xs">
-                    {summary.nameservers && summary.nameservers.length > 0 ? (
-                      <ul className="list-disc pl-4">
-                        {summary.nameservers.slice(0, 5).map((n: string) => (
-                          <li key={n} className="truncate max-w-full">
-                            {n}
-                          </li>
-                        ))}
-                        {summary.nameservers.length > 5 && (
-                          <li className="text-slate-500">and more...</li>
-                        )}
-                      </ul>
+                <div className="space-y-3">
+                  <div>
+                    <div className="text-xs text-slate-500 mb-1">Domain Status</div>
+                    <div className="text-sm font-medium text-slate-900 break-words">
+                      {summary.status}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-slate-500 mb-1">Abuse Contact</div>
+                    {summary.abuse ? (
+                      <a
+                        href={`mailto:${summary.abuse}`}
+                        className="text-sm font-medium text-blue-600 hover:text-blue-700 underline flex items-center gap-1"
+                      >
+                        <Mail className="w-4 h-4" />
+                        {summary.abuse}
+                      </a>
                     ) : (
-                      <span className="text-slate-500">Not found</span>
+                      <div className="text-sm text-slate-400 flex items-center gap-1">
+                        <XCircle className="w-4 h-4" />
+                        Not available
+                      </div>
                     )}
                   </div>
                 </div>
               </div>
 
-              {/* quick actions */}
-              <div className="mt-4 flex gap-2 flex-wrap">
-                <button
-                  onClick={copyData}
-                  className="px-3 py-1 border rounded flex items-center gap-1 text-sm"
-                >
-                  <Copy className="w-4 h-4" /> Copy
-                </button>
-                <button
-                  onClick={() => exportFile("json")}
-                  className="px-3 py-1 border rounded flex items-center gap-1 text-sm"
-                >
-                  <Download className="w-4 h-4" /> Export JSON
-                </button>
-                <button
-                  onClick={() => exportFile("txt")}
-                  className="px-3 py-1 border rounded flex items-center gap-1 text-sm"
-                >
-                  <Download className="w-4 h-4" /> Export TXT
-                </button>
-                <button
-                  onClick={shareData}
-                  className="px-3 py-1 border rounded flex items-center gap-1 text-sm"
-                >
-                  <Share2 className="w-4 h-4" /> Share
-                </button>
-              </div>
-            </div>
-
-            {/* Small pane with highlights / alerts */}
-            <div className="bg-white border border-slate-200 rounded p-4 text-sm space-y-3">
-              <div className="flex items-center gap-2">
-                <Shield className="w-5 h-5" />
-                <div>
-                  <div className="font-semibold">Security Insights</div>
-                  <div className="text-xs text-slate-600">
-                    Quick heuristic view of potential concerns.
+              {/* Security Features */}
+              <div className="bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow">
+                <div className="flex items-center gap-2 mb-3">
+                  <Lock className="w-5 h-5 text-green-600" />
+                  <h3 className="font-semibold text-slate-900">Security Features</h3>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-slate-600">DNSSEC</span>
+                    {summary.dnssec ? (
+                      <span className="flex items-center gap-1 text-green-600 font-medium text-sm">
+                        <CheckCircle2 className="w-4 h-4" />
+                        Enabled
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1 text-slate-400 font-medium text-sm">
+                        <XCircle className="w-4 h-4" />
+                        Not enabled
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-slate-600">Privacy Protection</span>
+                    {summary.privacy ? (
+                      <span className="flex items-center gap-1 text-blue-600 font-medium text-sm">
+                        <CheckCircle2 className="w-4 h-4" />
+                        Active
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1 text-slate-400 font-medium text-sm">
+                        <XCircle className="w-4 h-4" />
+                        Inactive
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
+            </div>
 
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="text-xs text-slate-600">Privacy / Proxy</div>
-                  <div className="font-medium">{summary.privacy ? "Yes" : "No"}</div>
+            {/* Nameservers */}
+            <div className="bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-2 mb-3">
+                <Server className="w-5 h-5 text-indigo-600" />
+                <h3 className="font-semibold text-slate-900">Nameservers</h3>
+                <span className="text-xs text-slate-500">
+                  ({summary.nameservers?.length || 0} found)
+                </span>
+              </div>
+              {summary.nameservers && summary.nameservers.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                  {summary.nameservers.map((ns: string, idx: number) => (
+                    <div
+                      key={idx}
+                      className="px-3 py-2 bg-slate-50 rounded border border-slate-200 text-sm font-mono text-slate-700"
+                    >
+                      {ns}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-sm text-slate-400 flex items-center gap-2">
+                  <XCircle className="w-4 h-4" />
+                  No nameservers found
+                </div>
+              )}
+            </div>
+
+            {/* Security Insights */}
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border border-blue-200 p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <Shield className="w-6 h-6 text-blue-600" />
+                <h3 className="font-semibold text-slate-900 text-lg">Security Insights</h3>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div className="bg-white rounded-lg p-3 border border-blue-100">
+                  <div className="text-xs text-slate-500 mb-1">Privacy / Proxy</div>
+                  <div className={`font-semibold ${summary.privacy ? "text-blue-600" : "text-slate-600"}`}>
+                    {summary.privacy ? "Detected" : "Not detected"}
+                  </div>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="text-xs text-slate-600">Abuse contact</div>
-                  <div className="font-medium">{summary.abuse ? "Present" : "Missing"}</div>
+                <div className="bg-white rounded-lg p-3 border border-blue-100">
+                  <div className="text-xs text-slate-500 mb-1">Abuse Contact</div>
+                  <div className={`font-semibold ${summary.abuse ? "text-green-600" : "text-red-600"}`}>
+                    {summary.abuse ? "Available" : "Missing"}
+                  </div>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="text-xs text-slate-600">Expiry risk</div>
-                  <div className="font-medium">
+                <div className="bg-white rounded-lg p-3 border border-blue-100">
+                  <div className="text-xs text-slate-500 mb-1">Expiry Risk</div>
+                  <div
+                    className={`font-semibold ${summary.expiryDays === null
+                        ? "text-slate-400"
+                        : summary.expiryDays <= 0
+                          ? "text-red-600"
+                          : summary.expiryDays <= 30
+                            ? "text-red-600"
+                            : summary.expiryDays <= 90
+                              ? "text-yellow-600"
+                              : "text-green-600"
+                      }`}
+                  >
                     {summary.expiryDays === null
                       ? "Unknown"
                       : summary.expiryDays <= 0
-                      ? "Expired"
-                      : summary.expiryDays <= 30
-                      ? "High"
-                      : summary.expiryDays <= 90
-                      ? "Medium"
-                      : "Low"}
+                        ? "Expired"
+                        : summary.expiryDays <= 30
+                          ? "High"
+                          : summary.expiryDays <= 90
+                            ? "Medium"
+                            : "Low"}
                   </div>
                 </div>
+              </div>
 
-                <div className="pt-2">
-                  <div className="text-xs text-slate-500">Recommended actions</div>
-                  <ul className="list-disc pl-5 text-xs mt-1 text-slate-600">
-                    <li>Monitor expiry if expiry is near.</li>
-                    <li>Contact abuse address for malicious activity.</li>
-                    <li>Check DNSSEC from authoritative DNS if important.</li>
-                  </ul>
+              <div className="bg-white rounded-lg p-4 border border-blue-100">
+                <div className="text-sm font-medium text-slate-700 mb-2">
+                  💡 Recommended Actions
                 </div>
+                <ul className="space-y-1 text-sm text-slate-600">
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-600 mt-0.5">•</span>
+                    <span>Monitor domain expiry and renew before expiration</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-600 mt-0.5">•</span>
+                    <span>Use abuse contact for reporting malicious activity</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-600 mt-0.5">•</span>
+                    <span>Enable DNSSEC for enhanced security if not already enabled</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-600 mt-0.5">•</span>
+                    <span>Verify nameserver configuration matches your DNS provider</span>
+                  </li>
+                </ul>
               </div>
             </div>
-          </div>
-        )}
 
-        {/* Raw JSON */}
-        {summary && (
-          <pre className="text-xs whitespace-pre-wrap bg-black-950 text-black-100 border border-slate-800 rounded p-2 max-h-96 overflow-y-auto mt-4">
-            {JSON.stringify(data, null, 2)}
-          </pre>
+            {/* Action Buttons */}
+            <div className="flex gap-3 flex-wrap">
+              <button
+                onClick={copyData}
+                className="px-4 py-2 bg-white border-2 border-slate-300 hover:border-slate-400 rounded-lg flex items-center gap-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-all"
+              >
+                <Copy className="w-4 h-4" />
+                Copy JSON
+              </button>
+              <button
+                onClick={() => exportFile("json")}
+                className="px-4 py-2 bg-white border-2 border-slate-300 hover:border-slate-400 rounded-lg flex items-center gap-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-all"
+              >
+                <Download className="w-4 h-4" />
+                Export JSON
+              </button>
+              <button
+                onClick={() => exportFile("txt")}
+                className="px-4 py-2 bg-white border-2 border-slate-300 hover:border-slate-400 rounded-lg flex items-center gap-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-all"
+              >
+                <Download className="w-4 h-4" />
+                Export TXT
+              </button>
+              <button
+                onClick={shareData}
+                className="px-4 py-2 bg-white border-2 border-slate-300 hover:border-slate-400 rounded-lg flex items-center gap-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-all"
+              >
+                <Share2 className="w-4 h-4" />
+                Share
+              </button>
+            </div>
+
+            {/* Raw JSON Viewer */}
+            <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
+              <button
+                onClick={() => setShowRawJson(!showRawJson)}
+                className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-50 transition-colors"
+              >
+                <span className="font-medium text-slate-900">Raw RDAP Response</span>
+                {showRawJson ? (
+                  <ChevronUp className="w-5 h-5 text-slate-500" />
+                ) : (
+                  <ChevronDown className="w-5 h-5 text-slate-500" />
+                )}
+              </button>
+              {showRawJson && (
+                <pre className="text-xs whitespace-pre-wrap bg-slate-900 text-green-400 p-4 max-h-96 overflow-y-auto font-mono border-t border-slate-200">
+                  {JSON.stringify(data, null, 2)}
+                </pre>
+              )}
+            </div>
+          </div>
         )}
       </Section>
 
       <Section title="What is WHOIS / RDAP?">
-        <p className="text-sm text-slate-600">
-          WHOIS / RDAP provides ownership and registration details of domain names.
-          Key insights include registrar info, creation & expiry dates, status flags,
-          and abuse contacts.
-        </p>
-        <ul className="list-disc pl-5 text-sm mt-2 text-slate-600">
-          <li>🔎 Investigate suspicious domains</li>
-          <li>📅 Monitor expiry dates for takedowns</li>
-          <li>🛡️ Identify registrar and abuse contacts</li>
-        </ul>
+        <div className="prose prose-slate max-w-none">
+          <p className="text-slate-600">
+            WHOIS / RDAP (Registration Data Access Protocol) provides comprehensive ownership and
+            registration details for domain names. This tool helps security professionals,
+            researchers, and administrators investigate domains and monitor their status.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+            <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+              <div className="text-2xl mb-2">🔎</div>
+              <h4 className="font-semibold text-slate-900 mb-1">Investigate Domains</h4>
+              <p className="text-sm text-slate-600">
+                Research suspicious domains and identify their owners, registrars, and registration dates
+              </p>
+            </div>
+
+            <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
+              <div className="text-2xl mb-2">📅</div>
+              <h4 className="font-semibold text-slate-900 mb-1">Monitor Expiry</h4>
+              <p className="text-sm text-slate-600">
+                Track domain expiration dates to prevent service disruptions or identify takedown opportunities
+              </p>
+            </div>
+
+            <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+              <div className="text-2xl mb-2">🛡️</div>
+              <h4 className="font-semibold text-slate-900 mb-1">Security Analysis</h4>
+              <p className="text-sm text-slate-600">
+                Verify DNSSEC status, identify abuse contacts, and assess domain security posture
+              </p>
+            </div>
+          </div>
+        </div>
       </Section>
     </div>
   );
