@@ -375,8 +375,8 @@ export default function Navigation() {
               <Star className="w-5 h-5 text-white" />
             </div>
             <div className="hidden sm:block">
-              <div className="text-lg font-semibold text-slate-900 dark:text-white">AIToolBox.io
-</div>
+              <div className="text-lg font-semibold text-slate-900 dark:text-white">SecuTools.io
+              </div>
               <div className="text-xs text-slate-500 dark:text-slate-300 -mt-0.5">Fast · Privacy-friendly · Open</div>
             </div>
           </Link>
@@ -488,15 +488,12 @@ export default function Navigation() {
             <Link href="/" className="p-2 rounded hover:bg-slate-50" title="Home" aria-label="Home">
               <Home className="w-5 h-5 text-sky-600" />
             </Link>
-            <Link href="/about" className="p-2 rounded hover:bg-slate-50" title="About" aria-label="About">
+            <Link href="/about" className="p-2 rounded hover:bg-slate-50" title="About & Contact" aria-label="About">
               <Info className="w-5 h-5 text-emerald-600" />
             </Link>
-            <Link href="/contact" className="p-2 rounded hover:bg-slate-50" title="Contact" aria-label="Contact">
-              <Mail className="w-5 h-5 text-rose-600" />
+            <Link href="/how-to" className="p-2 rounded hover:bg-slate-50" title="How to Use" aria-label="How to Use">
+              <Newspaper className="w-5 h-5 text-purple-600" />
             </Link>
-            {/* <Link href="/news" className="p-2 rounded hover:bg-slate-50" title="News" aria-label="News">
-              <Newspaper className="w-5 h-5 text-yellow-600" />
-            </Link> */}
           </nav>
 
           {/* misc icons */}
@@ -584,6 +581,9 @@ export default function Navigation() {
                 </Link>
                 <Link href="/about" className="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-50">
                   <Info className="w-5 h-5 text-emerald-600" /> About
+                </Link>
+                <Link href="/how-to" className="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-50">
+                  <Newspaper className="w-5 h-5 text-purple-600" /> How to
                 </Link>
               </nav>
 

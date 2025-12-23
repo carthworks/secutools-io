@@ -92,6 +92,10 @@ Desktop.ini
 *.tmp
 *.temp
 .turbo
+*.md 
+!README.md
+*.txt
+!LICENSE
 
 # ============================================
 # Misc
