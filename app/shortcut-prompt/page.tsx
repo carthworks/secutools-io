@@ -120,12 +120,24 @@ const CATEGORIES = [
   'Structure', 'Creativity'
 ];
 
+type Shortcut = {
+  id: number;
+  command: string;
+  description: string;
+  category: string;
+};
+
+type Message = {
+  type: 'success' | 'error';
+  text: string;
+} | null;
+
 export default function PromptShortcutsApp() {
   // UI state
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   // store favorites as array of ids to avoid mutating Set in state
-  const [favorites, setFavorites] = useState(() => {
+  const [favorites, setFavorites] = useState<number[]>(() => {
     try {
       const raw = typeof window !== 'undefined' ? window.localStorage.getItem('favorites') : null;
       return raw ? JSON.parse(raw) : [];
@@ -134,11 +146,11 @@ export default function PromptShortcutsApp() {
     }
   });
   const [userPrompt, setUserPrompt] = useState('');
-  const [activeShortcuts, setActiveShortcuts] = useState([]);
+  const [activeShortcuts, setActiveShortcuts] = useState<Shortcut[]>([]);
   const [showPromptArea, setShowPromptArea] = useState(false);
 
   // for inline user messages instead of alerts
-  const [message, setMessage] = useState(null);
+  const [message, setMessage] = useState<Message>(null);
 
   // memoized filtered list
   const filteredShortcuts = useMemo(() => {
@@ -165,7 +177,7 @@ export default function PromptShortcutsApp() {
   }, [favorites]);
 
   // safe clipboard function
-  const safeWriteClipboard = useCallback(async (text) => {
+  const safeWriteClipboard = useCallback(async (text: string) => {
     if (!text) {
       setMessage({ type: 'error', text: 'Nothing to copy' });
       return false;
@@ -202,18 +214,18 @@ export default function PromptShortcutsApp() {
   }, []);
 
   // add/remove favorites using id array
-  const toggleFavorite = useCallback((id) => {
+  const toggleFavorite = useCallback((id: number) => {
     setFavorites((prev) => {
       const exists = prev.includes(id);
       return exists ? prev.filter((x) => x !== id) : [...prev, id];
     });
   }, []);
 
-  const addShortcut = useCallback((shortcut) => {
+  const addShortcut = useCallback((shortcut: Shortcut) => {
     setActiveShortcuts((prev) => [...prev, shortcut]);
   }, []);
 
-  const removeShortcut = useCallback((index) => {
+  const removeShortcut = useCallback((index: number) => {
     setActiveShortcuts((prev) => prev.filter((_, i) => i !== index));
   }, []);
 
@@ -257,7 +269,7 @@ export default function PromptShortcutsApp() {
 
   // small helper to copy single command
   const copyCommand = useCallback(
-    (cmd) => {
+    (cmd: string) => {
       safeWriteClipboard(cmd);
     },
     [safeWriteClipboard]
@@ -285,9 +297,8 @@ export default function PromptShortcutsApp() {
           <div
             role="status"
             aria-live="polite"
-            className={`mb-4 rounded-md p-3 text-sm ${
-              message.type === 'success' ? 'bg-green-50 text-green-800 border border-green-100' : 'bg-red-50 text-red-800 border border-red-100'
-            }`}
+            className={`mb-4 rounded-md p-3 text-sm ${message.type === 'success' ? 'bg-green-50 text-green-800 border border-green-100' : 'bg-red-50 text-red-800 border border-red-100'
+              }`}
           >
             {message.text}
           </div>
@@ -412,9 +423,8 @@ export default function PromptShortcutsApp() {
                     key={category}
                     onClick={() => setSelectedCategory(category)}
                     aria-pressed={selectedCategory === category}
-                    className={`text-xs px-3 py-1.5 rounded-full transition-colors ${
-                      selectedCategory === category ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
+                    className={`text-xs px-3 py-1.5 rounded-full transition-colors ${selectedCategory === category ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
                   >
                     {category}
                   </button>
@@ -497,9 +507,8 @@ export default function PromptShortcutsApp() {
                       </button>
                       <button
                         onClick={() => toggleFavorite(shortcut.id)}
-                        className={`p-1.5 rounded-md transition-colors ${
-                          favorites.includes(shortcut.id) ? 'text-yellow-500' : 'text-gray-400 hover:bg-gray-100 hover:text-gray-700'
-                        }`}
+                        className={`p-1.5 rounded-md transition-colors ${favorites.includes(shortcut.id) ? 'text-yellow-500' : 'text-gray-400 hover:bg-gray-100 hover:text-gray-700'
+                          }`}
                         title={favorites.includes(shortcut.id) ? 'Unfavorite' : 'Favorite'}
                         aria-pressed={favorites.includes(shortcut.id)}
                       >

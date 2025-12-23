@@ -24,21 +24,21 @@ Features implemented:
 
 import { useRef, useState } from 'react';
 
-function validateDomain(domain:any) {
+function validateDomain(domain: string) {
   // Basic domain validation (not bulletproof)
   const d = domain.trim().toLowerCase();
   if (!d) return { ok: false, msg: 'Please enter a domain.' };
   // simple regex for domain-like strings
   const re = /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/i;
-  if (re.test(d)) return { ok: true };
+  if (re.test(d)) return { ok: true, msg: '' };
   // suggestion: maybe user omitted www or .com
   if (!d.includes('.')) return { ok: false, msg: 'Domain looks incomplete — did you forget the TLD (e.g. .com)?' };
   return { ok: false, msg: 'Invalid domain format. Example: example.com' };
 }
 
-function simpleHighlight(text:any) {
+function simpleHighlight(text: string) {
   // Lightweight highlighting: wrap headers and common tokens
-  const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   let out = esc(text)
     .replace(/(WHOIS:)/g, '<span class="font-semibold">$1</span>')
     .replace(/(DNS:)/g, '<span class="font-semibold">$1</span>')
@@ -66,7 +66,7 @@ export default function OSINTDomainIntelligence() {
     return '';
   };
 
-  function createMockResult(d) {
+  function createMockResult(d: string) {
     const now = new Date().toISOString();
     return `WHOIS:
 Domain: ${d}
@@ -105,7 +105,7 @@ Scan run at: ${now}
 `;
   }
 
-  async function performRealScan(domain:any) {
+  async function performRealScan(domain: string) {
     // Placeholder: implement server-side APIs that perform WHOIS/DNS/Website scans
     // Example: POST /api/osint/scan { domain }
     // Then fetch results and return.
@@ -121,7 +121,7 @@ Scan run at: ${now}
     return createMockResult(domain);
   }
 
-  async function runScan(e) {
+  async function runScan(e?: React.FormEvent) {
     e?.preventDefault?.();
     setError('');
     const v = domain.trim().toLowerCase();
@@ -144,7 +144,7 @@ Scan run at: ${now}
     }
   }
 
-  function copyToClipboard(text) {
+  function copyToClipboard(text: string) {
     navigator.clipboard?.writeText(text).then(() => {
       // optionally show toast (simple alert here)
       // In production replace with non-blocking toast
@@ -152,7 +152,7 @@ Scan run at: ${now}
     }).catch(() => alert('Copy failed — please copy manually'));
   }
 
-  function download(filename, content) {
+  function download(filename: string, content: string) {
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -184,7 +184,7 @@ Scan run at: ${now}
 
   function shareResult() {
     if (navigator.share) {
-      navigator.share({ title: `OSINT scan — ${domain}`, text: result }).catch(() => {});
+      navigator.share({ title: `OSINT scan — ${domain}`, text: result }).catch(() => { });
     } else {
       copyToClipboard(result);
       alert('Share not supported — result copied to clipboard.');
