@@ -87,7 +87,7 @@ export const categories: Category[] = [
             { slug: "toxicity-checker", title: "Toxicity Classifier", desc: "Detect harmful or biased language in model outputs.", isPublish: false },
             { slug: "hallucination-checker", title: "Hallucination Checker", desc: "Compare generated output with factual references.", isPublish: false },
             { slug: "alignment-score", title: "Alignment Score Tracker", desc: "Rate model safety, honesty, and relevance.", isPublish: false },
-            { slug: "agent-flow", title: "Agent Flow Visualizer", desc: "Visualize task-chains and tool-use flows.", isPublish: trufalsee },
+            { slug: "agent-flow", title: "Agent Flow Visualizer", desc: "Visualize task-chains and tool-use flows.", isPublish: false },
             { slug: "memory-tester", title: "Task Memory Tester", desc: "Evaluate how well an agent retains prior context.", isPublish: false },
             { slug: "rag-builder", title: "RAG Builder", desc: "Connect documents → embeddings → LLM for retrieval QA.", isPublish: false },
             { slug: "tool-use-sim", title: "Tool Use Simulator", desc: "Simulate agent reasoning and tool calls.", isPublish: false },
