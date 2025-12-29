@@ -225,36 +225,47 @@ export default function HomePage(): JSX.Element {
       <div className="grid md:grid-cols-4 gap-6">
         {/* Sidebar */}
         <aside className="hidden md:block col-span-1 sticky top-24 h-fit">
-          <div className="rounded-lg border p-4 bg-white shadow-sm">
-            <div className="flex items-center justify-between">
-              <div className="font-medium">Categories</div>
-              <div className="text-xs text-slate-500">Jump</div>
+          <div className="rounded-2xl border border-slate-200 p-5 bg-gradient-to-br from-white to-slate-50 shadow-lg hover:shadow-xl transition-all duration-300">
+            <div className="flex items-center justify-between mb-4">
+              <div className="font-semibold text-lg bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Categories</div>
+              <div className="text-xs text-slate-500 px-2 py-1 bg-slate-100 rounded-full">Quick Jump</div>
             </div>
 
-            <div className="mt-3 space-y-2">
-              {categories.map((c) => (
+            <div className="space-y-1">
+              {categories.map((c, idx) => (
                 <button
                   key={c.title}
                   onClick={() => scrollToCategory(c.title)}
-                  className="w-full text-left px-2 py-1 rounded hover:bg-slate-50 text-sm flex items-center gap-2"
+                  className="group w-full text-left px-3 py-2.5 rounded-xl hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 text-sm flex items-center gap-3 transition-all duration-200 hover:scale-[1.02] hover:shadow-md"
+                  style={{ animation: `slideIn 0.3s ease-out ${idx * 0.05}s both` }}
                 >
-                  <RenderIcon icon={c.icon} className="w-4 h-4" />
-                  <span className="flex-1">{c.title}</span>
-                  <span className="text-xs text-slate-400">{c.tools.length}</span>
+                  <div className={`p-2 rounded-lg ${c.color} group-hover:scale-110 transition-transform duration-200`}>
+                    <RenderIcon icon={c.icon} className="w-4 h-4" />
+                  </div>
+                  <span className="flex-1 font-medium group-hover:text-indigo-700 transition-colors">{c.title}</span>
+                  <span className="text-xs text-slate-400 group-hover:text-indigo-600 font-semibold px-2 py-1 bg-slate-100 group-hover:bg-indigo-100 rounded-full transition-all">
+                    {c.tools.filter(t => t.isPublish).length}
+                  </span>
                 </button>
               ))}
             </div>
 
-            <div className="mt-4 border-t pt-3">
-              <div className="text-sm font-medium">Filter tags</div>
-              <div className="mt-2 flex flex-wrap gap-2">
+            <div className="mt-6 pt-5 border-t border-slate-200">
+              <div className="text-sm font-semibold mb-3 flex items-center gap-2">
+                <div className="w-2 h-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></div>
+                Filter Tags
+              </div>
+              <div className="flex flex-wrap gap-2">
                 {allTags.map((tg) => {
                   const active = activeTagFilters.includes(tg);
                   return (
                     <button
                       key={tg}
                       onClick={() => toggleTagFilter(tg)}
-                      className={`text-xs px-2 py-1 rounded-full border ${active ? "bg-slate-800 text-white" : "bg-white text-slate-700"}`}
+                      className={`text-xs px-3 py-1.5 rounded-full border-2 font-medium transition-all duration-200 hover:scale-105 ${active
+                        ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white border-transparent shadow-md"
+                        : "bg-white text-slate-700 border-slate-200 hover:border-indigo-300 hover:bg-indigo-50"
+                        }`}
                     >
                       {tg}
                     </button>
@@ -263,19 +274,36 @@ export default function HomePage(): JSX.Element {
               </div>
             </div>
 
-            <div className="mt-4 border-t pt-3">
-              <div className="text-sm font-medium">Favorites</div>
-              <div className="mt-2">
+            <div className="mt-6 pt-5 border-t border-slate-200">
+              <div className="text-sm font-semibold mb-3 flex items-center gap-2">
+                <Star className="w-4 h-4 text-amber-500" />
+                Favorites
+              </div>
+              <div className="space-y-1">
                 {favoritesResolved.length === 0 ? (
-                  <div className="text-xs text-slate-400">No favorites yet</div>
+                  <div className="text-xs text-slate-400 italic py-2 px-3 bg-slate-50 rounded-lg">
+                    No favorites yet. Click ⭐ to add!
+                  </div>
                 ) : (
-                  favoritesResolved.slice(0, 6).map((t) => (
-                    <div key={t.slug} className="flex items-center justify-between text-sm py-1">
-                      <Link href={`/${t.slug}`} onClick={() => recordRecent(t.slug)} className="hover:underline">
+                  favoritesResolved.slice(0, 6).map((t, idx) => (
+                    <div
+                      key={t.slug}
+                      className="group flex items-center justify-between py-2 px-3 rounded-lg hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 transition-all duration-200"
+                      style={{ animation: `slideIn 0.2s ease-out ${idx * 0.05}s both` }}
+                    >
+                      <Link
+                        href={`/${t.slug}`}
+                        onClick={() => recordRecent(t.slug)}
+                        className="text-sm hover:text-indigo-600 transition-colors flex-1 font-medium group-hover:translate-x-1 transition-transform duration-200"
+                      >
                         {t.title}
                       </Link>
-                      <button onClick={() => toggleFavorite(t.slug)} title="Unfavorite">
-                        <Star className="w-4 h-4 text-amber-500" />
+                      <button
+                        onClick={() => toggleFavorite(t.slug)}
+                        title="Unfavorite"
+                        className="p-1 rounded-lg hover:bg-amber-100 transition-all duration-200 hover:scale-110"
+                      >
+                        <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
                       </button>
                     </div>
                   ))
@@ -283,6 +311,19 @@ export default function HomePage(): JSX.Element {
               </div>
             </div>
           </div>
+
+          <style jsx>{`
+            @keyframes slideIn {
+              from {
+                opacity: 0;
+                transform: translateX(-10px);
+              }
+              to {
+                opacity: 1;
+                transform: translateX(0);
+              }
+            }
+          `}</style>
         </aside>
 
         {/* Main column */}
@@ -348,22 +389,32 @@ export default function HomePage(): JSX.Element {
           </section>
 
           <section className="grid md:grid-cols-2 gap-6">
-            {filteredCategories.map((cat) => (
+            {filteredCategories.map((cat, catIdx) => (
               <div
                 key={cat.title}
                 ref={(el) => {
                   categoryRefs.current[cat.title] = el;
                 }}
-                className={`rounded-lg p-4 shadow-sm ${cat.color} border bg-opacity-60`}
+                className={`rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 ${cat.color} border-2 border-white/50 backdrop-blur-sm bg-opacity-70 hover:scale-[1.01]`}
+                style={{ animation: `fadeInUp 0.5s ease-out ${catIdx * 0.1}s both` }}
               >
-                <div className="flex items-center gap-3">
-                  <RenderIcon icon={cat.icon} />
-                  <h2 className="text-lg font-semibold uppercase tracking-wide">{cat.title}</h2>
-                  <div className="ml-auto text-sm text-slate-500">{(cat.tools || []).length} tools</div>
-                  <div className="ml-2 flex items-center gap-2">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-3 bg-white rounded-xl shadow-md">
+                    <RenderIcon icon={cat.icon} className="w-6 h-6" />
+                  </div>
+                  <h2 className="text-xl font-bold uppercase tracking-wide bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
+                    {cat.title}
+                  </h2>
+                  <div className="ml-auto flex items-center gap-2">
+                    <div className="text-sm text-slate-600 font-semibold px-3 py-1 bg-white/70 rounded-full shadow-sm">
+                      {(cat.tools || []).filter(t => t.isPublish).length} tools
+                    </div>
                     <button
                       onClick={() => toggleCategory(cat.title)}
-                      className="text-xs px-2 py-1 rounded border bg-white"
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${openCategories[cat.title]
+                        ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md hover:shadow-lg"
+                        : "bg-white text-slate-700 hover:bg-slate-100 shadow-sm"
+                        }`}
                       aria-expanded={!!openCategories[cat.title]}
                     >
                       {openCategories[cat.title] ? "Collapse" : "Expand"}
@@ -371,61 +422,72 @@ export default function HomePage(): JSX.Element {
                   </div>
                 </div>
 
-                <div className={`mt-4 grid gap-3 ${openCategories[cat.title] ? "block" : "hidden"}`}>
-                  {(cat.tools || []).map((t) => {
+                <div className={`grid gap-3 ${openCategories[cat.title] ? "block" : "hidden"}`}>
+                  {(cat.tools || []).map((t, toolIdx) => {
                     const tags = toolTags(t.slug);
                     const isFav = (favorites || []).includes(t.slug);
                     return (
                       <div
                         key={t.slug}
-                        className="rounded-lg border border-slate-200 bg-white hover:bg-slate-50 p-3 shadow-sm flex items-start gap-3"
+                        className="group rounded-xl border-2 border-white bg-white/90 backdrop-blur-sm hover:bg-white hover:border-indigo-300 p-4 shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1"
+                        style={{ animation: `slideInUp 0.3s ease-out ${toolIdx * 0.05}s both` }}
                       >
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3">
-                            <div className="font-medium text-base">{t.title}</div>
-                            <div className="flex gap-1 ml-1">
-                              {tags.map((tg) => (
-                                <span key={tg} className="text-xs px-2 py-0.5 bg-slate-100 rounded-full text-slate-600">
-                                  {tg}
-                                </span>
-                              ))}
-                            </div>
-                            <span className="ml-2 text-xs text-slate-400" title={t.desc}>
-                              <Info className="inline w-3 h-3" />
-                            </span>
-                          </div>
-                          <div className="text-sm text-slate-500 mt-1">{t.desc}</div>
-                        </div>
-
-                        <div className="flex flex-col items-end gap-2">
-                          {t.isPublish === false ? (
-                            <div className="px-2 py-1 rounded bg-yellow-100 text-yellow-800 text-xs font-medium">🚧 In Development</div>
-                          ) : (
-                            <>
-                              <div className="flex gap-2">
-                                <button
-                                  onClick={() => toggleFavorite(t.slug)}
-                                  aria-pressed={isFav}
-                                  aria-label={isFav ? `Remove ${t.title} from favorites` : `Add ${t.title} to favorites`}
-                                  className="p-1 rounded hover:bg-slate-100"
-                                  title={isFav ? "Unfavorite" : "Add to favorites"}
-                                >
-                                  {isFav ? <Star className="w-4 h-4 text-amber-500" /> : <StarOff className="w-4 h-4 text-slate-400" />}
-                                </button>
-                                <Link
-                                  href={`/${t.slug}`}
-                                  onClick={() => recordRecent(t.slug)}
-                                  className="px-2 py-1 rounded border text-xs bg-white hover:bg-slate-50"
-                                  title={`Open ${t.title}`}
-                                >
-                                  Open
-                                </Link>
+                        <div className="flex items-start gap-3">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 flex-wrap mb-2">
+                              <div className="font-semibold text-base group-hover:text-indigo-700 transition-colors">
+                                {t.title}
                               </div>
-                              <a href={`/${t.slug}`} onClick={() => recordRecent(t.slug)} className="text-xs text-slate-400 hover:text-slate-600">
-                                Learn <ExternalLink className="inline w-3 h-3" />
-                              </a>
-                            </>
-                          )}
+                              <div className="flex gap-1.5">
+                                {tags.map((tg) => (
+                                  <span
+                                    key={tg}
+                                    className="text-xs px-2 py-0.5 bg-gradient-to-r from-slate-100 to-slate-200 rounded-full text-slate-700 font-medium border border-slate-300 group-hover:from-indigo-100 group-hover:to-purple-100 group-hover:border-indigo-300 transition-all duration-200"
+                                  >
+                                    {tg}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="text-sm text-slate-600 leading-relaxed">{t.desc}</div>
+                          </div>
+
+                          <div className="flex flex-col items-end gap-2">
+                            {t.isPublish === false ? (
+                              <div className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-yellow-100 to-amber-100 text-amber-800 text-xs font-semibold border-2 border-amber-200 shadow-sm">
+                                🚧 Coming Soon
+                              </div>
+                            ) : (
+                              <>
+                                <div className="flex gap-2">
+                                  <button
+                                    onClick={() => toggleFavorite(t.slug)}
+                                    aria-pressed={isFav}
+                                    aria-label={isFav ? `Remove ${t.title} from favorites` : `Add ${t.title} to favorites`}
+                                    className={`p-2 rounded-lg transition-all duration-200 hover:scale-110 ${isFav
+                                      ? "bg-amber-100 hover:bg-amber-200"
+                                      : "bg-slate-100 hover:bg-slate-200"
+                                      }`}
+                                    title={isFav ? "Unfavorite" : "Add to favorites"}
+                                  >
+                                    {isFav ? (
+                                      <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                                    ) : (
+                                      <StarOff className="w-4 h-4 text-slate-400" />
+                                    )}
+                                  </button>
+                                  <Link
+                                    href={`/${t.slug}`}
+                                    onClick={() => recordRecent(t.slug)}
+                                    className={`px-4 py-2 rounded-lg ${cat.color} border-2 border-white text-slate-900 text-xs font-semibold hover:shadow-lg transition-all duration-200 hover:scale-105 flex items-center gap-1`}
+                                    title={`Open ${t.title}`}
+                                  >
+                                    <ExternalLink className="w-3 h-3" />
+                                  </Link>
+                                </div>
+                              </>
+                            )}
+                          </div>
                         </div>
                       </div>
                     );
@@ -433,13 +495,38 @@ export default function HomePage(): JSX.Element {
                 </div>
 
                 {!openCategories[cat.title] && (
-                  <div className="mt-2 md:hidden">
-                    <div className="text-xs text-slate-500">Tap "Expand" to view tools</div>
+                  <div className="mt-3 text-center">
+                    <div className="text-sm text-slate-600 italic bg-white/50 rounded-lg py-2 px-4 inline-block">
+                      Click "Expand" to view {cat.tools.filter(t => t.isPublish).length} tools
+                    </div>
                   </div>
                 )}
               </div>
             ))}
           </section>
+
+          <style jsx>{`
+            @keyframes fadeInUp {
+              from {
+                opacity: 0;
+                transform: translateY(20px);
+              }
+              to {
+                opacity: 1;
+                transform: translateY(0);
+              }
+            }
+            @keyframes slideInUp {
+              from {
+                opacity: 0;
+                transform: translateY(10px);
+              }
+              to {
+                opacity: 1;
+                transform: translateY(0);
+              }
+            }
+          `}</style>
         </main>
       </div>
     </div>
