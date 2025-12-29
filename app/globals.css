@@ -94,11 +94,27 @@ aside  .bg-slate-50:hover {
     color: #fff;
 }
 
+/* Mobile optimizations */
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Smooth scrolling on mobile */
+  .touch-scroll {
+    -webkit-overflow-scrolling: touch;
+  }
+}
 
-/* aside:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(161 200 239 / var(--tw-bg-opacity)); 
-  background-image: linear-gradient(to top right, #4f46e5, #34d399);
-  color: #fff;
-  transition: background 0.4s ease, color 0.3s ease;
-} */
+/* Improve touch targets on mobile */
+@media (max-width: 640px) {
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
