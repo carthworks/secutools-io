@@ -46,9 +46,18 @@ function base64UrlDecode(str: string): string {
     return atob(str);
 }
 
+
 type AttackType = "none" | "hs256-to-none" | "expired" | "admin-claim";
 
-const ATTACK_TEMPLATES = {
+type AttackTemplate = {
+    name: string;
+    description: string;
+    severity: "high" | "medium";
+    header?: { alg: string; typ: string };
+    modifyPayload?: (payload: any) => any;
+};
+
+const ATTACK_TEMPLATES: Record<AttackType, AttackTemplate> = {
     none: {
         name: "Algorithm None Attack",
         description: "Remove signature and set algorithm to 'none'",
