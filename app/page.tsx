@@ -2,25 +2,22 @@
 
 import {
   ExternalLink,
-  Info,
   Star,
-  StarOff,
 } from "lucide-react";
-import dynamic from "next/dynamic";
+
 import Link from "next/link";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { categories } from "./data";
 import { recordToolOpen } from "@/lib/useToolUsage";
 import TrendingTools from "@/components/TrendingTools";
 
-const PasswordStrengthTicker = dynamic(() => import("./password-strength/page"), { ssr: false });
+
 
 /* ----------------------------- Types & Constants ---------------------------- */
 type Tool = { slug: string; title: string; desc: string; isPublish: boolean };
 type Category = { title: string; icon: any; color: string; tools: Tool[] };
 
 const FAVORITES_KEY = "secu_favs_v1";
-const RECENT_KEY = "secu_recent_v1";
 
 /* ------------------------------- Helpers -------------------------------- */
 function loadJSON<T>(key: string): T | null {
@@ -80,16 +77,13 @@ function RenderIcon({ icon: IconComp, className = "w-5 h-5" }: { icon: any; clas
   return <Comp className={className} aria-hidden="true" />;
 }
 
-function Kbd({ children }: { children: React.ReactNode }) {
-  return <kbd className="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2 py-0.5 text-xs text-slate-600 dark:text-slate-300 font-mono">{children}</kbd>;
-}
+
 
 /* ------------------------------- Main component ------------------------------- */
 export default function HomePage(): JSX.Element {
   const [mounted, setMounted] = useState(false);
   const [query, setQuery] = useState("");
   const [favorites, setFavorites] = useState<string[]>([]);
-  const [recent, setRecent] = useState<string[]>([]);
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>(() =>
     categories.reduce<Record<string, boolean>>((acc, c, idx) => {
       acc[c.title] = idx < 2;
@@ -98,16 +92,13 @@ export default function HomePage(): JSX.Element {
   );
   const [activeTagFilters, setActiveTagFilters] = useState<string[]>([]);
 
-  const searchRef = useRef<HTMLInputElement | null>(null);
   const categoryRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   // mount
   useEffect(() => {
     setMounted(true);
     const favs = loadJSON<string[]>(FAVORITES_KEY) ?? [];
-    const rec = loadJSON<string[]>(RECENT_KEY) ?? [];
     setFavorites(Array.isArray(favs) ? favs : []);
-    setRecent(Array.isArray(rec) ? rec : []);
   }, []);
 
   // persist
@@ -116,23 +107,7 @@ export default function HomePage(): JSX.Element {
     saveJSON(FAVORITES_KEY, favorites);
   }, [favorites, mounted]);
 
-  useEffect(() => {
-    if (!mounted) return;
-    saveJSON(RECENT_KEY, recent);
-  }, [recent, mounted]);
 
-  // keyboard shortcut: focus search
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      const mod = e.ctrlKey || e.metaKey;
-      if (mod && e.key.toLowerCase() === "k") {
-        e.preventDefault();
-        searchRef.current?.focus();
-      }
-    }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
 
   const allToolsFlat: Tool[] = useMemo(() => categories.flatMap((c) => c.tools), []);
   const allTags = useMemo(() => {
@@ -162,9 +137,6 @@ export default function HomePage(): JSX.Element {
   const favoritesResolved = (favorites || [])
     .map((s) => allToolsFlat.find((t) => t.slug === s))
     .filter(Boolean) as Tool[];
-  const recentResolved = (recent || [])
-    .map((s) => allToolsFlat.find((t) => t.slug === s))
-    .filter(Boolean) as Tool[];
 
   const toggleFavorite = useCallback((slug: string) => {
     setFavorites((prev) => {
@@ -175,10 +147,6 @@ export default function HomePage(): JSX.Element {
 
   const recordRecent = useCallback((slug: string) => {
     recordToolOpen(slug);
-    setRecent((prev) => {
-      const next = [slug, ...prev.filter((s) => s !== slug)];
-      return next.slice(0, 12);
-    });
   }, []);
 
   const scrollToCategory = useCallback((title: string) => {
@@ -335,44 +303,6 @@ export default function HomePage(): JSX.Element {
 
         {/* Main column */}
         <main className="md:col-span-3 space-y-6">
-          <section className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-6 shadow-sm space-y-4">
-            <PasswordStrengthTicker />
-            <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
-              <div className="relative flex-1">
-                <input
-                  ref={searchRef}
-                  type="text"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search tools (e.g. hash, CVE, PCAP, ASN, JWT)..."
-                  aria-label="Search tools"
-                  className="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 focus:border-indigo-500 dark:focus:border-indigo-500 rounded-xl p-3 shadow-sm pr-16 text-sm text-slate-900 dark:text-slate-100 outline-none transition"
-                />
-                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 flex items-center gap-2">
-                  <span className="hidden sm:inline">Press</span>
-                  <Kbd>⌘K</Kbd>
-                </div>
-              </div>
-            </div>
-
-            {recentResolved.length > 0 && (
-              <div className="pt-2">
-                <div className="text-xs text-slate-500 dark:text-slate-400 mb-1.5 font-medium">Recently Used</div>
-                <div className="flex gap-2 overflow-x-auto py-1 scrollbar-hide">
-                  {recentResolved.map((t) => (
-                    <Link
-                      key={t.slug}
-                      href={`/${t.slug}`}
-                      onClick={() => recordRecent(t.slug)}
-                      className="text-xs whitespace-nowrap px-3 py-1.5 border border-slate-200 dark:border-slate-700 hover:border-indigo-400 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-700 transition flex items-center gap-1.5"
-                    >
-                      <span>{t.title}</span>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
-          </section>
 
           {/* Categories Grid */}
           <section className="grid grid-cols-1 lg:grid-cols-2 gap-5">
