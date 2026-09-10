@@ -1,6 +1,8 @@
 // File: app/layout.tsx
 import Navigation from "@/components/Navigation";
 import CookieConsent from "@/components/CookieConsent";
+import CriticalCveBanner from "@/components/CriticalCveBanner";
+import ClipboardDetective from "@/components/ClipboardDetective";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { ReactNode } from "react";
@@ -90,6 +92,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="min-h-screen flex flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 font-sans transition-colors duration-200">
         <SpeedInsights />
         <Analytics />
+        <CriticalCveBanner />
         <Navigation />
         <main className="container-page py-6 sm:py-8 flex-1 w-full">{children}</main>
 
@@ -123,6 +126,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         </footer>
 
         <CookieConsent />
+        <ClipboardDetective />
       </body>
     </html>
   );
