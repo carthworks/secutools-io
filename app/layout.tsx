@@ -1,70 +1,40 @@
-﻿
-// File: app/layout.tsx (or wherever your RootLayout lives)
+// File: app/layout.tsx
 import Navigation from "@/components/Navigation";
+import CookieConsent from "@/components/CookieConsent";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { ReactNode } from "react";
+import Link from "next/link";
 import "./globals.css";
 
-// import dynamic from "next/dynamic";
-// const ViewTicker = dynamic(() => import("../components/ViewTicker"), { ssr: false });
+export const metadata = {
+  title: "SecuTools.io — Free, Privacy-First Cybersecurity Tools",
+  description: "Fast, privacy-friendly online utilities for cybersecurity students, SOC analysts, and security researchers. Zero client data tracking.",
+  authors: [{ name: "Karthikeyan T", url: "https://github.com/carthworks" }],
+  creator: "SecuTools",
+  openGraph: {
+    title: "SecuTools.io — Cybersecurity Handy Tools",
+    description: "Free, privacy-friendly tools and utilities for security students and professionals.",
+    url: "https://secutools.io",
+    siteName: "SecuTools",
+    locale: "en_US",
+    type: "website"
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SecuTools.io — Cybersecurity Handy Tools",
+    description: "Free, privacy-friendly tools for students and professionals.",
+    creator: "@SecuTools"
+  }
+};
 
-
-// export const metadata = {
-//   title: "Cybersecurity Handy Tools",
-//   description: "Free, privacy-friendly tools and utilities for security students and professionals — ASN lookup, CVE lookup, hash tools, network analysis, and more.",
-//   keywords: [
-//     "cybersecurity tools",
-//     "ASN lookup",
-//     "ISP lookup",
-//     "offline ASN",
-//     "network tools",
-//     "CVE lookup",
-//     "hash tools",
-//     "pcap decoder",
-//     "web security tools",
-//     "pentesting utilities",
-//     "security learning",
-//     "SOC tools",
-//     "security education"
-//   ].join(", "),
-//   authors: [{ name: "SecuTools", url: "https://secutools.io" }],
-//   creator: "SecuTools",
-//   // NOTE: viewport removed from here (exported separately below)
-//   openGraph: {
-//     title: "Cybersecurity Handy Tools — SecuTools",
-//     description: "Free, privacy-friendly tools and utilities for security students and professionals.",
-//     url: "https://secutools.io",
-//     siteName: "SecuTools",
-//     images: [
-//       {
-//         url: "https://secutools.io/og.png",
-//         width: 1200,
-//         height: 630,
-//         alt: "SecuTools — Cybersecurity Handy Tools"
-//       }
-//     ],
-//     locale: "en_US",
-//     type: "website"
-//   },
-//   twitter: {
-//     card: "summary_large_image",
-//     title: "Cybersecurity Handy Tools",
-//     description: "Free, privacy-friendly tools for students and professionals.",
-//     images: ["https://secutools.io/og.png"],
-//     creator: "@SecuTools"
-//   }
-// };
-
-// Correct viewport export for Next.js App Router (13.4+)
 export const viewport = {
   width: "device-width",
   initialScale: 1
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
-  const siteUrl = "https://secutools.io"; // <- replace with your real domain
-  const ogImage = `${siteUrl}/og.png`; // recommended 1200x630
+  const siteUrl = "https://secutools.io";
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -87,71 +57,50 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
-        {/* viewport removed here — Next will apply the exported viewport */}
         <meta name="theme-color" content="#0f172a" />
-        {/* <meta name="description" content={metadata.description} />
-        <meta name="keywords" content={metadata.keywords} />
-        <meta name="author" content="tkarthikeyan@gmail.com" />
-        <meta name="robots" content="index,follow" />
-        <meta name="developer" content="Karthikeyan T" />
-        <link rel="canonical" href={siteUrl} />
-
-        {/* Open Graph */}
-        {/* <meta property="og:type" content={metadata.openGraph.type} />
-        <meta property="og:title" content={metadata.openGraph.title} />
-        <meta property="og:description" content={metadata.openGraph.description} />
-        <meta property="og:url" content={metadata.openGraph.url} />
-        <meta property="og:site_name" content={metadata.openGraph.siteName} />
-        <meta property="og:locale" content={metadata.openGraph.locale} />
-        <meta property="og:image" content={ogImage} />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-
-        {/* Twitter */}
-        {/* <meta name="twitter:card" content={metadata.twitter.card} />
-        <meta name="twitter:title" content={metadata.twitter.title} />
-        <meta name="twitter:description" content={metadata.twitter.description} />
-        <meta name="twitter:image" content={metadata.twitter.images[0]} />
-        <meta name="twitter:creator" content={metadata.twitter.creator} /> */} 
-
-        {/* Favicons / PWA hint (replace with your icons) */}
         <link rel="icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />
-
-        {/* Structured data */}
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </head>
 
-      <body className="bg-white text-slate-800">
-        <SpeedInsights/>
-        <Analytics/>
+      <body className="bg-white text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+        <SpeedInsights />
+        <Analytics />
         <Navigation />
-        <main className="container-page py-8">{children}</main>
+        <main className="container-page py-8 flex-1">{children}</main>
 
-        <footer className="border-t border-slate-200 bg-slate-50">
-          <div className="container-page py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
-            <p>
-              ⚡ Built for learning. No tracking. All processing runs client-side unless a checker needs a public API.
-               {/* <ViewTicker /> */}
-            </p>
-            <div className="flex gap-4">
-              <a href="/" className="hover:bg-slate-50" title="Home" aria-label="Home">
-                Home
-              </a>
-              <a href="/about" className="hover:text-slate-700">About</a>
-              <a href="/privacy" className="hover:text-slate-700">Privacy</a>
-              <a href="https://github.com/carthworks" target="_blank" rel="noreferrer" className="hover:text-slate-700">GitHub</a>
-             
+        <footer className="border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 transition-colors">
+          <div className="container-page py-8 space-y-4">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
+              <div className="text-center md:text-left space-y-1">
+                <p className="font-medium text-slate-700 dark:text-slate-300">
+                  ⚡ SecuTools.io — Built for education, defensive research, and daily security operations.
+                </p>
+                <p>
+                  Zero server-side logging of cryptographic data. All calculations run client-side in your browser.
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 font-medium">
+                <Link href="/" className="hover:text-slate-900 dark:hover:text-white transition-colors">Home</Link>
+                <Link href="/about" className="hover:text-slate-900 dark:hover:text-white transition-colors">About</Link>
+                <Link href="/contact" className="hover:text-slate-900 dark:hover:text-white transition-colors">Contact</Link>
+                <Link href="/privacy" className="hover:text-slate-900 dark:hover:text-white transition-colors">Privacy Policy</Link>
+                <Link href="/terms" className="hover:text-slate-900 dark:hover:text-white transition-colors">Terms of Service</Link>
+                <Link href="/cookies" className="hover:text-slate-900 dark:hover:text-white transition-colors">Cookie Policy</Link>
+                <a href="https://github.com/carthworks/secutools-io" target="_blank" rel="noreferrer" className="hover:text-slate-900 dark:hover:text-white transition-colors">GitHub</a>
+              </div>
             </div>
 
-
+            <div className="pt-4 border-t border-slate-200/60 dark:border-slate-800/60 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-400 dark:text-slate-500">
+              <p>&copy; {new Date().getFullYear()} SecuTools.io. Open source under MIT License.</p>
+              <p>For ethical security research & educational use only.</p>
+            </div>
           </div>
-                      {/* <div className="mt-3 sm:mt-0 w-full">
-
-</div> */}
         </footer>
+
+        <CookieConsent />
       </body>
     </html>
   );

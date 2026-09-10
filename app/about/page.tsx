@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import Section from "@/components/Section";
@@ -77,38 +77,46 @@ export default function AboutPage() {
           <Section title="Get in Touch" subtitle="We would love to hear from you">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Name</label>
+                <label htmlFor="about-name" className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Name</label>
                 <input
+                  id="about-name"
+                  name="name"
                   type="text"
+                  autoComplete="name"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full bg-white border border-slate-300 rounded p-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
+                <label htmlFor="about-email" className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Email</label>
                 <input
+                  id="about-email"
+                  name="email"
                   type="email"
+                  autoComplete="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full bg-white border border-slate-300 rounded p-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Message</label>
+                <label htmlFor="about-message" className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Message</label>
                 <textarea
+                  id="about-message"
+                  name="message"
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   rows={4}
-                  className="w-full bg-white border border-slate-300 rounded p-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
                   required
                 ></textarea>
               </div>
               <button
                 type="submit"
-                className="w-full px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition-colors"
+                className="w-full px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors shadow-sm"
               >
                 Send Message
               </button>
