@@ -352,17 +352,6 @@ export default function Navigation() {
   // derived
   const suggestions = query ? searchTools(query).slice(0, 6) : [];
 
-  // small handlers
-  function toggleTheme() {
-    setTheme((t) => {
-      const next = t === "light" ? "dark" : "light";
-      try { localStorage.setItem("site_theme", next); } catch { }
-      return next;
-    });
-  }
-  function toggleBookmark() {
-    setBookmarked((b) => !b);
-  }
 
   return (
     <header className="sticky top-0 z-50 border-b bg-white/70 backdrop-blur-md dark:bg-slate-900/80">
@@ -516,7 +505,7 @@ export default function Navigation() {
           </button>
 
           <button
-            onClick={toggleBookmark}
+            onClick={() => setBookmarked((b) => !b)}
             className="p-2 rounded hover:bg-slate-50"
             aria-pressed={bookmarked}
             title={bookmarked ? "Bookmarked" : "Bookmark"}

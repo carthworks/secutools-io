@@ -10,6 +10,8 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { categories } from "./data";
+import { recordToolOpen } from "@/lib/useToolUsage";
+import TrendingTools from "@/components/TrendingTools";
 
 const PasswordStrengthTicker = dynamic(() => import("./password-strength/page"), { ssr: false });
 
@@ -172,6 +174,7 @@ export default function HomePage(): JSX.Element {
   }, []);
 
   const recordRecent = useCallback((slug: string) => {
+    recordToolOpen(slug);
     setRecent((prev) => {
       const next = [slug, ...prev.filter((s) => s !== slug)];
       return next.slice(0, 12);
@@ -211,92 +214,123 @@ export default function HomePage(): JSX.Element {
 
       <div className="grid md:grid-cols-4 gap-6">
         {/* Sidebar */}
-        <aside className="hidden md:block col-span-1 sticky top-24 h-fit space-y-4">
-          <div className="rounded-2xl border border-slate-200 dark:border-slate-800 p-5 bg-white dark:bg-slate-900 shadow-sm space-y-5">
-            <div className="flex items-center justify-between">
-              <div className="font-semibold text-sm uppercase tracking-wider text-slate-800 dark:text-slate-200">Categories</div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-full font-medium">Quick Jump</div>
+        <aside className="hidden md:block col-span-1 sticky top-24 h-fit space-y-3">
+
+          {/* ── CATEGORIES card ── */}
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm overflow-hidden">
+            {/* header */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60">
+              <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Categories</span>
+              <span className="text-[10px] text-indigo-600 dark:text-indigo-400 px-2 py-0.5 bg-indigo-50 dark:bg-indigo-950/50 rounded-full font-semibold border border-indigo-100 dark:border-indigo-900">
+                Quick Jump
+              </span>
             </div>
 
-            <div className="space-y-1">
-              {categories.map((c, idx) => (
+            <div className="px-2 py-2 space-y-0.5">
+              {categories.map((c) => (
                 <button
                   key={c.title}
                   onClick={() => scrollToCategory(c.title)}
-                  className="group w-full text-left px-3 py-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 text-sm flex items-center gap-2.5 transition-all text-slate-700 dark:text-slate-300"
+                  className="group w-full text-left px-2.5 py-2 rounded-xl flex items-center gap-2.5 transition-all hover:bg-indigo-50 dark:hover:bg-indigo-950/30"
                 >
-                  <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                    <RenderIcon icon={c.icon} className="w-4 h-4" />
+                  <div className="shrink-0 p-1.5 rounded-lg bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 group-hover:bg-indigo-600 group-hover:text-white dark:group-hover:bg-indigo-600 transition-all">
+                    <RenderIcon icon={c.icon} className="w-3.5 h-3.5" />
                   </div>
-                  <span className="flex-1 font-medium truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{c.title}</span>
-                  <span className="text-xs text-slate-400 dark:text-slate-500 px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md">
+                  <span className="flex-1 text-xs font-medium truncate text-slate-700 dark:text-slate-300 group-hover:text-indigo-700 dark:group-hover:text-indigo-300 transition-colors">
+                    {c.title}
+                  </span>
+                  <span className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-950 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-all">
                     {c.tools.filter(t => t.isPublish).length}
                   </span>
                 </button>
               ))}
             </div>
+          </div>
 
-            <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
-              <div className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2.5 flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span>
-                Filter Tags
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                {allTags.map((tg) => {
-                  const active = activeTagFilters.includes(tg);
-                  return (
-                    <button
-                      key={tg}
-                      onClick={() => toggleTagFilter(tg)}
-                      className={`text-xs px-2.5 py-1 rounded-lg border font-medium transition-all ${active
-                        ? "bg-indigo-600 text-white border-indigo-600 shadow-sm"
-                        : "bg-slate-50 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/40"
-                        }`}
-                    >
-                      {tg}
-                    </button>
-                  );
-                })}
-              </div>
+          {/* ── FILTER TAGS card ── */}
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm overflow-hidden">
+            <div className="flex items-center gap-1.5 px-4 py-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60">
+              <span className="w-1.5 h-1.5 rounded-full bg-violet-500"></span>
+              <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Filter Tags</span>
             </div>
+            <div className="px-4 py-3 flex flex-wrap gap-1.5">
+              {allTags.map((tg) => {
+                const active = activeTagFilters.includes(tg);
+                return (
+                  <button
+                    key={tg}
+                    onClick={() => toggleTagFilter(tg)}
+                    className={`text-[11px] px-2.5 py-1 rounded-full font-semibold border transition-all ${
+                      active
+                        ? "bg-indigo-600 text-white border-indigo-600 shadow-sm"
+                        : "bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/30"
+                    }`}
+                  >
+                    {tg}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
-            <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
-              <div className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2.5 flex items-center gap-1.5">
-                <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-                Favorites ({favoritesResolved.length})
-              </div>
-              <div className="space-y-1">
-                {favoritesResolved.length === 0 ? (
-                  <div className="text-xs text-slate-400 dark:text-slate-500 italic py-2 px-2.5 bg-slate-50 dark:bg-slate-800/40 rounded-lg">
-                    Click ⭐ on any tool to pin here
-                  </div>
-                ) : (
-                  favoritesResolved.slice(0, 6).map((t) => (
+          {/* ── FAVORITES card ── */}
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm overflow-hidden">
+            <div className="flex items-center gap-1.5 px-4 py-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60">
+              <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+              <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                Favorites
+              </span>
+              {favoritesResolved.length > 0 && (
+                <span className="ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400">
+                  {favoritesResolved.length}
+                </span>
+              )}
+            </div>
+            <div className="px-2 py-2">
+              {favoritesResolved.length === 0 ? (
+                <div className="m-2 py-4 rounded-xl bg-gradient-to-b from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/10 border border-dashed border-amber-200 dark:border-amber-900 flex flex-col items-center gap-1.5">
+                  <Star className="w-5 h-5 text-amber-400" />
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 text-center">
+                    Click <span className="text-amber-500">★</span> on any tool
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-0.5">
+                  {favoritesResolved.slice(0, 6).map((t) => (
                     <div
                       key={t.slug}
-                      className="group flex items-center justify-between py-1.5 px-2.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                      className="group flex items-center gap-2 px-2.5 py-2 rounded-lg hover:bg-amber-50 dark:hover:bg-amber-950/20 transition-colors"
                     >
                       <Link
                         href={`/${t.slug}`}
                         onClick={() => recordRecent(t.slug)}
-                        className="text-xs text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors flex-1 truncate font-medium"
+                        className="text-xs font-medium flex-1 truncate text-slate-700 dark:text-slate-300 group-hover:text-amber-700 dark:group-hover:text-amber-400 transition-colors"
                       >
                         {t.title}
                       </Link>
                       <button
                         onClick={() => toggleFavorite(t.slug)}
                         title="Unfavorite"
-                        className="p-1 text-slate-400 hover:text-amber-500"
+                        className="shrink-0 p-1 rounded-md text-amber-400 hover:text-amber-600 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition"
                         aria-label={`Unfavorite ${t.title}`}
                       >
-                        <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                        <Star className="w-3.5 h-3.5 fill-amber-400" />
                       </button>
                     </div>
-                  ))
-                )}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
+
+          {/* ── TRENDING card ── */}
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm overflow-hidden">
+            <div className="h-1 bg-gradient-to-r from-orange-400 via-rose-500 to-pink-500" />
+            <div className="px-4 py-4">
+              <TrendingTools onToolOpen={recordRecent} compact />
+            </div>
+          </div>
+
         </aside>
 
         {/* Main column */}
@@ -319,24 +353,6 @@ export default function HomePage(): JSX.Element {
                   <Kbd>⌘K</Kbd>
                 </div>
               </div>
-
-              {/* Favorites row */}
-              {favoritesResolved.length > 0 && (
-                <div className="hidden lg:flex gap-1.5 items-center">
-                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Quick:</span>
-                  {favoritesResolved.slice(0, 3).map((t) => (
-                    <Link
-                      key={t.slug}
-                      href={`/${t.slug}`}
-                      onClick={() => recordRecent(t.slug)}
-                      className="px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-indigo-400 bg-slate-50 dark:bg-slate-800 text-xs text-slate-700 dark:text-slate-300 transition flex items-center gap-1.5 truncate max-w-[110px]"
-                      title={t.title}
-                    >
-                      <span className="truncate">{t.title}</span>
-                    </Link>
-                  ))}
-                </div>
-              )}
             </div>
 
             {recentResolved.length > 0 && (
