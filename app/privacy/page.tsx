@@ -1,13 +1,18 @@
 // File: app/privacy/page.tsx
-"use client";
-
 import React from "react";
 import Link from "next/link";
-import { Shield, Lock, EyeOff, FileText, UserCheck, Server } from "lucide-react";
+import { Shield, Lock, Server, FileText, UserCheck } from "lucide-react";
+
+export const dynamic = "force-static";
+
+export const metadata = {
+  title: "Privacy Policy — SecuTools.io",
+  description: "Zero-knowledge, client-side first privacy policy for SecuTools.io.",
+};
 
 export default function PrivacyPage() {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-10 text-slate-800 dark:text-slate-200">
+    <div className="max-w-4xl mx-auto px-4 py-8 text-slate-800 dark:text-slate-200">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold mb-3 text-slate-900 dark:text-white flex items-center gap-3">
@@ -15,12 +20,12 @@ export default function PrivacyPage() {
           Privacy Policy
         </h1>
         <p className="text-sm text-slate-500 dark:text-slate-400">
-          Last Updated: {new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+          Last Updated: September 2026
         </p>
       </div>
 
       {/* Intro */}
-      <div className="p-4 sm:p-6 mb-8 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+      <div className="p-4 sm:p-6 mb-8 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
         <p className="text-base sm:text-lg leading-relaxed text-slate-700 dark:text-slate-300">
           At <strong className="text-slate-900 dark:text-white">SecuTools.io</strong>, we operate with a strict <strong>zero-knowledge, client-side first architecture</strong>. We believe cybersecurity tools must respect the privacy and security of the practitioners and students who use them.
         </p>
@@ -109,23 +114,20 @@ export default function PrivacyPage() {
             4. Your Privacy Rights
           </h2>
           <p className="text-slate-600 dark:text-slate-300">
-            Depending on your jurisdiction, you have the right to request access, rectification, deletion, restriction, and portability of personal data, as well as the right to lodge a complaint with a data protection supervisory authority.
+            Depending on your jurisdiction, you have the right to request access, rectification, deletion, restriction, and portability of personal data.
           </p>
           <p className="text-slate-600 dark:text-slate-300">
-            Because SecuTools.io does not maintain user databases, accounts, or persistent personal logs, we generally store no identifiable data linking to your identity. If you submit a query via our contact form, your name and email are used solely to respond to your inquiry.
+            Because SecuTools.io does not maintain user databases, accounts, or persistent personal logs, we generally store no identifiable data linking to your identity.
           </p>
         </section>
 
         {/* 5. Contact & Data Controller */}
         <section className="space-y-3">
           <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
-            5. Contact Information & Data Protection
+            5. Contact Information
           </h2>
-          <p className="text-slate-600 dark:text-slate-300">
-            For any privacy inquiries or rights requests, please contact:
-          </p>
-          <div className="p-4 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-sm">
-            <p><strong>Entity / Operator:</strong> SecuTools.io / Karthikeyan T</p>
+          <div className="p-4 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm shadow-sm space-y-1">
+            <p><strong>Operator:</strong> SecuTools.io / Karthikeyan T</p>
             <p><strong>Email:</strong> <a href="mailto:tkarthikeyan@gmail.com" className="text-indigo-600 dark:text-indigo-400 hover:underline">tkarthikeyan@gmail.com</a></p>
             <p><strong>GitHub:</strong> <a href="https://github.com/carthworks/secutools-io" target="_blank" rel="noreferrer" className="text-indigo-600 dark:text-indigo-400 hover:underline">github.com/carthworks/secutools-io</a></p>
           </div>

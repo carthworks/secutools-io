@@ -5,7 +5,15 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { Inter } from "next/font/google";
 import "./globals.css";
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-sans",
+  preload: true,
+});
 
 export const metadata = {
   title: "SecuTools.io — Free, Privacy-First Cybersecurity Tools",
@@ -53,8 +61,21 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     }
   };
 
+  const themeScript = `
+    (function() {
+      try {
+        var theme = localStorage.getItem('site_theme');
+        if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (_) {}
+    })();
+  `;
+
   return (
-    <html lang="en">
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="theme-color" content="#0f172a" />
@@ -62,38 +83,39 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </head>
 
-      <body className="bg-white text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+      <body className="min-h-screen flex flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 font-sans transition-colors duration-200">
         <SpeedInsights />
         <Analytics />
         <Navigation />
-        <main className="container-page py-8 flex-1">{children}</main>
+        <main className="container-page py-6 sm:py-8 flex-1 w-full">{children}</main>
 
-        <footer className="border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 transition-colors">
-          <div className="container-page py-8 space-y-4">
+        <footer className="border-t border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900/70 transition-colors">
+          <div className="container-page py-8 space-y-6">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
               <div className="text-center md:text-left space-y-1">
-                <p className="font-medium text-slate-700 dark:text-slate-300">
-                  ⚡ SecuTools.io — Built for education, defensive research, and daily security operations.
+                <p className="font-semibold text-slate-800 dark:text-slate-200">
+                  ⚡ SecuTools.io — Free, privacy-focused security engineering toolkit
                 </p>
                 <p>
-                  Zero server-side logging of cryptographic data. All calculations run client-side in your browser.
+                  Zero server logging of cryptographic inputs. All processing runs locally in your browser.
                 </p>
               </div>
-              <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 font-medium">
-                <Link href="/" className="hover:text-slate-900 dark:hover:text-white transition-colors">Home</Link>
-                <Link href="/about" className="hover:text-slate-900 dark:hover:text-white transition-colors">About</Link>
-                <Link href="/contact" className="hover:text-slate-900 dark:hover:text-white transition-colors">Contact</Link>
-                <Link href="/privacy" className="hover:text-slate-900 dark:hover:text-white transition-colors">Privacy Policy</Link>
-                <Link href="/terms" className="hover:text-slate-900 dark:hover:text-white transition-colors">Terms of Service</Link>
-                <Link href="/cookies" className="hover:text-slate-900 dark:hover:text-white transition-colors">Cookie Policy</Link>
-                <a href="https://github.com/carthworks/secutools-io" target="_blank" rel="noreferrer" className="hover:text-slate-900 dark:hover:text-white transition-colors">GitHub</a>
+              <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 font-medium">
+                <Link href="/" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Home</Link>
+                <Link href="/about" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">About</Link>
+                <Link href="/contact" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Contact</Link>
+                <Link href="/privacy" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Privacy Policy</Link>
+                <Link href="/terms" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Terms of Service</Link>
+                <Link href="/cookies" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Cookie Policy</Link>
+                <a href="https://github.com/carthworks/secutools-io" target="_blank" rel="noreferrer" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">GitHub</a>
               </div>
             </div>
 
-            <div className="pt-4 border-t border-slate-200/60 dark:border-slate-800/60 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-400 dark:text-slate-500">
+            <div className="pt-4 border-t border-slate-200/80 dark:border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-400 dark:text-slate-500">
               <p>&copy; {new Date().getFullYear()} SecuTools.io. Open source under MIT License.</p>
               <p>For ethical security research & educational use only.</p>
             </div>

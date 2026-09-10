@@ -1,4 +1,4 @@
-﻿// File: components/Navigation.tsx
+// File: components/Navigation.tsx
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
@@ -295,28 +295,36 @@ export default function Navigation() {
   const [megaOpen, setMegaOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [query, setQuery] = useState("");
-  // const [theme, setTheme] = useState<"light" | "dark">(() => (typeof window !== "undefined" && localStorage.getItem("site_theme") === "dark" ? "dark" : "light"));
   const [theme, setTheme] = useState<"light" | "dark">("dark");
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("site_theme");
-      if (stored === "light") setTheme("light");
+      const isDark = document.documentElement.classList.contains("dark") || localStorage.getItem("site_theme") === "dark";
+      setTheme(isDark ? "dark" : "light");
     }
   }, []);
 
-  const [notifCount, setNotifCount] = useState(2);
+  const [notifCount, setNotifCount] = useState(0);
   const [bookmarked, setBookmarked] = useState(false);
 
   // refs for outside clicks
   const megaRef = useRef<HTMLDivElement | null>(null);
   const searchRef = useRef<HTMLInputElement | null>(null);
 
-  useEffect(() => {
-    // dark mode sync
-    if (theme === "dark") document.documentElement.classList.add("dark");
-    else document.documentElement.classList.remove("dark");
-  }, [theme]);
+  // theme handler
+  function toggleTheme() {
+    const next = theme === "light" ? "dark" : "light";
+    setTheme(next);
+    try {
+      localStorage.setItem("site_theme", next);
+      if (next === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+      window.dispatchEvent(new CustomEvent("theme-changed", { detail: next }));
+    } catch {}
+  }
 
   // outside click closes mega
   useEffect(() => {
