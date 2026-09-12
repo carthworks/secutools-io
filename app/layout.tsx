@@ -3,6 +3,7 @@ import Navigation from "@/components/Navigation";
 import CookieConsent from "@/components/CookieConsent";
 import CriticalCveBanner from "@/components/CriticalCveBanner";
 import ClipboardDetective from "@/components/ClipboardDetective";
+import ConsoleSignature from "@/components/ConsoleSignature";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { ReactNode } from "react";
@@ -22,6 +23,7 @@ export const metadata = {
   description: "Fast, privacy-friendly online utilities for cybersecurity students, SOC analysts, and security researchers. Zero client data tracking.",
   authors: [{ name: "Karthikeyan T", url: "https://github.com/carthworks" }],
   creator: "SecuTools",
+  manifest: "/site.webmanifest",
   openGraph: {
     title: "SecuTools.io — Cybersecurity Handy Tools",
     description: "Free, privacy-friendly tools and utilities for security students and professionals.",
@@ -92,6 +94,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="min-h-screen flex flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 font-sans transition-colors duration-200">
         <SpeedInsights />
         <Analytics />
+        <ConsoleSignature />
         <CriticalCveBanner />
         <Navigation />
         <main className="container-page py-6 sm:py-8 flex-1 w-full">{children}</main>
