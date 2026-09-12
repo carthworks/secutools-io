@@ -17,6 +17,7 @@ import {
   Coins,
   FileText,
 } from "lucide-react";
+import GalaxyGlobeBackground from "@/components/GalaxyGlobeBackground";
 
 type Analysis = {
   type: "url" | "wifi" | "crypto" | "vcard" | "text";
@@ -463,15 +464,20 @@ export default function QrScannerSafe(): JSX.Element {
 
   return (
     <section className="max-w-4xl mx-auto space-y-6" aria-labelledby="qr-title">
-      {/* Header */}
-      <div className="space-y-1 text-center sm:text-left">
-        <h1 id="qr-title" className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white flex items-center justify-center sm:justify-start gap-2.5">
-          <ShieldCheck className="w-7 h-7 text-indigo-600 dark:text-indigo-400" />
-          <span>QR Code Security Analyzer & Scanner</span>
-        </h1>
-        <p className="text-sm text-slate-600 dark:text-slate-400">
-          Upload any QR code image, paste from clipboard (<kbd className="px-1.5 py-0.5 text-xs bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded font-mono">Ctrl+V</kbd>), or scan via camera. Client-side zero-knowledge security evaluation.
-        </p>
+      {/* Header Banner */}
+      <div className="relative overflow-hidden p-5 sm:p-7 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200 dark:border-slate-800 shadow-lg shadow-indigo-500/5">
+        <GalaxyGlobeBackground />
+        <div className="relative z-10 space-y-1.5 text-center sm:text-left max-w-2xl">
+          <h1 id="qr-title" className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white flex items-center justify-center sm:justify-start gap-2.5">
+            <ShieldCheck className="w-7 h-7 text-indigo-600 dark:text-indigo-400 shrink-0" />
+            <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 dark:from-indigo-400 dark:via-purple-300 dark:to-emerald-400 bg-clip-text text-transparent">
+              QR Code Security Analyzer & Scanner
+            </span>
+          </h1>
+          <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+            Upload any QR code image, paste from clipboard (<kbd className="px-1.5 py-0.5 text-xs bg-white/80 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded font-mono shadow-2xs">Ctrl+V</kbd>), or scan via camera. Client-side zero-knowledge security evaluation.
+          </p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
