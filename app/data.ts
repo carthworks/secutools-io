@@ -46,6 +46,7 @@ export const categories: Category[] = [
             { slug: "whois", title: "WHOIS / RDAP", desc: "Ownership & registration", isPublish: true },
             { slug: "email-analyzer", title: "Email Header Analyzer", desc: "Trace spoofing & spam origins", isPublish: true },
             { slug: "qr-code-check", title: "QR Code Security Analyzer", desc: "Scan with your camera or upload a QR code image. The tool decodes and flags risky URLs", isPublish: true },
+            { slug: "qr-code-generator", title: "The QR Code Generator (TQRCG)", desc: "Convert images, files, URLs & text into customizable TQRCG-style QR codes with custom dots, logos, gradients & frames", isPublish: true },
             { slug: "bulk-ioc-enrichment", title: "Bulk IOC Enrichment", desc: "CSV upload for batch IOC analysis and enrichment", isPublish: false },
             { slug: "risk-scoring-dashboard", title: "Risk Scoring Dashboard", desc: "Risk scoring dashboard per indicator with threat levels", isPublish: false },
             { slug: "url-detonation", title: "URL Detonation Analyzer", desc: "Redirect analyzer for URL detonation and chain tracking", isPublish: false },

@@ -70,6 +70,7 @@ const categories: Category[] = [
       { slug: "cve-feed", title: "CVE Feed Viewer", desc: "Browse latest CVEs from NVD" },
       { slug: "threat", title: "Threat Intel Check", desc: "VirusTotal/AbuseIPDB" },
       { slug: "whois", title: "WHOIS / RDAP", desc: "Ownership & registration" },
+      { slug: "qr-code-generator", title: "QR Code Generator (TQRCG)", desc: "Create & customize QR codes" },
     ],
   },
   {

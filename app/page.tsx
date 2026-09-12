@@ -55,6 +55,7 @@ function toolTags(slug: string) {
     "hash-id",
     "hash-collision",
     "cert-parser",
+    "qr-code-generator",
   ]);
   const apiNeeded = new Set(["ip-dns", "cve", "threat", "whois", "headers-check", "aws-s3", "cors-check", "qr-code-check", "email-analyzer"]);
   const tags: string[] = [];
