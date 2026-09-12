@@ -150,20 +150,20 @@ export default function NewsFeedSection({ max = 8 }: { max?: number }) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-2xl font-bold text-indigo-700">🔔 Latest Security News</h3>
-          <p className="text-sm text-slate-600">
+          <h3 className="text-2xl font-bold text-indigo-700 dark:text-indigo-400">🔔 Latest Security News</h3>
+          <p className="text-sm text-slate-600 dark:text-slate-400">
             Aggregated from trusted cybersecurity feeds. Stay updated with the latest threats and insights.
           </p>
         </div>
         <button
           onClick={() => void fetchAll(true)}
-          className="px-3 py-1 text-xs rounded-md border border-indigo-300 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 transition-all"
+          className="px-3 py-1 text-xs rounded-md border border-indigo-300 dark:border-indigo-700/60 bg-indigo-50 dark:bg-indigo-950/50 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 transition-all"
         >
           {loading ? "⏳ Loading…" : "🔄 Refresh"}
         </button>
       </div>
 
-      {error && <div className="text-sm text-red-600">{error}</div>}
+      {error && <div className="text-sm text-red-600 dark:text-red-400">{error}</div>}
 
       {/* News Grid */}
       <div className="grid gap-4 sm:grid-cols-2">
@@ -175,7 +175,7 @@ export default function NewsFeedSection({ max = 8 }: { max?: number }) {
               href={it.link}
               target="_blank"
               rel="noreferrer"
-              className="block p-4 rounded-lg shadow hover:shadow-lg transition-all border bg-white group"
+              className="block p-4 rounded-lg shadow hover:shadow-lg transition-all border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 group"
             >
               <div className="flex items-start gap-3">
                 <div
@@ -184,11 +184,11 @@ export default function NewsFeedSection({ max = 8 }: { max?: number }) {
                   {it.source}
                 </div>
               </div>
-              <h4 className="font-medium text-slate-800 mt-2 group-hover:text-indigo-700">
+              <h4 className="font-medium text-slate-800 dark:text-slate-200 mt-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                 {it.title}
               </h4>
-              <p className="text-xs text-slate-600 mt-1 line-clamp-3">{it.excerpt}</p>
-              <div className="text-xs text-slate-400 mt-2">
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 line-clamp-3">{it.excerpt}</p>
+              <div className="text-xs text-slate-400 dark:text-slate-500 mt-2">
                 {it.isoDate ? new Date(it.isoDate).toLocaleString() : ""}
               </div>
             </a>
@@ -197,7 +197,7 @@ export default function NewsFeedSection({ max = 8 }: { max?: number }) {
       </div>
 
       {/* Footer */}
-      <div className="text-xs text-slate-400 mt-2">
+      <div className="text-xs text-slate-400 dark:text-slate-500 mt-2">
         ℹ️ Some feeds may fail due to CORS/rate-limits. Add your own proxy for reliability.
       </div>
     </section>

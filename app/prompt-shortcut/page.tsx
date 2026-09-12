@@ -293,229 +293,236 @@ export default function PromptShortcutsApp(): JSX.Element {
   }, [message]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-4 md:p-8">
-      <div className="max-w-6xl mx-auto">
-        <header className="mb-8 text-center">
-          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-            LLM Prompt Shortcuts
-          </h1>
-          <p className="text-gray-600 mt-2">Prompt shortcuts to enhance your AI interactions</p>
-        </header>
+    <div className="space-y-8 max-w-6xl mx-auto">
+      <header className="text-center space-y-2">
+        <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
+          LLM Prompt Shortcuts
+        </h1>
+        <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base">Prompt shortcuts to enhance your AI interactions</p>
+      </header>
 
-        {message && (
-          <div
-            role="status"
-            aria-live="polite"
-            className={`mb-4 rounded-md p-3 text-sm ${
-              message.type === 'success'
-                ? 'bg-green-50 text-green-800 border border-green-100'
-                : 'bg-red-50 text-red-800 border border-red-100'
-            }`}
+      {message && (
+        <div
+          role="status"
+          aria-live="polite"
+          className={`rounded-lg p-3 text-sm transition-colors ${
+            message.type === 'success'
+              ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/50'
+              : 'bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-800/50'
+          }`}
+        >
+          {message.text}
+        </div>
+      )}
+
+      {/* Prompt Builder */}
+      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 transition-colors">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Prompt Builder</h2>
+          <button
+            onClick={() => setShowPromptArea((s) => !s)}
+            className="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline"
+            aria-expanded={showPromptArea}
           >
-            {message.text}
+            {showPromptArea ? 'Hide' : 'Show'} Prompt Area
+          </button>
+        </div>
+
+        {showPromptArea && (
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="selected-shortcuts" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                Selected Shortcuts
+              </label>
+              <div id="selected-shortcuts" className="flex flex-wrap gap-2 min-h-[44px] p-2 border border-slate-300 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-950/60">
+                {activeShortcuts.length === 0 ? (
+                  <span className="text-slate-400 dark:text-slate-500 text-sm flex items-center px-1">No shortcuts added yet</span>
+                ) : (
+                  activeShortcuts.map((shortcut, index) => (
+                    <div key={`${shortcut.id}-${index}`} className="flex items-center bg-indigo-50 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/60 rounded-full px-3 py-1 text-sm">
+                      <span>{shortcut.command}</span>
+                      <button
+                        onClick={() => removeShortcut(index)}
+                        aria-label={`Remove ${shortcut.command}`}
+                        className="ml-2 text-indigo-500 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-200"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="user-query" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                Your Query
+              </label>
+              <textarea
+                id="user-query"
+                value={userPrompt}
+                onChange={(e) => setUserPrompt(e.target.value)}
+                placeholder="Enter your query here..."
+                className="w-full p-3 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 outline-none transition min-h-[100px]"
+              />
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              <button
+                onClick={handleSendToLLM}
+                className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors font-medium text-sm shadow-sm"
+                aria-label="Send prompt to LLM"
+              >
+                <Send className="h-4 w-4" />
+                Send to LLM
+              </button>
+              <button
+                onClick={() => void handleShare()}
+                className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg transition-colors font-medium text-sm shadow-sm"
+                aria-label="Share prompt"
+              >
+                <Share className="h-4 w-4" />
+                Share Prompt
+              </button>
+              <button
+                onClick={() => void safeWriteClipboard(generateFullPrompt())}
+                className="flex items-center gap-2 bg-slate-700 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white px-4 py-2 rounded-lg transition-colors font-medium text-sm shadow-sm border border-slate-600 dark:border-slate-700"
+                aria-label="Copy full prompt"
+              >
+                <Copy className="h-4 w-4" />
+                Copy Full Prompt
+              </button>
+            </div>
+
+            <div className="p-3 bg-slate-50 dark:bg-slate-950/60 rounded-lg border border-slate-200 dark:border-slate-800" aria-live="polite">
+              <p className="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Preview:</p>
+              <p className="text-sm text-slate-800 dark:text-slate-200 mt-1 font-mono">{generateFullPrompt() || 'Your combined prompt will appear here...'}</p>
+            </div>
           </div>
         )}
+      </div>
 
-        {/* Prompt Builder */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">Prompt Builder</h2>
-            <button
-              onClick={() => setShowPromptArea((s) => !s)}
-              className="text-sm text-indigo-600 hover:underline"
-              aria-expanded={showPromptArea}
-            >
-              {showPromptArea ? 'Hide' : 'Show'} Prompt Area
-            </button>
-          </div>
-
-          {showPromptArea && (
-            <>
-              <div className="mb-4">
-                <label htmlFor="selected-shortcuts" className="block text-sm font-medium text-gray-700 mb-2">
-                  Selected Shortcuts
-                </label>
-                <div id="selected-shortcuts" className="flex flex-wrap gap-2 min-h-[40px] p-2 border border-gray-300 rounded-lg bg-gray-50">
-                  {activeShortcuts.length === 0 ? (
-                    <span className="text-gray-400 text-sm">No shortcuts added yet</span>
-                  ) : (
-                    activeShortcuts.map((shortcut, index) => (
-                      <div key={`${shortcut.id}-${index}`} className="flex items-center bg-indigo-100 text-indigo-800 rounded-full px-3 py-1 text-sm">
-                        <span>{shortcut.command}</span>
-                        <button
-                          onClick={() => removeShortcut(index)}
-                          aria-label={`Remove ${shortcut.command}`}
-                          className="ml-2 text-indigo-600 hover:text-indigo-900"
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </button>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <label htmlFor="user-query" className="block text-sm font-medium text-gray-700 mb-2">
-                  Your Query
-                </label>
-                <textarea
-                  id="user-query"
-                  value={userPrompt}
-                  onChange={(e) => setUserPrompt(e.target.value)}
-                  placeholder="Enter your query here..."
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 outline-none transition min-h-[100px]"
-                />
-              </div>
-
-              <div className="flex flex-wrap gap-3">
-                <button
-                  onClick={handleSendToLLM}
-                  className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors"
-                  aria-label="Send prompt to LLM"
-                >
-                  <Send className="h-4 w-4" />
-                  Send to LLM
-                </button>
-                <button
-                  onClick={() => void handleShare()}
-                  className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors"
-                  aria-label="Share prompt"
-                >
-                  <Share className="h-4 w-4" />
-                  Share Prompt
-                </button>
-                <button
-                  onClick={() => void safeWriteClipboard(generateFullPrompt())}
-                  className="flex items-center gap-2 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
-                  aria-label="Copy full prompt"
-                >
-                  <Copy className="h-4 w-4" />
-                  Copy Full Prompt
-                </button>
-              </div>
-
-              <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200" aria-live="polite">
-                <p className="text-sm font-medium text-blue-800">Preview:</p>
-                <p className="text-sm text-gray-700 mt-1">{generateFullPrompt() || 'Your combined prompt will appear here...'}</p>
-              </div>
-            </>
-          )}
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          <aside className="lg:col-span-1 space-y-6" aria-label="Sidebar">
-            <div className="bg-white rounded-xl shadow-md p-6">
-              <h2 className="text-lg font-semibold mb-4">Search & Filter</h2>
-              <div className="relative mb-4">
-                <Search className="absolute left-3 top-3.5 h-4 w-4 text-gray-400" aria-hidden />
-                <input
-                  aria-label="Search shortcuts"
-                  placeholder="Search shortcuts..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 outline-none transition"
-                />
-              </div>
-
-              <div className="flex items-center gap-2 mb-2">
-                <Filter className="h-4 w-4 text-gray-500" aria-hidden />
-                <span className="text-sm font-medium">Categories</span>
-              </div>
-              <div className="flex flex-wrap gap-2" role="list">
-                {CATEGORIES.map((category) => (
-                  <button
-                    key={category}
-                    onClick={() => setSelectedCategory(category)}
-                    aria-pressed={selectedCategory === category}
-                    className={`text-xs px-3 py-1.5 rounded-full transition-colors ${
-                      selectedCategory === category ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {category}
-                  </button>
-                ))}
-              </div>
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <aside className="lg:col-span-1 space-y-6" aria-label="Sidebar">
+          <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 transition-colors">
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Search & Filter</h2>
+            <div className="relative mb-4">
+              <Search className="absolute left-3 top-3.5 h-4 w-4 text-slate-400" aria-hidden />
+              <input
+                aria-label="Search shortcuts"
+                placeholder="Search shortcuts..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 outline-none transition text-sm"
+              />
             </div>
 
-            <div className="bg-white rounded-xl shadow-md p-6">
-              <h2 className="text-lg font-semibold mb-4">How to Use</h2>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li className="flex items-start"><span className="text-indigo-600 mr-2">•</span><span>Use commands like /ELI5 to modify your prompts</span></li>
-                <li className="flex items-start"><span className="text-indigo-600 mr-2">•</span><span>Combine multiple commands for complex requests</span></li>
-                <li className="flex items-start"><span className="text-indigo-600 mr-2">•</span><span>Click the star to save favorites</span></li>
-                <li className="flex items-start"><span className="text-indigo-600 mr-2">•</span><span>Click the copy icon to copy to clipboard</span></li>
-                <li className="flex items-start"><span className="text-indigo-600 mr-2">•</span><span>Click the + button to add shortcuts to your prompt</span></li>
-              </ul>
+            <div className="flex items-center gap-2 mb-3">
+              <Filter className="h-4 w-4 text-slate-500 dark:text-slate-400" aria-hidden />
+              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Categories</span>
             </div>
-          </aside>
-
-          <main className="lg:col-span-3" aria-live="polite">
-            <div className="mb-4 flex justify-between items-center">
-              <h2 className="text-xl font-semibold">
-                {selectedCategory === 'All' ? 'All Shortcuts' : selectedCategory}
-                <span className="text-gray-500 text-sm font-normal ml-2">({filteredShortcuts.length} shortcuts)</span>
-              </h2>
-              <div className="text-sm text-gray-500">{favorites.length} favorites</div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {filteredShortcuts.map((shortcut) => (
-                <article key={shortcut.id} className="bg-white rounded-xl shadow-md p-4 hover:shadow-lg transition-shadow" aria-labelledby={`sc-${shortcut.id}`}>
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <code id={`sc-${shortcut.id}`} className="bg-indigo-100 text-indigo-800 text-sm font-mono px-2 py-1 rounded">{shortcut.command}</code>
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">{shortcut.category}</span>
-                      </div>
-                      <p className="mt-2 text-gray-700">{shortcut.description}</p>
-                    </div>
-
-                    <div className="flex gap-1">
-                      <button
-                        onClick={() => addShortcut(shortcut)}
-                        className="p-1.5 rounded-md text-gray-500 hover:bg-gray-100 hover:text-indigo-600 transition-colors"
-                        title={`Add ${shortcut.command} to prompt`}
-                        aria-label={`Add ${shortcut.command}`}
-                      >
-                        <Plus className="h-4 w-4" />
-                      </button>
-
-                      <button
-                        onClick={() => copyCommand(shortcut.command)}
-                        className="p-1.5 rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors"
-                        title={`Copy ${shortcut.command}`}
-                        aria-label={`Copy ${shortcut.command}`}
-                      >
-                        <Copy className="h-4 w-4" />
-                      </button>
-
-                      <button
-                        onClick={() => toggleFavorite(shortcut.id)}
-                        className={`p-1.5 rounded-md transition-colors ${favorites.includes(shortcut.id) ? 'text-yellow-500' : 'text-gray-400 hover:bg-gray-100 hover:text-gray-700'}`}
-                        title={favorites.includes(shortcut.id) ? 'Unfavorite' : 'Favorite'}
-                        aria-pressed={favorites.includes(shortcut.id)}
-                      >
-                        <Star className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </div>
-                </article>
+            <div className="flex flex-wrap gap-2" role="list">
+              {CATEGORIES.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  aria-pressed={selectedCategory === category}
+                  className={`text-xs px-3 py-1.5 rounded-full transition-colors font-medium ${
+                    selectedCategory === category
+                      ? 'bg-indigo-600 text-white shadow-sm'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                  }`}
+                >
+                  {category}
+                </button>
               ))}
             </div>
+          </div>
 
-            {filteredShortcuts.length === 0 && (
-              <div className="text-center py-12 bg-white rounded-xl shadow-sm">
-                <p className="text-gray-500">No shortcuts match your search criteria</p>
-              </div>
-            )}
-          </main>
-        </div>
+          <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 transition-colors">
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">How to Use</h2>
+            <ul className="space-y-2.5 text-sm text-slate-600 dark:text-slate-400">
+              <li className="flex items-start"><span className="text-indigo-600 dark:text-indigo-400 mr-2 font-bold">•</span><span>Use commands like <code className="text-xs bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-indigo-600 dark:text-indigo-300">/ELI5</code> to modify prompts</span></li>
+              <li className="flex items-start"><span className="text-indigo-600 dark:text-indigo-400 mr-2 font-bold">•</span><span>Combine multiple commands for complex workflows</span></li>
+              <li className="flex items-start"><span className="text-indigo-600 dark:text-indigo-400 mr-2 font-bold">•</span><span>Click the star to bookmark favorites</span></li>
+              <li className="flex items-start"><span className="text-indigo-600 dark:text-indigo-400 mr-2 font-bold">•</span><span>Click the copy icon to copy directly</span></li>
+              <li className="flex items-start"><span className="text-indigo-600 dark:text-indigo-400 mr-2 font-bold">•</span><span>Click the + button to stack into Prompt Builder</span></li>
+            </ul>
+          </div>
+        </aside>
 
-        {/* <footer className="mt-12 text-center text-sm text-gray-500">
-          <div className="border-t border-gray-200 my-6" />
-          <p>Prompt Shortcuts • Data Engineering Tamil</p>
-        </footer> */}
+        <main className="lg:col-span-3" aria-live="polite">
+          <div className="mb-4 flex justify-between items-center">
+            <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
+              {selectedCategory === 'All' ? 'All Shortcuts' : selectedCategory}
+              <span className="text-slate-500 dark:text-slate-400 text-sm font-normal ml-2">({filteredShortcuts.length} shortcuts)</span>
+            </h2>
+            <div className="text-sm font-medium text-slate-500 dark:text-slate-400">{favorites.length} favorites</div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {filteredShortcuts.map((shortcut) => (
+              <article
+                key={shortcut.id}
+                className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 hover:border-indigo-300 dark:hover:border-indigo-700/60 hover:shadow-md transition-all"
+                aria-labelledby={`sc-${shortcut.id}`}
+              >
+                <div className="flex justify-between items-start gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <code id={`sc-${shortcut.id}`} className="bg-indigo-50 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/50 text-xs font-mono px-2 py-0.5 rounded font-semibold">
+                        {shortcut.command}
+                      </code>
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800/50">
+                        {shortcut.category}
+                      </span>
+                    </div>
+                    <p className="mt-2.5 text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{shortcut.description}</p>
+                  </div>
+
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button
+                      onClick={() => addShortcut(shortcut)}
+                      className="p-1.5 rounded-md text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                      title={`Add ${shortcut.command} to prompt`}
+                      aria-label={`Add ${shortcut.command}`}
+                    >
+                      <Plus className="h-4 w-4" />
+                    </button>
+
+                    <button
+                      onClick={() => copyCommand(shortcut.command)}
+                      className="p-1.5 rounded-md text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
+                      title={`Copy ${shortcut.command}`}
+                      aria-label={`Copy ${shortcut.command}`}
+                    >
+                      <Copy className="h-4 w-4" />
+                    </button>
+
+                    <button
+                      onClick={() => toggleFavorite(shortcut.id)}
+                      className={`p-1.5 rounded-md transition-colors ${
+                        favorites.includes(shortcut.id)
+                          ? 'text-amber-500'
+                          : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200'
+                      }`}
+                      title={favorites.includes(shortcut.id) ? 'Unfavorite' : 'Favorite'}
+                      aria-pressed={favorites.includes(shortcut.id)}
+                    >
+                      <Star className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          {filteredShortcuts.length === 0 && (
+            <div className="text-center py-12 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
+              <p className="text-slate-500 dark:text-slate-400 text-sm">No shortcuts match your search criteria</p>
+            </div>
+          )}
+        </main>
       </div>
     </div>
   );

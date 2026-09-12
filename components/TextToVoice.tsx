@@ -201,9 +201,9 @@ export default function TextToVoice() {
     const idx = Math.max(0, Math.min(charIndex, text.length));
     return (
       <>
-        <span className="text-slate-700">{text.slice(0, idx)}</span>
-        <mark className="bg-yellow-200">{text.slice(idx, idx + 40)}</mark>
-        <span className="text-slate-500">{text.slice(idx + 40)}</span>
+        <span className="text-slate-700 dark:text-slate-200">{text.slice(0, idx)}</span>
+        <mark className="bg-yellow-200 dark:bg-yellow-900/60 dark:text-yellow-200 rounded px-0.5">{text.slice(idx, idx + 40)}</mark>
+        <span className="text-slate-500 dark:text-slate-400">{text.slice(idx + 40)}</span>
       </>
     );
   }, [text, charIndex]);
@@ -215,41 +215,41 @@ export default function TextToVoice() {
   }, [voices]);
 
   return (
-    <section className="max-w-4xl mx-auto p-4">
-      <h2 className="text-xl font-semibold mb-2">Text to Voice (Browser TTS)</h2>
+    <section className="max-w-4xl mx-auto p-4 text-slate-900 dark:text-slate-100">
+      <h2 className="text-xl font-semibold mb-2 text-slate-900 dark:text-slate-100">Text to Voice (Browser TTS)</h2>
 
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
         rows={6}
-        className="w-full border rounded p-3 text-sm font-sans mb-3"
+        className="w-full border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-sm font-sans mb-3 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
       />
 
       <div className="flex flex-wrap gap-2 items-center">
-        <button onClick={speak} className="px-3 py-2 bg-emerald-600 text-white rounded text-sm" disabled={playing}>Play</button>
-        <button onClick={pause} className="px-3 py-2 border rounded text-sm" disabled={!playing || paused}>Pause</button>
-        <button onClick={resume} className="px-3 py-2 border rounded text-sm" disabled={!paused}>Resume</button>
-        <button onClick={stop} className="px-3 py-2 border rounded text-sm" disabled={!playing && !paused}>Stop</button>
-        <button onClick={copyText} className="ml-auto px-3 py-2 border rounded text-sm">Copy</button>
-        <button onClick={() => exportText(format)} className="px-3 py-2 border rounded text-sm">Export</button>
-        <button onClick={share} className="px-3 py-2 border rounded text-sm">Share</button>
+        <button onClick={speak} className="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg text-sm transition-colors" disabled={playing}>Play</button>
+        <button onClick={pause} className="px-3 py-2 border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 rounded-lg text-sm disabled:opacity-50" disabled={!playing || paused}>Pause</button>
+        <button onClick={resume} className="px-3 py-2 border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 rounded-lg text-sm disabled:opacity-50" disabled={!paused}>Resume</button>
+        <button onClick={stop} className="px-3 py-2 border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 rounded-lg text-sm disabled:opacity-50" disabled={!playing && !paused}>Stop</button>
+        <button onClick={copyText} className="ml-auto px-3 py-2 border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 rounded-lg text-sm">Copy</button>
+        <button onClick={() => exportText(format)} className="px-3 py-2 border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 rounded-lg text-sm">Export</button>
+        <button onClick={share} className="px-3 py-2 border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 rounded-lg text-sm">Share</button>
       </div>
 
-      <div className="mt-4 border rounded bg-slate-50 p-3 text-sm">
-        <div className="font-semibold mb-1">Realtime Preview</div>
-        <div className="bg-white rounded p-2 min-h-[80px]">{previewHighlighted}</div>
+      <div className="mt-4 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-900/60 p-3 text-sm">
+        <div className="font-semibold mb-1 text-slate-800 dark:text-slate-200">Realtime Preview</div>
+        <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg p-2 min-h-[80px]">{previewHighlighted}</div>
       </div>
 
       <div className="mt-4 grid md:grid-cols-2 gap-3">
-        <div className="rounded border p-3 bg-white">
-          <label className="block text-xs font-medium">Voice preset</label>
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-white dark:bg-slate-900/80 shadow-sm">
+          <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">Voice preset</label>
           <div className="mt-2 grid grid-cols-2 gap-2">
             {["female", "male", "child", "aged"].map((type) => (
               <button
                 key={type}
                 onClick={() => setVoiceType(type as VoiceType)}
-                className={`px-2 py-1 text-sm rounded ${
-                  voiceType === type ? "bg-blue-600 text-white" : "border"
+                className={`px-2 py-1 text-sm rounded-lg font-medium transition-colors ${
+                  voiceType === type ? "bg-blue-600 text-white" : "border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300"
                 }`}
               >
                 {type[0].toUpperCase() + type.slice(1)}
@@ -257,11 +257,11 @@ export default function TextToVoice() {
             ))}
           </div>
 
-          <label className="block text-xs font-medium mt-3">Voice (manual)</label>
+          <label className="block text-xs font-medium mt-3 text-slate-700 dark:text-slate-300">Voice (manual)</label>
           <select
             value={selectedVoiceUri ?? ""}
             onChange={(e) => setSelectedVoiceUri(e.target.value)}
-            className="w-full mt-1 border rounded px-2 py-1 text-sm"
+            className="w-full mt-1 border border-slate-300 dark:border-slate-700 rounded-lg px-2 py-1.5 text-sm bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100"
           >
             {voiceOptions.map((v) => (
               <option key={v.value} value={v.value}>{v.label}</option>
@@ -269,19 +269,19 @@ export default function TextToVoice() {
           </select>
 
           <div className="mt-3 grid gap-2">
-            <label className="text-xs">Rate ({rate.toFixed(2)})</label>
+            <label className="text-xs text-slate-600 dark:text-slate-400">Rate ({rate.toFixed(2)})</label>
             <input type="range" min={0.4} max={2.0} step={0.05} value={rate} onChange={(e) => setRate(Number(e.target.value))} />
-            <label className="text-xs">Pitch ({pitch.toFixed(2)})</label>
+            <label className="text-xs text-slate-600 dark:text-slate-400">Pitch ({pitch.toFixed(2)})</label>
             <input type="range" min={0.5} max={2.0} step={0.05} value={pitch} onChange={(e) => setPitch(Number(e.target.value))} />
-            <label className="text-xs">Volume ({volume.toFixed(2)})</label>
+            <label className="text-xs text-slate-600 dark:text-slate-400">Volume ({volume.toFixed(2)})</label>
             <input type="range" min={0} max={1} step={0.05} value={volume} onChange={(e) => setVolume(Number(e.target.value))} />
           </div>
         </div>
 
-        <div className="rounded border p-3 bg-white text-sm">
-          <div>Voices loaded: {voicesLoaded ? voices.length : "loading..."}</div>
-          <div>Last action: {lastActionAt ?? "—"}</div>
-          <div className="text-red-600 mt-1">{error}</div>
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-white dark:bg-slate-900/80 shadow-sm text-sm space-y-2">
+          <div className="text-slate-700 dark:text-slate-300">Voices loaded: <span className="font-semibold">{voicesLoaded ? voices.length : "loading..."}</span></div>
+          <div className="text-slate-700 dark:text-slate-300">Last action: <span className="font-medium">{lastActionAt ?? "—"}</span></div>
+          <div className="text-red-600 dark:text-red-400 mt-1">{error}</div>
         </div>
       </div>
     </section>

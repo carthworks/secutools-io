@@ -275,7 +275,11 @@ export default function NetworkTools() {
             <button
               key={k}
               onClick={() => setTab(k as any)}
-              className={`px-3 py-1 rounded text-sm border ${tab === k ? "bg-indigo-600 text-white" : "bg-white text-slate-700"}`}
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
+                tab === k 
+                  ? "bg-indigo-600 text-white border-indigo-600" 
+                  : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"
+              }`}
             >
               {label}
             </button>
@@ -283,15 +287,15 @@ export default function NetworkTools() {
         </div>
 
         {/* Content */}
-        <div className="mt-4">
+        <div className="mt-4 text-slate-800 dark:text-slate-200">
           {tab === "subnet" && (
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="text-xs text-slate-500">CIDR</label>
-                <input value={cidr} onChange={(e) => setCidr(e.target.value)} className="w-full border rounded p-2" />
+                <label className="text-xs text-slate-500 dark:text-slate-400">CIDR</label>
+                <input value={cidr} onChange={(e) => setCidr(e.target.value)} className="w-full border border-slate-300 dark:border-slate-700 rounded-lg p-2 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100" />
                 <div className="mt-3 space-y-2 text-sm">
                   {subnetRes.error ? (
-                    <div className="text-rose-600">Error: {String((subnetRes as any).error)}</div>
+                    <div className="text-rose-600 dark:text-rose-400">Error: {String((subnetRes as any).error)}</div>
                   ) : (
                     <>
                       <div><strong>Network:</strong> {subnetRes.network}</div>
@@ -306,11 +310,11 @@ export default function NetworkTools() {
               </div>
 
               <div>
-                <div className="flex gap-2">
-                  <button onClick={() => handleCopyResult(JSON.stringify(subnetRes, null, 2), "Copied subnet JSON")} className="px-3 py-1 border rounded flex items-center gap-2"><Copy className="w-4 h-4" /> Copy</button>
-                  <button onClick={() => exportResult("subnet", JSON.stringify(subnetRes, null, 2), "json")} className="px-3 py-1 border rounded">Export JSON</button>
-                  <button onClick={() => shareText(JSON.stringify(subnetRes, null, 2))} className="px-3 py-1 border rounded"><Share2 className="w-4 h-4" /> Share</button>
-                  <button onClick={() => printHtml("Subnet Result", `<pre>${JSON.stringify(subnetRes, null, 2)}</pre>`)} className="px-3 py-1 border rounded ml-auto">Print</button>
+                <div className="flex gap-2 flex-wrap">
+                  <button onClick={() => handleCopyResult(JSON.stringify(subnetRes, null, 2), "Copied subnet JSON")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-lg flex items-center gap-2 text-sm"><Copy className="w-4 h-4" /> Copy</button>
+                  <button onClick={() => exportResult("subnet", JSON.stringify(subnetRes, null, 2), "json")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-lg text-sm">Export JSON</button>
+                  <button onClick={() => shareText(JSON.stringify(subnetRes, null, 2))} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-lg flex items-center gap-2 text-sm"><Share2 className="w-4 h-4" /> Share</button>
+                  <button onClick={() => printHtml("Subnet Result", `<pre>${JSON.stringify(subnetRes, null, 2)}</pre>`)} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-lg text-sm ml-auto">Print</button>
                 </div>
               </div>
             </div>
@@ -319,23 +323,23 @@ export default function NetworkTools() {
           {tab === "conv" && (
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="text-xs text-slate-500">IPv4 address</label>
-                <input value={convIp} onChange={(e) => setConvIp(e.target.value)} className="w-full border rounded p-2" />
+                <label className="text-xs text-slate-500 dark:text-slate-400">IPv4 address</label>
+                <input value={convIp} onChange={(e) => setConvIp(e.target.value)} className="w-full border border-slate-300 dark:border-slate-700 rounded-lg p-2 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100" />
                 <div className="mt-3 text-sm">
-                  {convInt === null ? <div className="text-rose-600">Invalid IPv4</div> : (
-                    <>
+                  {convInt === null ? <div className="text-rose-600 dark:text-rose-400">Invalid IPv4</div> : (
+                    <div className="space-y-1">
                       <div><strong>Integer:</strong> {convInt.int}</div>
-                      <div><strong>Binary:</strong> <code className="text-xs font-mono">{convInt.bin}</code></div>
+                      <div><strong>Binary:</strong> <code className="text-xs font-mono bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded">{convInt.bin}</code></div>
                       <div><strong>Hex:</strong> {convInt.hex}</div>
-                    </>
+                    </div>
                   )}
                 </div>
               </div>
               <div>
-                <div className="flex gap-2">
-                  <button onClick={() => convInt && handleCopyResult(String(convInt.int))} className="px-3 py-1 border rounded">Copy Int</button>
-                  <button onClick={() => convInt && exportResult("ipv4", JSON.stringify(convInt, null, 2), "json")} className="px-3 py-1 border rounded">Export</button>
-                  <button onClick={() => convInt && shareText(JSON.stringify(convInt, null, 2))} className="px-3 py-1 border rounded">Share</button>
+                <div className="flex gap-2 flex-wrap">
+                  <button onClick={() => convInt && handleCopyResult(String(convInt.int))} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-lg text-sm">Copy Int</button>
+                  <button onClick={() => convInt && exportResult("ipv4", JSON.stringify(convInt, null, 2), "json")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-lg text-sm">Export</button>
+                  <button onClick={() => convInt && shareText(JSON.stringify(convInt, null, 2))} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-lg text-sm">Share</button>
                 </div>
               </div>
             </div>
@@ -344,23 +348,23 @@ export default function NetworkTools() {
           {tab === "range" && (
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="text-xs text-slate-500">Start IP</label>
-                <input value={rangeStart} onChange={(e) => setRangeStart(e.target.value)} className="w-full border rounded p-2" />
-                <label className="text-xs text-slate-500 mt-2">End IP</label>
-                <input value={rangeEnd} onChange={(e) => setRangeEnd(e.target.value)} className="w-full border rounded p-2" />
+                <label className="text-xs text-slate-500 dark:text-slate-400">Start IP</label>
+                <input value={rangeStart} onChange={(e) => setRangeStart(e.target.value)} className="w-full border border-slate-300 dark:border-slate-700 rounded-lg p-2 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100" />
+                <label className="text-xs text-slate-500 dark:text-slate-400 mt-2 block">End IP</label>
+                <input value={rangeEnd} onChange={(e) => setRangeEnd(e.target.value)} className="w-full border border-slate-300 dark:border-slate-700 rounded-lg p-2 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100" />
                 <div className="mt-3 text-sm">
-                  {("error" in (rangeRes as any)) ? <div className="text-rose-600">{(rangeRes as any).error}</div> : (
+                  {("error" in (rangeRes as any)) ? <div className="text-rose-600 dark:text-rose-400">{(rangeRes as any).error}</div> : (
                     <div>Count: {(rangeRes as any).count}</div>
                   )}
                 </div>
               </div>
               <div>
-                <div className="flex gap-2 mb-2">
-                  <button onClick={() => { if (!("error" in (rangeRes as any))) handleCopyResult(((rangeRes as any).list).join("\n"), "Copied list"); }} className="px-3 py-1 border rounded">Copy list</button>
-                  <button onClick={() => { if (!("error" in (rangeRes as any))) exportResult("range", ((rangeRes as any).list).join("\n"), "txt"); }} className="px-3 py-1 border rounded">Export</button>
+                <div className="flex gap-2 mb-2 flex-wrap">
+                  <button onClick={() => { if (!("error" in (rangeRes as any))) handleCopyResult(((rangeRes as any).list).join("\n"), "Copied list"); }} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-lg text-sm">Copy list</button>
+                  <button onClick={() => { if (!("error" in (rangeRes as any))) exportResult("range", ((rangeRes as any).list).join("\n"), "txt"); }} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-lg text-sm">Export</button>
                 </div>
-                <div className="overflow-auto max-h-60 border rounded p-2 bg-white text-sm">
-                  {("error" in (rangeRes as any)) ? <div className="text-rose-600">{(rangeRes as any).error}</div> : ((rangeRes as any).list || []).map((ip: string) => <div key={ip} className="py-0.5">{ip}</div>)}
+                <div className="overflow-auto max-h-60 border border-slate-200 dark:border-slate-700 rounded-lg p-2 bg-white dark:bg-slate-950 text-sm">
+                  {("error" in (rangeRes as any)) ? <div className="text-rose-600 dark:text-rose-400">{(rangeRes as any).error}</div> : ((rangeRes as any).list || []).map((ip: string) => <div key={ip} className="py-0.5">{ip}</div>)}
                 </div>
               </div>
             </div>
@@ -369,17 +373,17 @@ export default function NetworkTools() {
           {tab === "maclookup" && (
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="text-xs text-slate-500">MAC address</label>
-                <input value={macQuery} onChange={(e) => setMacQuery(e.target.value)} className="w-full border rounded p-2" />
-                <div className="mt-3 text-sm">
-                  <div><strong>Normalized:</strong> {macNormalized || <span className="text-rose-600">Invalid</span>}</div>
+                <label className="text-xs text-slate-500 dark:text-slate-400">MAC address</label>
+                <input value={macQuery} onChange={(e) => setMacQuery(e.target.value)} className="w-full border border-slate-300 dark:border-slate-700 rounded-lg p-2 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100" />
+                <div className="mt-3 text-sm space-y-1">
+                  <div><strong>Normalized:</strong> {macNormalized || <span className="text-rose-600 dark:text-rose-400">Invalid</span>}</div>
                   <div><strong>Vendor:</strong> {macVendor}</div>
                 </div>
               </div>
               <div>
-                <div className="flex gap-2">
-                  <button onClick={() => macNormalized && handleCopyResult(macNormalized, "MAC copied")} className="px-3 py-1 border rounded">Copy</button>
-                  <button onClick={() => macNormalized && exportResult("mac", JSON.stringify({ mac: macNormalized, vendor: macVendor }, null, 2), "json")} className="px-3 py-1 border rounded">Export</button>
+                <div className="flex gap-2 flex-wrap">
+                  <button onClick={() => macNormalized && handleCopyResult(macNormalized, "MAC copied")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-lg text-sm">Copy</button>
+                  <button onClick={() => macNormalized && exportResult("mac", JSON.stringify({ mac: macNormalized, vendor: macVendor }, null, 2), "json")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-lg text-sm">Export</button>
                 </div>
               </div>
             </div>
@@ -388,27 +392,27 @@ export default function NetworkTools() {
           {tab === "macgen" && (
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="text-xs text-slate-500">Options</label>
-                <div className="flex gap-2 items-center mt-2">
-                  <label className="flex items-center gap-1 text-sm">
+                <label className="text-xs text-slate-500 dark:text-slate-400">Options</label>
+                <div className="flex gap-2 items-center mt-2 flex-wrap">
+                  <label className="flex items-center gap-1 text-sm text-slate-700 dark:text-slate-300">
                     <input type="checkbox" checked={macOpts.multicast} onChange={(e) => setMacOpts({ ...macOpts, multicast: e.target.checked })} /> Multicast
                   </label>
-                  <label className="flex items-center gap-1 text-sm">
+                  <label className="flex items-center gap-1 text-sm text-slate-700 dark:text-slate-300">
                     <input type="checkbox" checked={macOpts.local} onChange={(e) => setMacOpts({ ...macOpts, local: e.target.checked })} /> Locally administered
                   </label>
-                  <button onClick={() => setMacOpts({ ...macOpts })} className="px-2 py-1 border rounded text-xs ml-auto">Refresh</button>
+                  <button onClick={() => setMacOpts({ ...macOpts })} className="px-2 py-1 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded text-xs ml-auto text-slate-700 dark:text-slate-300">Refresh</button>
                 </div>
 
                 <div className="mt-4 text-sm">
-                  <div><strong>Generated MAC:</strong> {generatedMac}</div>
+                  <div><strong>Generated MAC:</strong> <span className="font-mono">{generatedMac}</span></div>
                 </div>
               </div>
               <div>
-                <div className="flex gap-2">
-                  <button onClick={() => handleCopyResult(generatedMac, "MAC copied")} className="px-3 py-1 border rounded">Copy</button>
-                  <button onClick={() => exportResult("mac-gen", generatedMac, "txt")} className="px-3 py-1 border rounded">Export</button>
+                <div className="flex gap-2 flex-wrap">
+                  <button onClick={() => handleCopyResult(generatedMac, "MAC copied")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-lg text-sm">Copy</button>
+                  <button onClick={() => exportResult("mac-gen", generatedMac, "txt")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-lg text-sm">Export</button>
                 </div>
-                <div className="text-xs text-slate-500 mt-3">Tip: Locally-administered addresses set internal network device addressing.</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-3">Tip: Locally-administered addresses set internal network device addressing.</div>
               </div>
             </div>
           )}
@@ -416,18 +420,18 @@ export default function NetworkTools() {
           {tab === "ula" && (
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="text-xs text-slate-500">Generate ULA /48</label>
+                <label className="text-xs text-slate-500 dark:text-slate-400">Generate ULA /48</label>
                 <div className="mt-2">
-                  <button onClick={() => setUlaRes(generateUla())} className="px-3 py-1 border rounded">Generate</button>
+                  <button onClick={() => setUlaRes(generateUla())} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-lg text-sm font-medium">Generate</button>
                 </div>
-                <div className="mt-3 text-sm">{ulaRes ? <div><strong>ULA:</strong> {ulaRes}</div> : <div className="text-slate-500">No ULA generated yet</div>}</div>
+                <div className="mt-3 text-sm">{ulaRes ? <div><strong>ULA:</strong> <code className="font-mono bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded">{ulaRes}</code></div> : <div className="text-slate-500 dark:text-slate-400">No ULA generated yet</div>}</div>
               </div>
               <div>
-                <div className="flex gap-2">
-                  <button onClick={() => ulaRes && handleCopyResult(ulaRes, "ULA copied")} className="px-3 py-1 border rounded">Copy</button>
-                  <button onClick={() => ulaRes && exportResult("ula", ulaRes, "txt")} className="px-3 py-1 border rounded">Export</button>
+                <div className="flex gap-2 flex-wrap">
+                  <button onClick={() => ulaRes && handleCopyResult(ulaRes, "ULA copied")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-lg text-sm">Copy</button>
+                  <button onClick={() => ulaRes && exportResult("ula", ulaRes, "txt")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-lg text-sm">Export</button>
                 </div>
-                <div className="text-xs text-slate-500 mt-3">ULA prefixes start with <code>fd</code> and are for local networks (not globally routable).</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-3">ULA prefixes start with <code>fd</code> and are for local networks (not globally routable).</div>
               </div>
             </div>
           )}
@@ -435,21 +439,22 @@ export default function NetworkTools() {
           {tab === "math" && (
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="text-xs text-slate-500">Expression</label>
-                <input value={expr} onChange={(e) => setExpr(e.target.value)} className="w-full border rounded p-2 font-mono" />
+                <label className="text-xs text-slate-500 dark:text-slate-400">Expression</label>
+                <input value={expr} onChange={(e) => setExpr(e.target.value)} className="w-full border border-slate-300 dark:border-slate-700 rounded-lg p-2 font-mono bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100" />
                 <div className="mt-3 text-sm">
-                  {("error" in (mathRes as any)) ? <div className="text-rose-600">{(mathRes as any).error}</div> : <div><strong>Result:</strong> {(mathRes as any).value}</div>}
+                  {("error" in (mathRes as any)) ? <div className="text-rose-600 dark:text-rose-400">{(mathRes as any).error}</div> : <div><strong>Result:</strong> {(mathRes as any).value}</div>}
                 </div>
               </div>
               <div>
-                <div className="flex gap-2">
-                  <button onClick={async () => { if (!("error" in (mathRes as any))) { await copyText(String((mathRes as any).value)); alert("Copied"); } }} className="px-3 py-1 border rounded">Copy</button>
-                  <button onClick={() => exportResult("calc", JSON.stringify(mathRes, null, 2), "json")} className="px-3 py-1 border rounded">Export</button>
+                <div className="flex gap-2 flex-wrap">
+                  <button onClick={async () => { if (!("error" in (mathRes as any))) { await copyText(String((mathRes as any).value)); alert("Copied"); } }} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-lg text-sm">Copy</button>
+                  <button onClick={() => exportResult("calc", JSON.stringify(mathRes, null, 2), "json")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-lg text-sm">Export</button>
                 </div>
-                <div className="text-xs text-slate-500 mt-3">Supports + - * / % ^ and parentheses. Example: <code>2^8 + (1024/4)</code></div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-3">Supports + - * / % ^ and parentheses. Example: <code>2^8 + (1024/4)</code></div>
               </div>
             </div>
           )}
+        </div>
         </div>
       </Section>
     </div>
