@@ -218,14 +218,14 @@ export default function QrScannerSafe(): JSX.Element {
         <h3 id="qr-title" className="text-2xl font-bold text-indigo-700 dark:text-indigo-400">
           🛡️ QR Code Security Analyzer
         </h3>
-        <p className="text-sm text-slate-600 dark:text-slate-300">
+        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
           Scan a QR with camera or upload an image. Decoding happens in your browser.
         </p>
       </div>
 
       {/* Video + hidden canvas */}
-      <div className="rounded-lg border p-4 bg-white dark:bg-slate-800 space-y-3">
-        <div className="flex items-center gap-2">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-white dark:bg-slate-900 shadow-sm space-y-3">
+        <div className="flex items-center gap-3 flex-wrap">
           {!scanning ? (
             <button
               type="button"
@@ -234,20 +234,20 @@ export default function QrScannerSafe(): JSX.Element {
                 console.error("startCamera top-level error", e);
                 setError("Unable to start camera.");
               })}
-              className="px-3 py-1 bg-indigo-600 text-white rounded"
+              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg shadow-sm transition text-sm"
             >
               Start Camera
             </button>
           ) : (
-            <button type="button" onClick={stopCamera} className="px-3 py-1 bg-rose-600 text-white rounded">
+            <button type="button" onClick={stopCamera} className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-medium rounded-lg shadow-sm transition text-sm">
               Stop Camera
             </button>
           )}
-          <span className="text-xs text-slate-500">Use the environment/back camera for best results.</span>
+          <span className="text-xs text-slate-500 dark:text-slate-400">Use the environment/back camera for best results.</span>
         </div>
 
-        <div className="bg-black/5 rounded overflow-hidden">
-          <video ref={videoRef} className="w-full h-auto bg-black" playsInline muted />
+        <div className="bg-slate-950 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800">
+          <video ref={videoRef} className="w-full h-auto bg-black max-h-[400px] object-contain mx-auto" playsInline muted />
         </div>
 
         {/* offscreen canvas used for scanning */}
@@ -255,28 +255,28 @@ export default function QrScannerSafe(): JSX.Element {
       </div>
 
       {/* File Upload */}
-      <div className="rounded-lg border p-4 bg-white dark:bg-slate-800">
-        <label htmlFor="qr-file" className="block text-sm font-medium mb-2">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-white dark:bg-slate-900 shadow-sm">
+        <label htmlFor="qr-file" className="block text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">
           📁 Upload QR Code Image
         </label>
-        <input id="qr-file" type="file" accept="image/*" onChange={handleFileUpload} className="block w-full text-sm" />
-        <p className="text-xs text-slate-500 mt-2">PNG/JPG screenshots work well.</p>
+        <input id="qr-file" type="file" accept="image/*" onChange={handleFileUpload} className="block w-full text-sm text-slate-600 dark:text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 dark:file:bg-indigo-950/60 file:text-indigo-700 dark:file:text-indigo-400 hover:file:bg-indigo-100 dark:hover:file:bg-indigo-900/60 cursor-pointer" />
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">PNG/JPG screenshots work well.</p>
       </div>
 
       {/* Results */}
       {result && (
-        <div className="p-4 rounded-lg border shadow bg-white dark:bg-slate-800" aria-live="polite">
-          <h4 className="font-semibold mb-2">Decoded Result</h4>
+        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm bg-white dark:bg-slate-900" aria-live="polite">
+          <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-2">Decoded Result</h4>
           {result.type === "url" ? (
-            <a href={result.value} target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline break-all">
+            <a href={result.value} target="_blank" rel="noopener noreferrer" className="text-indigo-600 dark:text-indigo-400 hover:underline break-all font-mono text-sm">
               {result.value}
             </a>
           ) : (
-            <p className="break-all">{result.value}</p>
+            <p className="break-all font-mono text-sm text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-slate-950 p-3 rounded-lg border border-slate-200 dark:border-slate-800">{result.value}</p>
           )}
 
           {result.warnings.length > 0 && (
-            <ul className="mt-3 list-disc pl-5 text-sm text-red-600">
+            <ul className="mt-3 list-disc pl-5 text-sm text-rose-600 dark:text-rose-400 space-y-1">
               {result.warnings.map((w, i) => (
                 <li key={i}>{w}</li>
               ))}
@@ -286,7 +286,7 @@ export default function QrScannerSafe(): JSX.Element {
       )}
 
       {error && (
-        <div className="text-sm text-red-600" role="alert">
+        <div className="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/40 border-l-4 border-rose-500 text-sm text-rose-700 dark:text-rose-300" role="alert">
           {error}
         </div>
       )}

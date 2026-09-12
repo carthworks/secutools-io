@@ -354,14 +354,12 @@ export default function DeviceInfo() {
       lines.push(`Notes: ${info.suggestions.join("; ")}`);
     }
     return lines.join(" · ");
-  }, [info]);
-
-  return (
-    <div className="max-w-4xl mx-auto p-4 sm:p-6">
+  }, [info]);  return (
+    <div className="max-w-4xl mx-auto p-4 sm:p-6 text-slate-900 dark:text-slate-100">
       <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold">Device Information</h1>
-          <p className="text-sm text-slate-500 max-w-xl">
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Device Information</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 max-w-xl">
             Quick snapshot of your current device — screen, DPR, user agent, network hints, accessibility preferences. Data is processed in your browser.
           </p>
         </div>
@@ -370,7 +368,7 @@ export default function DeviceInfo() {
           <button
             onClick={refreshNow}
             title="Refresh"
-            className="inline-flex items-center gap-2 px-3 py-1 rounded border text-sm"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm transition-colors"
             aria-label="Refresh device info"
           >
             <RefreshCw className="w-4 h-4" /> Refresh
@@ -378,14 +376,14 @@ export default function DeviceInfo() {
           <button
             onClick={copyText}
             title="Copy JSON"
-            className="inline-flex items-center gap-2 px-3 py-1 rounded border text-sm"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm transition-colors"
           >
             <Copy className="w-4 h-4" /> Copy
           </button>
           <button
             onClick={shareResult}
             title="Share"
-            className="inline-flex items-center gap-2 px-3 py-1 rounded border text-sm"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm transition-colors"
           >
             <Share2 className="w-4 h-4" /> Share
           </button>
@@ -394,36 +392,36 @@ export default function DeviceInfo() {
 
       <main className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* left: controls & small summary */}
-        <section className="md:col-span-1 bg-white p-4 rounded border shadow-sm">
+        <section className="md:col-span-1 bg-white dark:bg-slate-900/90 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
           <div className="flex items-start gap-3">
             <div className="flex-1">
-              <h2 className="text-sm font-medium">Summary</h2>
-              <div className="text-xs text-slate-600 mt-1">{summary}</div>
+              <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Summary</h2>
+              <div className="text-xs text-slate-600 dark:text-slate-400 mt-1">{summary}</div>
             </div>
             <div className="text-xs text-slate-400">{info?.timeZone ?? ""}</div>
           </div>
 
           <div className="mt-4 space-y-2">
-            <div className="text-xs text-slate-500">Export</div>
-            <div className="flex gap-2">
-              <button onClick={exportText} className="px-2 py-1 rounded border text-xs" aria-label="Export text">TXT</button>
-              <button onClick={exportJSON} className="px-2 py-1 rounded border text-xs" aria-label="Export json">JSON</button>
-              <button onClick={exportMarkdown} className="px-2 py-1 rounded border text-xs" aria-label="Export markdown">MD</button>
-              <button onClick={printPDF} className="px-2 py-1 rounded border text-xs" aria-label="Print PDF"><Printer className="inline w-3 h-3" /> Print</button>
+            <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Export</div>
+            <div className="flex flex-wrap gap-2">
+              <button onClick={exportText} className="px-2.5 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs transition-colors" aria-label="Export text">TXT</button>
+              <button onClick={exportJSON} className="px-2.5 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs transition-colors" aria-label="Export json">JSON</button>
+              <button onClick={exportMarkdown} className="px-2.5 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs transition-colors" aria-label="Export markdown">MD</button>
+              <button onClick={printPDF} className="px-2.5 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs transition-colors" aria-label="Print PDF"><Printer className="inline w-3 h-3" /> Print</button>
             </div>
           </div>
 
-          <div className="mt-4 text-xs text-slate-500 space-y-1">
+          <div className="mt-4 text-xs text-slate-500 dark:text-slate-400 space-y-1">
             <div className="flex items-start gap-2">
-              <Info className="w-4 h-4 text-slate-400" />
+              <Info className="w-4 h-4 text-slate-400 mt-0.5 flex-shrink-0" />
               <div>All data stays in your browser. Use exports to save/share.</div>
             </div>
             {Array.isArray(info?.suggestions) && info.suggestions.length > 0 ? (
-              <div className="mt-2 flex items-start gap-2 text-xs text-amber-700">
-                <AlertTriangle className="w-4 h-4" />
+              <div className="mt-2 flex items-start gap-2 text-xs text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 p-2 rounded-lg border border-amber-200 dark:border-amber-900/50">
+                <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
                 <div>
-                  <div className="font-medium">Suggestions</div>
-                  <ul className="list-disc pl-5">
+                  <div className="font-semibold">Suggestions</div>
+                  <ul className="list-disc pl-4 mt-1 space-y-0.5">
                     {(info.suggestions as string[]).map((s) => (
                       <li key={s}>{s}</li>
                     ))}
@@ -436,14 +434,14 @@ export default function DeviceInfo() {
 
         {/* right: preview & formatted */}
         <section className="md:col-span-2 space-y-3">
-          <div className="bg-white p-4 rounded border shadow-sm">
+          <div className="bg-white dark:bg-slate-900/90 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-medium">Live Preview</h3>
-                <div className="text-xs text-slate-500">{mounted ? "Updated live" : "Loading..."}</div>
+                <h3 className="font-semibold text-slate-900 dark:text-slate-100">Live Preview</h3>
+                <div className="text-xs text-slate-500 dark:text-slate-400">{mounted ? "Updated live" : "Loading..."}</div>
               </div>
 
-              <div className="flex items-center gap-2 text-xs text-slate-500">
+              <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                 <div>{info ? new Date(info.timestamp).toLocaleString() : "-"}</div>
                 <div className="px-2">|</div>
                 <div>{info?.platform ?? "Unknown platform"}</div>
@@ -452,20 +450,20 @@ export default function DeviceInfo() {
 
             <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
               {/* Key fields card */}
-              <div className="p-3 rounded border bg-slate-50">
-                <div className="text-xs text-slate-500">Screen</div>
-                <div className="font-medium">
+              <div className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
+                <div className="text-xs text-slate-500 dark:text-slate-400">Screen</div>
+                <div className="font-medium text-slate-900 dark:text-slate-100">
                   {info ? `${info.screen?.width ?? "?"}×${info.screen?.height ?? "?"}` : "—"}
                 </div>
-                <div className="text-xs text-slate-500 mt-2">Viewport / DPR</div>
-                <div className="font-medium">
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-2">Viewport / DPR</div>
+                <div className="font-medium text-slate-900 dark:text-slate-100">
                   {info ? `${info.viewport?.width ?? "?"}×${info.viewport?.height ?? "?"} · ${info.devicePixelRatio ?? "?"} DPR` : "—"}
                 </div>
 
-                <div className="text-xs text-slate-500 mt-2">Network</div>
-                <div className="text-sm">{info?.connection?.effectiveType ?? "unknown"} {info?.connection?.saveData ? "· Save-Data" : ""}</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-2">Network</div>
+                <div className="text-sm text-slate-800 dark:text-slate-200">{info?.connection?.effectiveType ?? "unknown"} {info?.connection?.saveData ? "· Save-Data" : ""}</div>
 
-                <div className="text-xs text-slate-500 mt-2">Touch</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-2">Touch</div>
                 {(() => {
                   let touchInfo = "—";
                   if (info) {
@@ -473,50 +471,50 @@ export default function DeviceInfo() {
                       ? `Supports touch (${info.maxTouchPoints})`
                       : "No touch";
                   }
-                  return <div className="text-sm">{touchInfo}</div>;
+                  return <div className="text-sm text-slate-800 dark:text-slate-200">{touchInfo}</div>;
                 })()}
               </div>
 
               {/* Quick metadata */}
-              <div className="p-3 rounded border bg-slate-50">
-                <div className="text-xs text-slate-500">Platform</div>
-                <div className="font-medium">{info?.platform ?? "—"}</div>
+              <div className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
+                <div className="text-xs text-slate-500 dark:text-slate-400">Platform</div>
+                <div className="font-medium text-slate-900 dark:text-slate-100">{info?.platform ?? "—"}</div>
 
-                <div className="text-xs text-slate-500 mt-2">Locale</div>
-                <div className="font-medium">{info?.locale ?? "—"}</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-2">Locale</div>
+                <div className="font-medium text-slate-900 dark:text-slate-100">{info?.locale ?? "—"}</div>
 
-                <div className="text-xs text-slate-500 mt-2">Timezone</div>
-                <div className="font-medium">{info?.timeZone ?? "—"}</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-2">Timezone</div>
+                <div className="font-medium text-slate-900 dark:text-slate-100">{info?.timeZone ?? "—"}</div>
 
-                <div className="text-xs text-slate-500 mt-2">WebGL</div>
-                <div className="font-medium">{info?.hasWebGL ? "Available" : "Unavailable"}</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-2">WebGL</div>
+                <div className="font-medium text-slate-900 dark:text-slate-100">{info?.hasWebGL ? "Available" : "Unavailable"}</div>
 
-                  <div className="text-xs text-slate-500 mt-2">timeZone</div>
-                <div className="font-medium">{Intl.DateTimeFormat().resolvedOptions().timeZone }</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-2">Resolved Timezone</div>
+                <div className="font-medium text-slate-900 dark:text-slate-100">{Intl.DateTimeFormat().resolvedOptions().timeZone}</div>
               </div>
             </div>
 
             {/* formatted JSON preview */}
-            <div className="mt-3 rounded border p-3 bg-white">
-              <div ref={previewRef} className="prose-pre max-h-72 overflow-auto text-sm" aria-live="polite" dangerouslySetInnerHTML={{ __html: prettyHtml }} />
+            <div className="mt-3 rounded-lg border border-slate-200 dark:border-slate-800 p-3 bg-slate-50 dark:bg-slate-950 font-mono">
+              <div ref={previewRef} className="prose-pre max-h-72 overflow-auto text-sm text-slate-800 dark:text-slate-200" aria-live="polite" dangerouslySetInnerHTML={{ __html: prettyHtml }} />
             </div>
           </div>
 
           {/* quick actions row */}
-          <div className="flex items-center justify-between">
-            <div className="text-xs text-slate-500">Lightweight • Client-side only • No tracking</div>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="text-xs text-slate-500 dark:text-slate-400">Lightweight • Client-side only • No tracking</div>
             <div className="flex items-center gap-2">
-              <button onClick={copyText} className="px-2 py-1 rounded border text-sm" aria-label="Copy JSON">
-                <Copy className="w-4 h-4 inline" /> Copy
+              <button onClick={copyText} className="px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm transition-colors" aria-label="Copy JSON">
+                <Copy className="w-4 h-4 inline mr-1" /> Copy
               </button>
-              <button onClick={exportJSON} className="px-2 py-1 rounded border text-sm" aria-label="Export JSON">
-                <Download className="w-4 h-4 inline" /> JSON
+              <button onClick={exportJSON} className="px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm transition-colors" aria-label="Export JSON">
+                <Download className="w-4 h-4 inline mr-1" /> JSON
               </button>
-              <button onClick={exportMarkdown} className="px-2 py-1 rounded border text-sm" aria-label="Export Markdown">
-                <FileText className="w-4 h-4 inline" /> MD
+              <button onClick={exportMarkdown} className="px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm transition-colors" aria-label="Export Markdown">
+                <FileText className="w-4 h-4 inline mr-1" /> MD
               </button>
-              <button onClick={printPDF} className="px-2 py-1 rounded border text-sm" aria-label="Print">
-                <Printer className="w-4 h-4 inline" /> Print
+              <button onClick={printPDF} className="px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm transition-colors" aria-label="Print">
+                <Printer className="w-4 h-4 inline mr-1" /> Print
               </button>
             </div>
           </div>
@@ -524,7 +522,7 @@ export default function DeviceInfo() {
       </main>
 
       {/* bottom note */}
-      <footer className="mt-6 text-xs text-slate-500">
+      <footer className="mt-6 text-xs text-slate-500 dark:text-slate-400">
         ⚡ Device details are collected in your browser only. For privacy, avoid sharing full User-Agent or other sensitive fields in public.
       </footer>
 

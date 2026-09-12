@@ -500,10 +500,10 @@ await processArrayBuffer(ab, { name: filename, size: ab.byteLength, mime: conten
   const gpsText = gps && gps.DecimalLatitude && gps.DecimalLongitude ? `${gps.DecimalLatitude.toFixed(6)}, ${gps.DecimalLongitude.toFixed(6)}` : "No GPS data";
 
   return (
-    <section className="max-w-4xl mx-auto p-4">
-      <header className="mb-4">
-        <h1 className="text-2xl font-semibold">EXIF Viewer — Detailed Metadata</h1>
-        <p className="text-sm text-slate-500 mt-1">
+    <section className="max-w-4xl mx-auto p-4 space-y-6">
+      <header>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">EXIF Viewer — Detailed Metadata</h1>
+        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
           Shows rich image metadata: file info, camera settings and location (when available).
         </p>
       </header>
@@ -511,23 +511,23 @@ await processArrayBuffer(ab, { name: filename, size: ab.byteLength, mime: conten
       <div
         onDrop={onDrop}
         onDragOver={(e) => e.preventDefault()}
-        className="rounded border border-dashed p-4 bg-white"
+        className="rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 p-5 bg-white dark:bg-slate-900 shadow-sm"
       >
-        <div className="flex flex-col md:flex-row gap-3 items-center">
-          <div className="flex-1">
-            <label className="block text-xs font-medium text-slate-700">Image URL (optional)</label>
+        <div className="flex flex-col md:flex-row gap-4 items-center">
+          <div className="flex-1 w-full">
+            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">Image URL (optional)</label>
             <div className="flex gap-2 mt-1">
               <input
                 value={sourceUrl}
                 onChange={(e) => setSourceUrl(e.target.value)}
                 placeholder="https://example.com/photo.jpg"
-                className="flex-1 border rounded px-3 py-2 text-sm"
+                className="flex-1 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
-              <button onClick={onUrlFetch} disabled={loading} className="px-3 py-2 bg-blue-600 text-white rounded text-sm">
+              <button onClick={onUrlFetch} disabled={loading} className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium transition shadow-sm disabled:opacity-50">
                 Fetch
               </button>
             </div>
-            <div className="text-xs text-slate-500 mt-2">Or drag & drop / upload a file (recommended for reliable metadata).</div>
+            <div className="text-xs text-slate-500 dark:text-slate-400 mt-2">Or drag & drop / upload a file (recommended for reliable metadata).</div>
           </div>
 
           <div className="flex gap-2">
@@ -543,7 +543,7 @@ await processArrayBuffer(ab, { name: filename, size: ab.byteLength, mime: conten
                 if (fileInputRef.current) fileInputRef.current.value = "";
               }}
             />
-            <button onClick={onBrowse} className="px-3 py-2 border rounded text-sm">
+            <button onClick={onBrowse} className="px-3.5 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-sm font-medium transition">
               Browse
             </button>
             <button
@@ -554,7 +554,7 @@ await processArrayBuffer(ab, { name: filename, size: ab.byteLength, mime: conten
                 setSourceUrl("");
                 setError(null);
               }}
-              className="px-3 py-2 border rounded text-sm"
+              className="px-3.5 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-sm font-medium transition"
             >
               Clear
             </button>
@@ -563,89 +563,89 @@ await processArrayBuffer(ab, { name: filename, size: ab.byteLength, mime: conten
       </div>
 
       {/* main grid */}
-      <div className="mt-4 grid md:grid-cols-3 gap-4">
-        <div className="md:col-span-2 space-y-3">
-          <div className="rounded border bg-slate-50 p-3 min-h-[220px] flex items-center justify-center">
+      <div className="grid md:grid-cols-3 gap-4">
+        <div className="md:col-span-2 space-y-4">
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 p-4 min-h-[220px] flex items-center justify-center shadow-sm">
             {loading ? (
-              <div>Loading…</div>
+              <div className="text-sm text-slate-600 dark:text-slate-400">Loading…</div>
             ) : imageUrl ? (
-              <img src={imageUrl} alt="Preview" className="max-h-96 object-contain" />
+              <img src={imageUrl} alt="Preview" className="max-h-96 object-contain rounded-lg" />
             ) : (
-              <div className="text-slate-400">Preview will appear here</div>
+              <div className="text-slate-400 dark:text-slate-500 text-sm">Preview will appear here</div>
             )}
           </div>
 
-          <div className="rounded border bg-slate-900 text-slate-50 p-3">
-            <div className="flex justify-between items-center">
-              <h2 className="text-sm font-semibold">Image metadata</h2>
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-4 shadow-sm">
+            <div className="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-2">
+              <h2 className="text-sm font-bold text-slate-900 dark:text-white">Image metadata</h2>
             </div>
 
             <table className="w-full mt-3 text-xs">
-              <tbody>
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
                 <tr>
-                  <td className="py-1 font-medium">Name</td>
-                  <td className="py-1">{displayName}</td>
+                  <td className="py-1.5 font-semibold text-slate-600 dark:text-slate-400 w-1/3">Name</td>
+                  <td className="py-1.5 text-slate-900 dark:text-slate-100">{displayName}</td>
                 </tr>
                 <tr>
-                  <td className="py-1 font-medium">File size</td>
-                  <td className="py-1">{displaySize}</td>
+                  <td className="py-1.5 font-semibold text-slate-600 dark:text-slate-400">File size</td>
+                  <td className="py-1.5 text-slate-900 dark:text-slate-100">{displaySize}</td>
                 </tr>
                 <tr>
-                  <td className="py-1 font-medium">File type</td>
-                  <td className="py-1">{displayMime.startsWith("image/") ? "JPEG" : displayMime}</td>
+                  <td className="py-1.5 font-semibold text-slate-600 dark:text-slate-400">File type</td>
+                  <td className="py-1.5 text-slate-900 dark:text-slate-100">{displayMime.startsWith("image/") ? "JPEG" : displayMime}</td>
                 </tr>
                 <tr>
-                  <td className="py-1 font-medium">MIME type</td>
-                  <td className="py-1">{displayMime}</td>
+                  <td className="py-1.5 font-semibold text-slate-600 dark:text-slate-400">MIME type</td>
+                  <td className="py-1.5 text-slate-900 dark:text-slate-100">{displayMime}</td>
                 </tr>
                 <tr>
-                  <td className="py-1 font-medium">Image size</td>
-                  <td className="py-1">{displayImageSize}</td>
+                  <td className="py-1.5 font-semibold text-slate-600 dark:text-slate-400">Image size</td>
+                  <td className="py-1.5 text-slate-900 dark:text-slate-100">{displayImageSize}</td>
                 </tr>
                 <tr>
-                  <td className="py-1 font-medium">Color space</td>
-                  <td className="py-1">{displayColorSpace ?? "—"}</td>
+                  <td className="py-1.5 font-semibold text-slate-600 dark:text-slate-400">Color space</td>
+                  <td className="py-1.5 text-slate-900 dark:text-slate-100">{displayColorSpace ?? "—"}</td>
                 </tr>
                 <tr>
-                  <td className="py-1 font-medium">Created</td>
-                  <td className="py-1">{displayCreated}</td>
+                  <td className="py-1.5 font-semibold text-slate-600 dark:text-slate-400">Created</td>
+                  <td className="py-1.5 text-slate-900 dark:text-slate-100">{displayCreated}</td>
                 </tr>
               </tbody>
             </table>
           </div>
 
           {/* Camera settings */}
-          <div className="rounded border bg-white p-3">
-            <h3 className="text-sm font-semibold">Camera settings</h3>
-            <table className="w-full mt-3 text-sm">
-              <tbody>
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-4 shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-2">Camera settings</h3>
+            <table className="w-full mt-3 text-xs">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
                 <tr>
-                  <td className="py-1 font-medium">Make</td>
-                  <td className="py-1">{cameraMake}</td>
+                  <td className="py-1.5 font-semibold text-slate-600 dark:text-slate-400 w-1/3">Make</td>
+                  <td className="py-1.5 text-slate-900 dark:text-slate-100">{cameraMake}</td>
                 </tr>
                 <tr>
-                  <td className="py-1 font-medium">Model</td>
-                  <td className="py-1">{cameraModel}</td>
+                  <td className="py-1.5 font-semibold text-slate-600 dark:text-slate-400">Model</td>
+                  <td className="py-1.5 text-slate-900 dark:text-slate-100">{cameraModel}</td>
                 </tr>
                 <tr>
-                  <td className="py-1 font-medium">Focal length</td>
-                  <td className="py-1">{focal ? `${fmtNumber(focal, 1)} mm` : "—"}</td>
+                  <td className="py-1.5 font-semibold text-slate-600 dark:text-slate-400">Focal length</td>
+                  <td className="py-1.5 text-slate-900 dark:text-slate-100">{focal ? `${fmtNumber(focal, 1)} mm` : "—"}</td>
                 </tr>
                 <tr>
-                  <td className="py-1 font-medium">Aperture</td>
-                  <td className="py-1">{apertureRaw ? fmtNumber(Array.isArray(apertureRaw) ? apertureRaw[0] : apertureRaw, 1) : "—"}</td>
+                  <td className="py-1.5 font-semibold text-slate-600 dark:text-slate-400">Aperture</td>
+                  <td className="py-1.5 text-slate-900 dark:text-slate-100">{apertureRaw ? fmtNumber(Array.isArray(apertureRaw) ? apertureRaw[0] : apertureRaw, 1) : "—"}</td>
                 </tr>
                 <tr>
-                  <td className="py-1 font-medium">Exposure</td>
-                  <td className="py-1">{formatExposureTime(exposureRaw)}</td>
+                  <td className="py-1.5 font-semibold text-slate-600 dark:text-slate-400">Exposure</td>
+                  <td className="py-1.5 text-slate-900 dark:text-slate-100">{formatExposureTime(exposureRaw)}</td>
                 </tr>
                 <tr>
-                  <td className="py-1 font-medium">ISO</td>
-                  <td className="py-1">{isoRaw ?? "—"}</td>
+                  <td className="py-1.5 font-semibold text-slate-600 dark:text-slate-400">ISO</td>
+                  <td className="py-1.5 text-slate-900 dark:text-slate-100">{isoRaw ?? "—"}</td>
                 </tr>
                 <tr>
-                  <td className="py-1 font-medium">Flash</td>
-                  <td className="py-1">{flash}</td>
+                  <td className="py-1.5 font-semibold text-slate-600 dark:text-slate-400">Flash</td>
+                  <td className="py-1.5 text-slate-900 dark:text-slate-100">{flash}</td>
                 </tr>
               </tbody>
             </table>
@@ -653,31 +653,31 @@ await processArrayBuffer(ab, { name: filename, size: ab.byteLength, mime: conten
         </div>
 
         {/* right column: location & actions */}
-        <aside className="space-y-3">
-          <div className="rounded border bg-white p-3">
-            <h3 className="text-sm font-semibold">Location</h3>
-            <div className="mt-2 text-sm">
-              <div>{gpsText}</div>
+        <aside className="space-y-4">
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-2">Location</h3>
+            <div className="mt-3 text-sm text-slate-700 dark:text-slate-300">
+              <div className="font-mono text-xs">{gpsText}</div>
               {gps && gps.DecimalLatitude && gps.DecimalLongitude && (
-                <div className="mt-2">
+                <div className="mt-3">
                   <a
                     target="_blank"
                     rel="noreferrer"
-                    className="text-blue-600 underline"
+                    className="inline-flex items-center text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline"
                     href={`https://www.google.com/maps/search/?api=1&query=${gps.DecimalLatitude},${gps.DecimalLongitude}`}
                   >
-                    Open in Google Maps
+                    Open in Google Maps →
                   </a>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="rounded border bg-white p-3">
-            <h3 className="text-sm font-semibold">Quick actions</h3>
-            <div className="flex flex-col gap-2 mt-2">
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-2">Quick actions</h3>
+            <div className="flex flex-col gap-2 mt-3">
               <button
-                className="px-3 py-2 border rounded text-sm"
+                className="px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium transition disabled:opacity-40"
                 onClick={() => {
                   const payload = {
                     name: displayName,
@@ -695,7 +695,7 @@ await processArrayBuffer(ab, { name: filename, size: ab.byteLength, mime: conten
               </button>
 
               <button
-                className="px-3 py-2 border rounded text-sm"
+                className="px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium transition disabled:opacity-40"
                 onClick={() => {
                   const md = [`# EXIF Metadata`, `**Name:** ${displayName}`, `**File size:** ${displaySize}`, `**MIME:** ${displayMime}`, `**Image size:** ${displayImageSize}`, `**Created:** ${displayCreated}`, ``, `## Camera settings`, `- Make: ${cameraMake}`, `- Model: ${cameraModel}`, `- Focal length: ${focal ? `${fmtNumber(focal,1)} mm` : "—"}`, `- Aperture: ${apertureRaw ? fmtNumber(Array.isArray(apertureRaw) ? apertureRaw[0] : apertureRaw,1) : "—"}`, `- Exposure: ${formatExposureTime(exposureRaw)}`, `- ISO: ${isoRaw ?? "—"}`, `- Flash: ${flash}`, ``, `## Location`, `- ${gpsText}`].join("\n");
                   const blob = new Blob([md], { type: "text/markdown" });
@@ -714,14 +714,14 @@ await processArrayBuffer(ab, { name: filename, size: ab.byteLength, mime: conten
           </div>
 
           {error && (
-            <div className="rounded border bg-red-50 p-3 text-sm text-red-700">
+            <div className="rounded-xl border border-rose-200 dark:border-rose-900 bg-rose-50 dark:bg-rose-950/40 p-3.5 text-sm text-rose-700 dark:text-rose-300 font-medium">
               ⚠ {error}
             </div>
           )}
         </aside>
       </div>
 
-      <footer className="mt-4 text-xs text-slate-500">
+      <footer className="text-xs text-slate-500 dark:text-slate-400">
         Note: This viewer extracts common EXIF fields. For complete metadata coverage use a dedicated EXIF library (exifreader / exif-js).
       </footer>
     </section>

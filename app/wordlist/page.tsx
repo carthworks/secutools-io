@@ -445,44 +445,44 @@ export default function WordlistGenerator(): JSX.Element {
         {/* Stats Dashboard */}
         {lastGenerated && lastGenerated.length > 0 && (
           <div className="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border border-blue-200 p-4">
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/40 rounded-xl border border-blue-200 dark:border-blue-800/60 p-4">
               <div className="flex items-center gap-2 mb-2">
-                <Hash className="w-5 h-5 text-blue-600" />
-                <span className="text-sm font-medium text-slate-700">Count</span>
+                <Hash className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Count</span>
               </div>
-              <div className="text-2xl font-bold text-blue-900">{stats.count.toLocaleString()}</div>
-              <div className="text-xs text-slate-600 mt-1">words generated</div>
+              <div className="text-2xl font-bold text-blue-900 dark:text-blue-200">{stats.count.toLocaleString()}</div>
+              <div className="text-xs text-slate-600 dark:text-slate-400 mt-1">words generated</div>
             </div>
 
-            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg border border-purple-200 p-4">
+            <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/40 dark:to-pink-950/40 rounded-xl border border-purple-200 dark:border-purple-800/60 p-4">
               <div className="flex items-center gap-2 mb-2">
-                <Zap className="w-5 h-5 text-purple-600" />
-                <span className="text-sm font-medium text-slate-700">Entropy</span>
+                <Zap className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Entropy</span>
               </div>
-              <div className="text-2xl font-bold text-purple-900">{stats.avgEntropy}</div>
-              <div className="text-xs text-slate-600 mt-1">bits (average)</div>
+              <div className="text-2xl font-bold text-purple-900 dark:text-purple-200">{stats.avgEntropy}</div>
+              <div className="text-xs text-slate-600 dark:text-slate-400 mt-1">bits (average)</div>
             </div>
 
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg border border-green-200 p-4">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/40 dark:to-emerald-950/40 rounded-xl border border-green-200 dark:border-green-800/60 p-4">
               <div className="flex items-center gap-2 mb-2">
-                <BarChart3 className="w-5 h-5 text-green-600" />
-                <span className="text-sm font-medium text-slate-700">Size</span>
+                <BarChart3 className="w-5 h-5 text-green-600 dark:text-green-400" />
+                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Size</span>
               </div>
-              <div className="text-2xl font-bold text-green-900">
+              <div className="text-2xl font-bold text-green-900 dark:text-green-200">
                 {(stats.bytes / 1024).toFixed(1)} KB
               </div>
-              <div className="text-xs text-slate-600 mt-1">total file size</div>
+              <div className="text-xs text-slate-600 dark:text-slate-400 mt-1">total file size</div>
             </div>
 
-            <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-lg border border-orange-200 p-4">
+            <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950/40 dark:to-amber-950/40 rounded-xl border border-orange-200 dark:border-orange-800/60 p-4">
               <div className="flex items-center gap-2 mb-2">
-                <Sparkles className="w-5 h-5 text-orange-600" />
-                <span className="text-sm font-medium text-slate-700">Quality</span>
+                <Sparkles className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Quality</span>
               </div>
-              <div className="text-2xl font-bold text-orange-900">
+              <div className="text-2xl font-bold text-orange-900 dark:text-orange-200">
                 {avoidDuplicates ? "High" : "Standard"}
               </div>
-              <div className="text-xs text-slate-600 mt-1">
+              <div className="text-xs text-slate-600 dark:text-slate-400 mt-1">
                 {avoidDuplicates ? "no duplicates" : "may have duplicates"}
               </div>
             </div>
@@ -493,15 +493,15 @@ export default function WordlistGenerator(): JSX.Element {
           {/* Controls */}
           <div className="lg:col-span-1 space-y-4">
             {/* Character Set */}
-            <div className="bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow">
+            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 hover:shadow-md transition-shadow">
               <div className="flex items-center gap-2 mb-3">
-                <Type className="w-5 h-5 text-indigo-600" />
-                <label className="text-sm font-semibold text-slate-900">Character Set</label>
+                <Type className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                <label className="text-sm font-semibold text-slate-900 dark:text-slate-100">Character Set</label>
               </div>
               <input
                 value={charset}
                 onChange={(e) => setCharset(e.target.value)}
-                className="w-full px-3 py-2 border-2 border-slate-300 rounded-lg text-sm bg-transparent focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all"
+                className="w-full px-3 py-2 border-2 border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-900/30 transition-all"
                 aria-label="Character set"
                 placeholder="Enter custom characters"
               />
@@ -509,35 +509,35 @@ export default function WordlistGenerator(): JSX.Element {
                 <button
                   type="button"
                   onClick={() => setCharset(PRESET_CHARSETS.letters)}
-                  className="text-xs px-3 py-1.5 rounded-lg border-2 border-slate-300 hover:border-blue-500 hover:bg-blue-50 transition-all font-medium"
+                  className="text-xs px-3 py-1.5 rounded-lg border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:border-blue-500 dark:hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/40 transition-all font-medium"
                 >
                   abc
                 </button>
                 <button
                   type="button"
                   onClick={() => setCharset(PRESET_CHARSETS.lettersUpper)}
-                  className="text-xs px-3 py-1.5 rounded-lg border-2 border-slate-300 hover:border-purple-500 hover:bg-purple-50 transition-all font-medium"
+                  className="text-xs px-3 py-1.5 rounded-lg border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:border-purple-500 dark:hover:border-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/40 transition-all font-medium"
                 >
                   ABC
                 </button>
                 <button
                   type="button"
                   onClick={() => setCharset(PRESET_CHARSETS.digits)}
-                  className="text-xs px-3 py-1.5 rounded-lg border-2 border-slate-300 hover:border-green-500 hover:bg-green-50 transition-all font-medium"
+                  className="text-xs px-3 py-1.5 rounded-lg border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:border-green-500 dark:hover:border-green-400 hover:bg-green-50 dark:hover:bg-green-950/40 transition-all font-medium"
                 >
                   123
                 </button>
                 <button
                   type="button"
                   onClick={() => setCharset(PRESET_CHARSETS.symbols)}
-                  className="text-xs px-3 py-1.5 rounded-lg border-2 border-slate-300 hover:border-orange-500 hover:bg-orange-50 transition-all font-medium"
+                  className="text-xs px-3 py-1.5 rounded-lg border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:border-orange-500 dark:hover:border-orange-400 hover:bg-orange-50 dark:hover:bg-orange-950/40 transition-all font-medium"
                 >
                   !@#
                 </button>
                 <button
                   type="button"
                   onClick={() => setCharset(PRESET_CHARSETS.letters + PRESET_CHARSETS.digits)}
-                  className="text-xs px-3 py-1.5 rounded-lg border-2 border-slate-300 hover:border-indigo-500 hover:bg-indigo-50 transition-all font-medium"
+                  className="text-xs px-3 py-1.5 rounded-lg border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:border-indigo-500 dark:hover:border-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 transition-all font-medium"
                 >
                   abc123
                 </button>
@@ -545,63 +545,63 @@ export default function WordlistGenerator(): JSX.Element {
             </div>
 
             {/* Pattern */}
-            <div className="bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow">
+            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 hover:shadow-md transition-shadow">
               <div className="flex items-center gap-2 mb-3">
-                <Key className="w-5 h-5 text-purple-600" />
-                <label className="text-sm font-semibold text-slate-900">Pattern (Optional)</label>
+                <Key className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                <label className="text-sm font-semibold text-slate-900 dark:text-slate-100">Pattern (Optional)</label>
               </div>
               <input
                 value={pattern}
                 onChange={(e) => setPattern(e.target.value)}
                 placeholder="e.g. {l}{l}{d}{d}{d} or leave empty"
-                className="w-full px-3 py-2 border-2 border-slate-300 rounded-lg text-sm bg-transparent focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all font-mono"
+                className="w-full px-3 py-2 border-2 border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-900/30 transition-all font-mono"
                 aria-label="Pattern"
               />
               <div className="mt-3 flex gap-2 flex-wrap">
                 <button
                   type="button"
                   onClick={() => quickExample("{l}{l}{l}{d}{d}{d}")}
-                  className="text-xs px-3 py-1.5 rounded-lg bg-blue-50 border border-blue-200 hover:bg-blue-100 transition-all font-mono"
+                  className="text-xs px-3 py-1.5 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-all font-mono"
                 >
                   aaa111
                 </button>
                 <button
                   type="button"
                   onClick={() => quickExample("{l}{d}{d}{d}{s}")}
-                  className="text-xs px-3 py-1.5 rounded-lg bg-purple-50 border border-purple-200 hover:bg-purple-100 transition-all font-mono"
+                  className="text-xs px-3 py-1.5 rounded-lg bg-purple-50 dark:bg-purple-950/40 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-all font-mono"
                 >
                   a111!
                 </button>
                 <button
                   type="button"
                   onClick={() => quickExample("pass{d}{d}")}
-                  className="text-xs px-3 py-1.5 rounded-lg bg-green-50 border border-green-200 hover:bg-green-100 transition-all font-mono"
+                  className="text-xs px-3 py-1.5 rounded-lg bg-green-50 dark:bg-green-950/40 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-800 hover:bg-green-100 dark:hover:bg-green-900/40 transition-all font-mono"
                 >
                   pass##
                 </button>
               </div>
-              <div className="mt-2 text-xs text-slate-500 bg-slate-50 rounded p-2 font-mono">
-                Tokens: <span className="text-blue-600">{"{l}"}</span> lowercase{" "}
-                <span className="text-purple-600">{"{u}"}</span> uppercase{" "}
-                <span className="text-green-600">{"{d}"}</span> digit{" "}
-                <span className="text-orange-600">{"{s}"}</span> symbol
+              <div className="mt-2 text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-950 rounded-lg p-2 font-mono border border-slate-200 dark:border-slate-800">
+                Tokens: <span className="text-blue-600 dark:text-blue-400">{"{l}"}</span> lowercase{" "}
+                <span className="text-purple-600 dark:text-purple-400">{"{u}"}</span> uppercase{" "}
+                <span className="text-green-600 dark:text-green-400">{"{d}"}</span> digit{" "}
+                <span className="text-orange-600 dark:text-orange-400">{"{s}"}</span> symbol
               </div>
             </div>
 
             {/* Settings */}
-            <div className="bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow space-y-3">
+            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 hover:shadow-md transition-shadow space-y-3">
               <div className="flex items-center gap-2 mb-2">
-                <Sparkles className="w-5 h-5 text-green-600" />
-                <label className="text-sm font-semibold text-slate-900">Settings</label>
+                <Sparkles className="w-5 h-5 text-green-600 dark:text-green-400" />
+                <label className="text-sm font-semibold text-slate-900 dark:text-slate-100">Settings</label>
               </div>
 
               <div>
-                <label className="text-xs font-medium text-slate-700 mb-1 block">Length</label>
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 mb-1 block">Length</label>
                 <input
                   type="number"
                   value={fixedLength ?? ""}
                   onChange={(e) => setFixedLength(e.target.value ? Number(e.target.value) : null)}
-                  className="w-full px-3 py-2 border-2 border-slate-300 rounded-lg text-sm bg-transparent focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all"
+                  className="w-full px-3 py-2 border-2 border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:border-green-500 focus:ring-2 focus:ring-green-200 dark:focus:ring-green-900/30 transition-all"
                   aria-label="Fixed length"
                   placeholder="auto (from pattern)"
                   min={1}
@@ -609,21 +609,21 @@ export default function WordlistGenerator(): JSX.Element {
               </div>
 
               <div>
-                <label className="text-xs font-medium text-slate-700 mb-1 block">Quantity</label>
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 mb-1 block">Quantity</label>
                 <input
                   type="number"
                   value={quantity}
                   onChange={(e) => setQuantity(clamp(Number(e.target.value || 0), 1, SAFE_MAX))}
                   min={1}
                   max={SAFE_MAX}
-                  className="w-full px-3 py-2 border-2 border-slate-300 rounded-lg text-sm bg-transparent focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all"
+                  className="w-full px-3 py-2 border-2 border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:border-green-500 focus:ring-2 focus:ring-green-200 dark:focus:ring-green-900/30 transition-all"
                   aria-label="Quantity"
                 />
-                <div className="text-xs text-slate-500 mt-1">Max: {SAFE_MAX.toLocaleString()}</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">Max: {SAFE_MAX.toLocaleString()}</div>
               </div>
 
               <div className="flex flex-col gap-2">
-                <label className="text-xs inline-flex items-center gap-2 cursor-pointer">
+                <label className="text-xs inline-flex items-center gap-2 cursor-pointer text-slate-700 dark:text-slate-300">
                   <input
                     type="checkbox"
                     checked={avoidDuplicates}
@@ -632,7 +632,7 @@ export default function WordlistGenerator(): JSX.Element {
                   />
                   <span className="font-medium">Avoid duplicates</span>
                 </label>
-                <label className="text-xs inline-flex items-center gap-2 cursor-pointer">
+                <label className="text-xs inline-flex items-center gap-2 cursor-pointer text-slate-700 dark:text-slate-300">
                   <input
                     type="checkbox"
                     checked={shuffle}
@@ -644,11 +644,11 @@ export default function WordlistGenerator(): JSX.Element {
               </div>
 
               <div>
-                <label className="text-xs font-medium text-slate-700 mb-1 block">Case Transform</label>
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 mb-1 block">Case Transform</label>
                 <select
                   value={caseOption}
                   onChange={(e) => setCaseOption(e.target.value as CaseOption)}
-                  className="w-full px-3 py-2 border-2 border-slate-300 rounded-lg text-sm bg-white focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all"
+                  className="w-full px-3 py-2 border-2 border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:border-green-500 focus:ring-2 focus:ring-green-200 dark:focus:ring-green-900/30 transition-all"
                 >
                   <option value="none">None</option>
                   <option value="lower">lowercase</option>
@@ -682,7 +682,7 @@ export default function WordlistGenerator(): JSX.Element {
                     setLastGenerated(null);
                     setError(null);
                   }}
-                  className="px-4 py-3 rounded-lg border-2 border-slate-300 hover:border-slate-400 hover:bg-slate-50 transition-all"
+                  className="px-4 py-3 rounded-lg border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all"
                   title="Clear results"
                 >
                   <XCircle className="w-5 h-5" />
@@ -695,25 +695,25 @@ export default function WordlistGenerator(): JSX.Element {
           <div className="lg:col-span-2 space-y-4">
             {/* Error Display */}
             {error && (
-              <div className="p-4 rounded-lg bg-gradient-to-r from-red-50 to-rose-50 border-l-4 border-red-500">
+              <div className="p-4 rounded-xl bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-950/40 dark:to-rose-950/40 border-l-4 border-red-500">
                 <div className="flex items-start gap-3">
-                  <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+                  <AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" />
                   <div>
-                    <div className="font-semibold text-red-900">Validation Error</div>
-                    <div className="text-sm text-red-700 mt-1">{error}</div>
+                    <div className="font-semibold text-red-900 dark:text-red-200">Validation Error</div>
+                    <div className="text-sm text-red-700 dark:text-red-300 mt-1">{error}</div>
                   </div>
                 </div>
               </div>
             )}
 
             {/* Preview Box */}
-            <div className="bg-white rounded-lg border border-slate-200 overflow-hidden shadow-sm">
-              <div className="px-4 py-3 bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200 flex items-center justify-between">
+            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+              <div className="px-4 py-3 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-800/60 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <FileText className="w-5 h-5 text-indigo-600" />
+                  <FileText className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                   <div>
-                    <div className="text-sm font-semibold text-slate-900">Live Preview</div>
-                    <div className="text-xs text-slate-500">
+                    <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">Live Preview</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">
                       Showing first {previewLines} lines
                     </div>
                   </div>
@@ -724,13 +724,13 @@ export default function WordlistGenerator(): JSX.Element {
                     type="number"
                     value={previewLines}
                     onChange={(e) => setPreviewLines(clamp(Number(e.target.value || 0), 1, 1000))}
-                    className="w-20 px-2 py-1 border-2 border-slate-300 rounded text-sm bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                    className="w-20 px-2 py-1 border-2 border-slate-300 dark:border-slate-600 rounded text-sm bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-900/30"
                     min={1}
                     max={1000}
                   />
                   <button
                     type="button"
-                    className="px-3 py-1 rounded-lg bg-indigo-100 border border-indigo-300 hover:bg-indigo-200 text-indigo-700 text-xs font-medium transition-all"
+                    className="px-3 py-1 rounded-lg bg-indigo-100 dark:bg-indigo-950/60 border border-indigo-300 dark:border-indigo-800 hover:bg-indigo-200 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 text-xs font-medium transition-all"
                     onClick={() => {
                       const small = generateWordlist({
                         quantity: clamp(previewLines, 1, 200),
@@ -750,7 +750,7 @@ export default function WordlistGenerator(): JSX.Element {
               </div>
 
               <div
-                className="overflow-auto bg-slate-900 p-4"
+                className="overflow-auto bg-slate-900 dark:bg-black p-4"
                 style={{ maxHeight: 500 }}
               >
                 <pre className="text-sm font-mono whitespace-pre-wrap">
@@ -781,11 +781,11 @@ export default function WordlistGenerator(): JSX.Element {
 
               {/* Action Buttons */}
               {lastGenerated && lastGenerated.length > 0 && (
-                <div className="px-4 py-3 bg-slate-50 border-t border-slate-200 flex flex-wrap gap-2">
+                <div className="px-4 py-3 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-200 dark:border-slate-800 flex flex-wrap gap-2">
                   <button
                     type="button"
                     onClick={handleCopyAll}
-                    className="px-3 py-2 bg-white border-2 border-slate-300 hover:border-blue-500 hover:bg-blue-50 rounded-lg flex items-center gap-2 text-sm font-medium transition-all"
+                    className="px-3 py-2 bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-lg flex items-center gap-2 text-sm font-medium transition-all"
                   >
                     <Copy className="w-4 h-4" />
                     Copy All
@@ -793,7 +793,7 @@ export default function WordlistGenerator(): JSX.Element {
                   <button
                     type="button"
                     onClick={exportAsTxt}
-                    className="px-3 py-2 bg-white border-2 border-slate-300 hover:border-green-500 hover:bg-green-50 rounded-lg flex items-center gap-2 text-sm font-medium transition-all"
+                    className="px-3 py-2 bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-700 hover:border-green-500 dark:hover:border-green-400 hover:bg-green-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-lg flex items-center gap-2 text-sm font-medium transition-all"
                   >
                     <Download className="w-4 h-4" />
                     TXT
@@ -801,7 +801,7 @@ export default function WordlistGenerator(): JSX.Element {
                   <button
                     type="button"
                     onClick={exportAsMd}
-                    className="px-3 py-2 bg-white border-2 border-slate-300 hover:border-purple-500 hover:bg-purple-50 rounded-lg flex items-center gap-2 text-sm font-medium transition-all"
+                    className="px-3 py-2 bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-700 hover:border-purple-500 dark:hover:border-purple-400 hover:bg-purple-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-lg flex items-center gap-2 text-sm font-medium transition-all"
                   >
                     <FileText className="w-4 h-4" />
                     Markdown
@@ -809,7 +809,7 @@ export default function WordlistGenerator(): JSX.Element {
                   <button
                     type="button"
                     onClick={printAsPdf}
-                    className="px-3 py-2 bg-white border-2 border-slate-300 hover:border-orange-500 hover:bg-orange-50 rounded-lg flex items-center gap-2 text-sm font-medium transition-all"
+                    className="px-3 py-2 bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-700 hover:border-orange-500 dark:hover:border-orange-400 hover:bg-orange-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-lg flex items-center gap-2 text-sm font-medium transition-all"
                   >
                     <ArrowDownCircle className="w-4 h-4" />
                     PDF
@@ -817,7 +817,7 @@ export default function WordlistGenerator(): JSX.Element {
                   <button
                     type="button"
                     onClick={shareWordlist}
-                    className="px-3 py-2 bg-white border-2 border-slate-300 hover:border-indigo-500 hover:bg-indigo-50 rounded-lg flex items-center gap-2 text-sm font-medium transition-all"
+                    className="px-3 py-2 bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-400 hover:bg-indigo-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-lg flex items-center gap-2 text-sm font-medium transition-all"
                   >
                     <Share2 className="w-4 h-4" />
                     Share
@@ -827,28 +827,28 @@ export default function WordlistGenerator(): JSX.Element {
             </div>
 
             {/* Help Section */}
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border border-blue-200 p-4">
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/40 rounded-xl border border-blue-200 dark:border-blue-800/60 p-4">
               <div className="flex items-start gap-3">
-                <Sparkles className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                <div className="text-sm text-slate-700">
-                  <div className="font-semibold text-slate-900 mb-2">Quick Start Guide</div>
+                <Sparkles className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+                <div className="text-sm text-slate-700 dark:text-slate-300">
+                  <div className="font-semibold text-slate-900 dark:text-slate-100 mb-2">Quick Start Guide</div>
                   <ul className="space-y-1 text-xs">
                     <li className="flex items-start gap-2">
-                      <span className="text-blue-600 mt-0.5">•</span>
+                      <span className="text-blue-600 dark:text-blue-400 mt-0.5">•</span>
                       <span>Choose a character set or use presets (abc, 123, !@#)</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-blue-600 mt-0.5">•</span>
+                      <span className="text-blue-600 dark:text-blue-400 mt-0.5">•</span>
                       <span>
-                        Use patterns for structured words: <code className="bg-white px-1 rounded">{"{l}{l}{d}{d}"}</code> generates "ab12"
+                        Use patterns for structured words: <code className="bg-white dark:bg-slate-900 px-1 py-0.5 rounded border border-slate-200 dark:border-slate-800">{"{l}{l}{d}{d}"}</code> generates "ab12"
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-blue-600 mt-0.5">•</span>
+                      <span className="text-blue-600 dark:text-blue-400 mt-0.5">•</span>
                       <span>Set quantity (max {SAFE_MAX.toLocaleString()}) and enable duplicate removal for quality</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-blue-600 mt-0.5">•</span>
+                      <span className="text-blue-600 dark:text-blue-400 mt-0.5">•</span>
                       <span>Export as TXT, Markdown, or PDF for use in security tools</span>
                     </li>
                   </ul>
@@ -861,26 +861,26 @@ export default function WordlistGenerator(): JSX.Element {
 
       <Section title="Use Cases">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
+          <div className="bg-purple-50 dark:bg-purple-950/40 rounded-xl p-4 border border-purple-200 dark:border-purple-800/60">
             <div className="text-2xl mb-2">🔐</div>
-            <h4 className="font-semibold text-slate-900 mb-1">Password Testing</h4>
-            <p className="text-sm text-slate-600">
+            <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-1">Password Testing</h4>
+            <p className="text-sm text-slate-600 dark:text-slate-400">
               Generate custom wordlists for password strength testing and brute-force simulations
             </p>
           </div>
 
-          <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+          <div className="bg-blue-50 dark:bg-blue-950/40 rounded-xl p-4 border border-blue-200 dark:border-blue-800/60">
             <div className="text-2xl mb-2">🎯</div>
-            <h4 className="font-semibold text-slate-900 mb-1">Penetration Testing</h4>
-            <p className="text-sm text-slate-600">
+            <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-1">Penetration Testing</h4>
+            <p className="text-sm text-slate-600 dark:text-slate-400">
               Create targeted wordlists based on company names, patterns, or common conventions
             </p>
           </div>
 
-          <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+          <div className="bg-green-50 dark:bg-green-950/40 rounded-xl p-4 border border-green-200 dark:border-green-800/60">
             <div className="text-2xl mb-2">📚</div>
-            <h4 className="font-semibold text-slate-900 mb-1">Security Research</h4>
-            <p className="text-sm text-slate-600">
+            <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-1">Security Research</h4>
+            <p className="text-sm text-slate-600 dark:text-slate-400">
               Build specialized dictionaries for cryptographic analysis and security research
             </p>
           </div>

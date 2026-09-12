@@ -67,8 +67,8 @@ export default function CheatsheetsPage() {
     <div className="space-y-10">
       {/* Page Intro */}
       <section className="text-center space-y-3">
-        <h1 className="text-3xl font-bold">Cybersecurity Cheatsheets & Learning Hub</h1>
-        <p className="text-slate-600 max-w-2xl mx-auto">
+        <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white">Cybersecurity Cheatsheets & Learning Hub</h1>
+        <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto text-sm sm:text-base">
           A quick-access reference for students and professionals to learn the most important 
           security frameworks, top risks, and hands-on tutorials.
         </p>
@@ -76,9 +76,9 @@ export default function CheatsheetsPage() {
 
       {/* OWASP Top 10 */}
       <Section title="OWASP Top 10 (2021)" subtitle="The most critical web application security risks">
-        <ul className="list-disc pl-5 text-sm space-y-1">
+        <ul className="list-disc pl-5 text-sm space-y-1.5 text-slate-800 dark:text-slate-200">
           <li>
-            <a className="text-primary" href="https://owasp.org/Top10/" target="_blank" rel="noreferrer">
+            <a className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline" href="https://owasp.org/Top10/" target="_blank" rel="noreferrer">
               OWASP Top 10 official site
             </a>
           </li>
@@ -91,25 +91,25 @@ export default function CheatsheetsPage() {
         <div className="flex gap-2 mt-4 flex-wrap">
           <button
             onClick={copyOWASP}
-            className="px-3 py-1 border rounded flex items-center gap-1 hover:bg-slate-100"
+            className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium flex items-center gap-1.5 transition"
           >
             <Copy size={14} /> {copied ? "Copied!" : "Copy"}
           </button>
           <button
             onClick={() => exportFile("txt")}
-            className="px-3 py-1 border rounded flex items-center gap-1 hover:bg-slate-100"
+            className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium flex items-center gap-1.5 transition"
           >
             <Download size={14} /> Export TXT
           </button>
           <button
             onClick={() => exportFile("md")}
-            className="px-3 py-1 border rounded flex items-center gap-1 hover:bg-slate-100"
+            className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium flex items-center gap-1.5 transition"
           >
             <Download size={14} /> Export MD
           </button>
           <button
             onClick={share}
-            className="px-3 py-1 border rounded flex items-center gap-1 hover:bg-slate-100"
+            className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium flex items-center gap-1.5 transition"
           >
             <Share2 size={14} /> Share
           </button>
@@ -118,10 +118,10 @@ export default function CheatsheetsPage() {
 
       {/* MITRE ATT&CK */}
       <Section title="MITRE ATT&CK" subtitle="Adversary tactics and techniques">
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-slate-600 dark:text-slate-400">
           Quick lookup:{" "}
-          <a className="text-primary" href="https://attack.mitre.org/" target="_blank" rel="noreferrer">
-            MITRE ATT&CK Matrix
+          <a className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline inline-flex items-center gap-1" href="https://attack.mitre.org/" target="_blank" rel="noreferrer">
+            MITRE ATT&CK Matrix <ExternalLink size={13} />
           </a>
         </p>
       </Section>
@@ -135,7 +135,7 @@ export default function CheatsheetsPage() {
                 href={l.url}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-2 text-primary hover:underline"
+                className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-medium hover:underline"
               >
                 {l.title} <ExternalLink size={14} />
               </a>

@@ -192,9 +192,9 @@ function downloadBlob(content: string, filename: string, mime = "text/plain") {
 /* Minimal pretty header renderer (no dependencies) */
 function HeaderRow({ name, value }: { name: string; value: string }) {
   return (
-    <div className="flex gap-3 items-start py-2 border-b border-slate-100">
-      <div className="w-44 text-xs text-slate-600 font-mono">{name}</div>
-      <div className="flex-1 text-sm break-words">
+    <div className="flex gap-3 items-start py-2 border-b border-slate-100 dark:border-slate-800">
+      <div className="w-44 text-xs text-slate-600 dark:text-slate-400 font-mono">{name}</div>
+      <div className="flex-1 text-sm break-words text-slate-800 dark:text-slate-200">
         <code className="text-sm whitespace-pre-wrap">{value}</code>
       </div>
       <div className="ml-4">
@@ -202,11 +202,9 @@ function HeaderRow({ name, value }: { name: string; value: string }) {
           aria-label={`Copy ${name}`}
           onClick={async () => {
             await copyText(`${name}: ${value}`);
-            // small visual feedback via alert is simple and reliable across browsers
-            // Could be replaced with a toast in a production app
             alert("Copied header to clipboard");
           }}
-          className="p-1 rounded border text-xs"
+          className="p-1 rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 text-xs"
         >
           <Copy size={14} />
         </button>
@@ -237,14 +235,12 @@ export default function SecurityHeadersChecker() {
     }
 
     try {
-      // Try server-side proxy first
       const res = await fetch("/api/headers", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ url }),
       });
       if (!res.ok) {
-        // if proxy unavailable, show clear message
         const txt = await res.text().catch(() => "");
         throw new Error(`Proxy error: ${res.status} ${txt}`);
       }
@@ -258,8 +254,9 @@ export default function SecurityHeadersChecker() {
       // fall back to instructing user: CORS prevents direct client fetch in many cases
       setError(
         `Failed to fetch via /api/headers: ${String(err.message || err)}. ` +
-          `If you don't have a proxy, switch to "Paste" tab and paste Response headers.`
+        `You can paste the response headers manually in the Paste tab.`
       );
+      setTab("paste");
     } finally {
       setLoading(false);
     }
@@ -267,57 +264,61 @@ export default function SecurityHeadersChecker() {
 
   function onPasteParse() {
     setError(null);
-    const txt = rawHeaders.trim();
-    if (!txt) {
-      setError("Paste or type raw response headers first.");
+    if (!rawHeaders.trim()) {
+      setError("Please paste some headers first.");
       return;
     }
-    // parse lines like "Header-Name: value"
-    const lines = txt.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+    const lines = rawHeaders.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
     const map: HeadersMap = {};
-    for (const line of lines) {
-      const idx = line.indexOf(":");
-      if (idx === -1) {
-        // tolerate lines without colon
-        continue;
-      }
-      const name = line.slice(0, idx).trim().toLowerCase();
-      const value = line.slice(idx + 1).trim();
-      if (!map[name]) map[name] = value;
-      else {
-        const cur = map[name];
-        if (Array.isArray(cur)) cur.push(value);
-        else map[name] = [cur, value];
+    for (const l of lines) {
+      const idx = l.indexOf(":");
+      if (idx === -1) continue;
+      const k = l.slice(0, idx).trim().toLowerCase();
+      const v = l.slice(idx + 1).trim();
+      if (map[k]) {
+        if (Array.isArray(map[k])) (map[k] as string[]).push(v);
+        else map[k] = [map[k] as string, v];
+      } else {
+        map[k] = v;
       }
     }
     setHeaders(map);
-    setAnalysis(analyzeHeaders(map));
-    setTab("paste");
+    const an = analyzeHeaders(map);
+    setAnalysis(an);
   }
 
   const headerList = useMemo(() => {
     if (!headers) return [];
-    return Object.entries(headers).map(([k, v]) => ({ name: k, value: Array.isArray(v) ? v.join(", ") : String(v) }));
+    return Object.entries(headers).map(([k, v]) => ({
+      name: k,
+      value: Array.isArray(v) ? v.join(", ") : String(v),
+    }));
   }, [headers]);
 
-  function exportAll(type: "json" | "txt" | "md") {
+  function exportAll(type: "txt" | "md" | "json") {
     if (!headers) return;
-    const filenameBase = "security-headers";
+    const filenameBase = `security-headers-${(url.replace(/https?:\/\//, "") || "headers").replace(/[^a-z0-9]/gi, "_")}`;
     if (type === "json") {
       downloadBlob(JSON.stringify({ url, headers, analysis }, null, 2), `${filenameBase}.json`, "application/json");
     } else if (type === "txt") {
-      const txt =
-        `URL: ${url}\n\n` +
-        Object.entries(headers).map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(", ") : v}`).join("\n") +
-        `\n\nAnalysis Score: ${analysis?.score ?? "N/A"} - Grade: ${analysis?.grade ?? "N/A"}\n` +
-        (analysis?.suggestions && analysis.suggestions.length ? `Suggestions:\n- ${analysis.suggestions.join("\n- ")}` : "");
-      downloadBlob(txt, `${filenameBase}.txt`, "text/plain");
+      const lines = [
+        `URL: ${url}`,
+        `Score: ${analysis?.score ?? "N/A"} Grade: ${analysis?.grade ?? "N/A"}`,
+        "",
+        "Headers:",
+        ...headerList.map((h) => `${h.name}: ${h.value}`),
+        "",
+        "Suggestions:",
+        ...(analysis?.suggestions && analysis.suggestions.length ? analysis.suggestions.map((s: string) => `- ${s}`) : ["- None"]),
+      ];
+      downloadBlob(lines.join("\n"), `${filenameBase}.txt`, "text/plain");
     } else {
-      // markdown
       const md =
-        `# Security Headers — ${url}\n\n` +
-        Object.entries(headers)
-          .map(([k, v]) => `- **${k}:** ${Array.isArray(v) ? v.join(", ") : v}`)
+        `# Security Headers for ${url}\n\n` +
+        `**Date:** ${new Date().toISOString()}  \n\n` +
+        `## Response Headers\n\n` +
+        headerList
+          .map((h) => `- **${h.name}:** ${h.value}`)
           .join("\n") +
         `\n\n**Score:** ${analysis?.score ?? "N/A"}  \n**Grade:** ${analysis?.grade ?? "N/A"}\n\n` +
         (analysis?.suggestions && analysis.suggestions.length ? `### Suggestions\n- ${analysis.suggestions.join("\n- ")}` : "");
@@ -343,14 +344,14 @@ export default function SecurityHeadersChecker() {
   return (
     <div className="space-y-8">
       <Section title="Security Headers Checker" subtitle="Inspect response headers and get security suggestions">
-        <p className="text-sm text-muted-foreground mb-3 max-w-2xl">
+        <p className="text-sm text-slate-600 dark:text-slate-400 mb-3 max-w-2xl">
           Enter a site URL and press <strong>Fetch</strong> (server proxy required at <code>/api/headers</code>),
           or switch to <strong>Paste</strong> to paste raw response headers. The tool analyzes common security headers
           (CSP, HSTS, X-Frame-Options, etc.) and provides suggestions and a simple grade.
         </p>
 
         {/* input row + tabs */}
-        <div className="bg-slate-50 border rounded p-3">
+        <div className="bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-xl p-3">
           <div className="flex gap-2 items-center">
             <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-2">
               <div className="sm:col-span-2">
@@ -358,7 +359,7 @@ export default function SecurityHeadersChecker() {
                   type="text"
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
-                  className="w-full border rounded p-2"
+                  className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none"
                   placeholder="https://example.com"
                   aria-label="Target URL"
                 />
@@ -367,7 +368,7 @@ export default function SecurityHeadersChecker() {
                 <button
                   onClick={fetchHeaders}
                   disabled={loading}
-                  className="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+                  className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 font-medium transition-colors"
                 >
                   {loading ? "Fetching…" : "Fetch"}
                 </button>
@@ -379,7 +380,7 @@ export default function SecurityHeadersChecker() {
                     setRawHeaders("");
                     setError(null);
                   }}
-                  className="px-3 py-2 border rounded flex items-center gap-2"
+                  className="px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg flex items-center gap-2 transition-colors"
                   aria-label="Clear all"
                   title="Reset"
                 >
@@ -392,54 +393,54 @@ export default function SecurityHeadersChecker() {
           <div className="mt-3 flex gap-2 items-center">
             <button
               onClick={() => setTab("fetch")}
-              className={`px-3 py-1 rounded ${tab === "fetch" ? "bg-slate-200" : "hover:bg-slate-100"}`}
+              className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${tab === "fetch" ? "bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-100" : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"}`}
             >
               Fetch
             </button>
             <button
               onClick={() => setTab("paste")}
-              className={`px-3 py-1 rounded ${tab === "paste" ? "bg-slate-200" : "hover:bg-slate-100"}`}
+              className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${tab === "paste" ? "bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-100" : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"}`}
             >
               Paste
             </button>
-            <div className="ml-auto text-xs text-slate-500">Proxy path: <code className="bg-white px-1 rounded">/api/headers</code></div>
+            <div className="ml-auto text-xs text-slate-500 dark:text-slate-400">Proxy path: <code className="bg-white dark:bg-slate-800 px-1 py-0.5 border border-slate-200 dark:border-slate-700 rounded">/api/headers</code></div>
           </div>
 
           {/* Paste tab */}
           {tab === "paste" && (
             <div className="mt-3">
-              <label className="text-xs text-slate-600">Paste raw response headers (one per line)</label>
+              <label className="text-xs text-slate-600 dark:text-slate-400">Paste raw response headers (one per line)</label>
               <textarea
                 value={rawHeaders}
                 onChange={(e) => setRawHeaders(e.target.value)}
-                className="w-full mt-1 border rounded p-2 min-h-[120px] font-mono text-sm"
+                className="w-full mt-1 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg p-2 min-h-[120px] font-mono text-sm outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder={`Content-Security-Policy: default-src 'self';\nStrict-Transport-Security: max-age=31536000; includeSubDomains\nX-Frame-Options: DENY`}
               />
               <div className="flex gap-2 mt-2">
-                <button onClick={onPasteParse} className="px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700">Parse</button>
-                <button onClick={() => { setRawHeaders(""); setHeaders(null); setAnalysis(null); }} className="px-3 py-2 border rounded">Clear</button>
+                <button onClick={onPasteParse} className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors">Parse</button>
+                <button onClick={() => { setRawHeaders(""); setHeaders(null); setAnalysis(null); }} className="px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-sm transition-colors">Clear</button>
               </div>
             </div>
           )}
         </div>
 
         {/* error */}
-        {error && <div className="text-sm text-amber-500 mt-2">⚠ {error}</div>}
+        {error && <div className="text-sm text-amber-500 dark:text-amber-400 mt-2">⚠ {error}</div>}
 
         {/* analysis summary */}
         {analysis && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mt-4">
-            <div className="p-3 rounded border bg-white">
-              <div className="text-xs text-slate-500">Score</div>
-              <div className="text-xl font-semibold">{analysis.score}</div>
+            <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80">
+              <div className="text-xs text-slate-500 dark:text-slate-400">Score</div>
+              <div className="text-xl font-semibold text-slate-900 dark:text-slate-100">{analysis.score}</div>
             </div>
-            <div className="p-3 rounded border bg-white">
-              <div className="text-xs text-slate-500">Grade</div>
-              <div className="text-xl font-semibold">{analysis.grade}</div>
+            <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80">
+              <div className="text-xs text-slate-500 dark:text-slate-400">Grade</div>
+              <div className="text-xl font-semibold text-slate-900 dark:text-slate-100">{analysis.grade}</div>
             </div>
-            <div className="p-3 rounded border bg-white md:col-span-2">
-              <div className="text-xs text-slate-500">Top suggestions</div>
-              <ul className="list-disc pl-4 mt-2 text-sm">
+            <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 md:col-span-2">
+              <div className="text-xs text-slate-500 dark:text-slate-400">Top suggestions</div>
+              <ul className="list-disc pl-4 mt-2 text-sm text-slate-700 dark:text-slate-300">
                 {analysis.suggestions && analysis.suggestions.length ? (
                   analysis.suggestions.slice(0, 5).map((s: string, i: number) => <li key={i}>{s}</li>)
                 ) : (
@@ -451,40 +452,40 @@ export default function SecurityHeadersChecker() {
         )}
 
         {/* actions */}
-        <div className="mt-4 flex gap-2 items-center">
+        <div className="mt-4 flex flex-wrap gap-2 items-center">
           <button
             onClick={async () => {
               if (!headers) return;
               const ok = await copyText(JSON.stringify({ url, headers, analysis }, null, 2));
               alert(ok ? "Copied JSON to clipboard" : "Copy failed");
             }}
-            className="flex items-center gap-2 px-3 py-2 border rounded"
+            className="flex items-center gap-2 px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-sm transition-colors"
           >
             <Copy size={14} /> Copy JSON
           </button>
 
-          <button onClick={() => exportAll("txt")} className="flex items-center gap-2 px-3 py-2 border rounded">
+          <button onClick={() => exportAll("txt")} className="flex items-center gap-2 px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-sm transition-colors">
             <Download size={14} /> Export TXT
           </button>
-          <button onClick={() => exportAll("md")} className="flex items-center gap-2 px-3 py-2 border rounded">
+          <button onClick={() => exportAll("md")} className="flex items-center gap-2 px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-sm transition-colors">
             <Download size={14} /> Export MD
           </button>
-          <button onClick={doShare} className="flex items-center gap-2 px-3 py-2 border rounded ml-auto">
+          <button onClick={doShare} className="flex items-center gap-2 px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-sm ml-auto transition-colors">
             <Share2 size={14} /> Share
           </button>
         </div>
 
         {/* headers listing */}
-        <div className="mt-4 rounded border bg-white overflow-hidden">
-          <div className="px-4 py-3 border-b bg-slate-50 flex items-center gap-4">
-            <div className="text-sm font-medium">Headers</div>
+        <div className="mt-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 overflow-hidden">
+          <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 flex items-center gap-4">
+            <div className="text-sm font-medium text-slate-900 dark:text-slate-100">Headers</div>
             <div className="text-xs text-slate-400">({headerList.length})</div>
             <div className="ml-auto text-xs text-slate-400">Preview</div>
           </div>
 
-          <div className="max-h-[420px] overflow-y-auto">
+          <div className="max-h-[420px] overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800">
             {headerList.length === 0 ? (
-              <div className="p-4 text-sm text-slate-500">No headers to show. Fetch or paste headers first.</div>
+              <div className="p-4 text-sm text-slate-500 dark:text-slate-400">No headers to show. Fetch or paste headers first.</div>
             ) : (
               headerList.map((h) => <div key={h.name} className="px-4 py-3"><HeaderRow name={h.name} value={h.value} /></div>)
             )}
@@ -494,8 +495,8 @@ export default function SecurityHeadersChecker() {
         {/* raw JSON */}
         {headers && (
           <div className="mt-4">
-            <div className="text-sm text-slate-500 mb-2">Raw JSON</div>
-            <pre className="bg-slate-900 text-white p-3 rounded text-xs overflow-auto whitespace-pre-wrap">
+            <div className="text-sm text-slate-500 dark:text-slate-400 mb-2">Raw JSON</div>
+            <pre className="bg-slate-900 dark:bg-slate-950 border border-slate-800 text-slate-100 p-3 rounded-xl text-xs overflow-auto whitespace-pre-wrap">
               {JSON.stringify({ url, headers, analysis }, null, 2)}
             </pre>
           </div>

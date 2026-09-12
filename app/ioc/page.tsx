@@ -56,7 +56,7 @@ export default function IOCPage() {
         title="IOC Extractor"
         subtitle="Extract IPs, URLs, hashes, and emails from raw logs or text"
       >
-        <p className="text-sm text-muted-foreground mb-2">
+        <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
           Paste logs or raw text below. The tool will extract common Indicators
           of Compromise (IOCs) such as IPs, URLs, hashes, and emails. Useful for
           SOC investigations and threat hunting.
@@ -66,18 +66,19 @@ export default function IOCPage() {
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
-          className="w-full h-40 bg-slate-950 border border-slate-800 rounded p-2"
+          className="w-full h-40 bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg p-3 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm"
+          placeholder="Paste logs or text containing IPs, URLs, hashes, or emails..."
         />
-        <div className="flex gap-2 mt-2">
+        <div className="flex gap-2 mt-3">
           <button
             onClick={extract}
-            className="px-3 py-1 rounded bg-primary text-black font-medium"
+            className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition shadow-sm"
           >
-            Extract
+            Extract IOCs
           </button>
           <button
             onClick={() => setText("")}
-            className="px-3 py-1 flex items-center gap-1 border rounded hover:bg-slate-800"
+            className="px-3.5 py-2 flex items-center gap-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-sm transition"
           >
             <Trash2 size={14} /> Clear
           </button>
@@ -88,51 +89,52 @@ export default function IOCPage() {
           <div className="mt-6 space-y-4">
             {Object.entries(result).map(([key, values]) => (
               <div key={key}>
-                <h3 className="font-semibold text-slate-200 mb-1">
+                <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-1.5 text-sm">
                   {key.toUpperCase()} ({(values as string[]).length})
                 </h3>
                 {(values as string[]).length > 0 ? (
-                  <ul className="space-y-1 text-sm">
+                  <ul className="space-y-1.5 text-xs font-mono">
                     {(values as string[]).map((v, i) => (
                       <li
                         key={i}
-                        className="flex justify-between items-center bg-slate-900 border border-slate-800 rounded px-2 py-1"
+                        className="flex justify-between items-center bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-slate-800 dark:text-slate-200 shadow-sm"
                       >
-                        <span className="truncate">{v}</span>
+                        <span className="truncate mr-2">{v}</span>
                         <button
                           onClick={() => copyToClipboard(v)}
-                          className="p-1 text-slate-400 hover:text-white"
+                          className="p-1 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition"
+                          title="Copy"
                         >
-                          <Copy size={14} />
+                          <Copy size={13} />
                         </button>
                       </li>
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-xs text-slate-500">No matches</p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500">No matches</p>
                 )}
               </div>
             ))}
 
             {/* Export buttons */}
-            <div className="flex gap-2 mt-4">
+            <div className="flex gap-2 mt-4 flex-wrap">
               <button
                 onClick={() => copyToClipboard(JSON.stringify(result, null, 2))}
-                className="px-3 py-1 border rounded flex items-center gap-1 hover:bg-slate-800"
+                className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium flex items-center gap-1.5 transition"
               >
-                <Copy size={14} /> Copy JSON
+                <Copy size={13} /> Copy JSON
               </button>
               <button
                 onClick={() => downloadFile("json")}
-                className="px-3 py-1 border rounded flex items-center gap-1 hover:bg-slate-800"
+                className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium flex items-center gap-1.5 transition"
               >
-                <Download size={14} /> Export JSON
+                <Download size={13} /> Export JSON
               </button>
               <button
                 onClick={() => downloadFile("txt")}
-                className="px-3 py-1 border rounded flex items-center gap-1 hover:bg-slate-800"
+                className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium flex items-center gap-1.5 transition"
               >
-                <Download size={14} /> Export TXT
+                <Download size={13} /> Export TXT
               </button>
             </div>
           </div>

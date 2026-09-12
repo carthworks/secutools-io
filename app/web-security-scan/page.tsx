@@ -314,24 +314,24 @@ export default function WebSecurityScanner() {
   }, []);
 
   return (
-    <div className="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8">
+    <div className="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 text-slate-900 dark:text-slate-100">
       <header className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-semibold">Web Security Scanner</h1>
-        <p className="mt-1 text-sm text-slate-400 max-w-2xl">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900 dark:text-slate-100">Web Security Scanner</h1>
+        <p className="mt-1 text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
           Analyze your website for common security issues such as SQL Injection, XSS, exposed API keys, CSRF risks,
           insecure cookies, directory traversal, command injection, exposed webhooks and SSL/TLS problems.
         </p>
       </header>
 
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="col-span-1 lg:col-span-2 bg-white dark:bg-slate-900 border rounded-2xl p-4 shadow-sm">
+        <div className="col-span-1 lg:col-span-2 bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm">
           <label htmlFor="ws-url" className="block text-sm font-medium text-slate-700 dark:text-slate-200">
             Website URL
           </label>
-          <div className="mt-2 flex gap-2">
+          <div className="mt-2 flex flex-wrap sm:flex-nowrap gap-2">
             <input
               id="ws-url"
-              className="flex-1 rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="flex-1 min-w-[200px] rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="https://example.com"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
@@ -340,7 +340,7 @@ export default function WebSecurityScanner() {
             <select
               value={queryMode}
               onChange={(e) => setQueryMode(e.target.value as any)}
-              className="rounded-md border px-2 py-2"
+              className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 px-3 py-2 outline-none"
               aria-label="Scan mode"
             >
               <option value="quick">Quick (client heuristics)</option>
@@ -348,17 +348,17 @@ export default function WebSecurityScanner() {
             </select>
             <button
               onClick={() => runClientScan(url || "")}
-              className="rounded-md bg-indigo-600 text-white px-4 py-2 hover:bg-indigo-700 disabled:bg-indigo-300"
+              className="rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 font-medium disabled:opacity-50 transition-colors"
               disabled={!url || isLoading}
             >
               Quick Scan
             </button>
             <button
               onClick={() => runServerScan(url || "")}
-              className="rounded-md border px-4 py-2 hover:bg-slate-50"
+              className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 px-4 py-2 font-medium disabled:opacity-50 transition-colors"
               disabled={!url || isLoading}
             >
-              Start Server Scan
+              Server Scan
             </button>
           </div>
 
@@ -369,63 +369,63 @@ export default function WebSecurityScanner() {
                 setShowPreview(true);
                 toast("Preview refreshed");
               }}
-              className="text-sm px-3 py-1 rounded bg-slate-100 border"
+              className="text-sm px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 transition-colors"
             >
               Refresh Preview
             </button>
-            <button onClick={copyReport} className="text-sm px-3 py-1 rounded bg-slate-100 border">
+            <button onClick={copyReport} className="text-sm px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 transition-colors">
               Copy Report
             </button>
-            <button onClick={exportText} className="text-sm px-3 py-1 rounded bg-slate-100 border">
+            <button onClick={exportText} className="text-sm px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 transition-colors">
               Export .txt
             </button>
-            <button onClick={exportMarkdown} className="text-sm px-3 py-1 rounded bg-slate-100 border">
+            <button onClick={exportMarkdown} className="text-sm px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 transition-colors">
               Export .md
             </button>
-            <button onClick={exportPDF} className="text-sm px-3 py-1 rounded bg-slate-100 border">
+            <button onClick={exportPDF} className="text-sm px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 transition-colors">
               Export PDF
             </button>
-            <button onClick={shareReport} className="text-sm px-3 py-1 rounded bg-slate-100 border">
+            <button onClick={shareReport} className="text-sm px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 transition-colors">
               Share
             </button>
           </div>
 
           <div className="mt-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-medium">Findings</h2>
-              <div className="text-sm text-slate-500">Last scanned: {lastScanned ?? "—"}</div>
+              <h2 className="text-lg font-medium text-slate-900 dark:text-slate-100">Findings</h2>
+              <div className="text-sm text-slate-500 dark:text-slate-400">Last scanned: {lastScanned ?? "—"}</div>
             </div>
 
             <div className="mt-3">
-              {isLoading && <div className="p-4 border rounded-md text-slate-500">Scanning in progress…</div>}
+              {isLoading && <div className="p-4 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/40">Scanning in progress…</div>}
 
-              {error && <div className="p-4 border rounded-md bg-rose-50 text-rose-700">Error: {error}</div>}
+              {error && <div className="p-4 border border-rose-200 dark:border-rose-900/50 rounded-xl bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-400">Error: {error}</div>}
 
               {!isLoading && findings.length === 0 && !error && (
-                <div className="p-4 border rounded-md text-slate-500">No findings yet — run a scan to begin.</div>
+                <div className="p-4 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/40">No findings yet — run a scan to begin.</div>
               )}
 
               <ul className="mt-2 space-y-3">
                 {findings.map((f) => (
-                  <li key={f.id} className="border rounded-lg p-3 bg-slate-50">
+                  <li key={f.id} className="border border-slate-200 dark:border-slate-800 rounded-xl p-3 sm:p-4 bg-slate-50 dark:bg-slate-800/50">
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <div className="text-sm font-semibold">{f.title}</div>
-                        <div className="text-xs text-slate-500 mt-1">{f.description}</div>
+                        <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">{f.title}</div>
+                        <div className="text-xs text-slate-600 dark:text-slate-400 mt-1">{f.description}</div>
                         {f.evidence && (
-                          <pre className="mt-2 text-xs bg-white rounded p-2 overflow-auto">{f.evidence}</pre>
+                          <pre className="mt-2 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 rounded p-2 overflow-auto">{f.evidence}</pre>
                         )}
                       </div>
 
                       <div className="text-right">
                         <div
-                          className={`inline-block px-2 py-1 rounded ${
+                          className={`inline-block px-2.5 py-1 rounded-md ${
                             f.severity === "High"
                               ? "bg-rose-600 text-white"
                               : f.severity === "Medium"
                               ? "bg-amber-500 text-white"
-                              : "bg-slate-200 text-slate-800"
-                          } text-xs font-medium`}
+                              : "bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200"
+                          } text-xs font-semibold`}
                         >
                           {f.severity}
                         </div>
@@ -434,7 +434,7 @@ export default function WebSecurityScanner() {
                             setReportMarkdown((md) => md + `\n\n- NOTE: ${f.title} handled by me.`);
                             toast("Appended note to report");
                           }}
-                          className="mt-2 text-xs px-2 py-1 border rounded"
+                          className="mt-2 text-xs px-2 py-1 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition-colors"
                         >
                           Add note
                         </button>
@@ -447,26 +447,26 @@ export default function WebSecurityScanner() {
           </div>
         </div>
 
-        <aside className="col-span-1 bg-white dark:bg-slate-900 border rounded-2xl p-4 shadow-sm">
-          <h3 className="text-sm font-medium">Tool description</h3>
-          <p className="text-sm text-slate-500 mt-2">
+        <aside className="col-span-1 bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm">
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Tool description</h3>
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
             Quick, friendly web security checks for developers and site owners. Use the Quick Scan for instant client-side
             hints, or enable the Server Scan (requires a server route) for in-depth checks like SQL injection testing,
             SSL/TLS analysis and command-injection probes.
           </p>
 
-          <h4 className="mt-4 text-sm font-medium">Quick start</h4>
-          <ol className="list-decimal ml-5 mt-2 text-sm text-slate-500">
+          <h4 className="mt-4 text-sm font-semibold text-slate-900 dark:text-slate-100">Quick start</h4>
+          <ol className="list-decimal ml-5 mt-2 text-sm text-slate-600 dark:text-slate-400 space-y-1">
             <li>Enter your website URL (include https://).</li>
             <li>Click Quick Scan for instant hints or Start Server Scan for a deep check.</li>
             <li>Review findings, copy or export your report.</li>
           </ol>
 
           <div className="mt-4">
-            <h4 className="text-sm font-medium">Testing payloads</h4>
-            <div className="mt-2 flex gap-2">
+            <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Testing payloads</h4>
+            <div className="mt-2 flex flex-wrap gap-2">
               <button
-                className="px-2 py-1 rounded border text-xs"
+                className="px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs transition-colors"
                 onClick={() => {
                   navigator.clipboard.writeText(samplePayloads.xss);
                   toast("XSS payload copied");
@@ -475,7 +475,7 @@ export default function WebSecurityScanner() {
                 Copy XSS
               </button>
               <button
-                className="px-2 py-1 rounded border text-xs"
+                className="px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs transition-colors"
                 onClick={() => {
                   navigator.clipboard.writeText(samplePayloads.sqli);
                   toast("SQLi payload copied");
@@ -484,7 +484,7 @@ export default function WebSecurityScanner() {
                 Copy SQLi
               </button>
               <button
-                className="px-2 py-1 rounded border text-xs"
+                className="px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs transition-colors"
                 onClick={() => {
                   navigator.clipboard.writeText(samplePayloads.cmd);
                   toast("Command Injection payload copied");
@@ -495,37 +495,36 @@ export default function WebSecurityScanner() {
             </div>
           </div>
 
-          <div className="mt-4 text-xs text-slate-400">
-            <strong>Security note:</strong> Do not scan sites you do not own or have permission to test. This tool is
+          <div className="mt-4 text-xs text-slate-500 dark:text-slate-400">
+            <strong className="text-slate-700 dark:text-slate-300">Security note:</strong> Do not scan sites you do not own or have permission to test. This tool is
             intended for responsible testing and developer hygiene.
           </div>
         </aside>
       </section>
 
       {showPreview && (
-        <section className="mt-6 bg-white border rounded-2xl p-4">
+        <section className="mt-6 bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-6">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-medium">Report preview</h3>
-            <div className="text-sm text-slate-500">Live markdown preview</div>
+            <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">Report preview</h3>
+            <div className="text-sm text-slate-500 dark:text-slate-400">Live markdown preview</div>
           </div>
 
           <div className="mt-3 grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="col-span-1">
-              <div ref={reportRef} className="prose max-w-none p-3 border rounded h-80 overflow-auto">
-                {/* Simple markdown to HTML rendering without dependencies: basic replacements */}
+              <div ref={reportRef} className="p-3 border border-slate-200 dark:border-slate-800 rounded-xl h-80 overflow-auto bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 font-mono text-xs">
                 <pre className="whitespace-pre-wrap">{reportMarkdown || "No report generated yet. Run a scan to see output."}</pre>
               </div>
             </div>
 
             <div className="col-span-1">
-              <div className="p-3 border rounded h-80 overflow-auto">
-                <h4 className="text-sm font-medium">Actionable suggestions</h4>
-                {findings.length === 0 && <div className="text-sm text-slate-500 mt-2">No suggestions available.</div>}
+              <div className="p-3 border border-slate-200 dark:border-slate-800 rounded-xl h-80 overflow-auto bg-slate-50 dark:bg-slate-800/40">
+                <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Actionable suggestions</h4>
+                {findings.length === 0 && <div className="text-sm text-slate-500 dark:text-slate-400 mt-2">No suggestions available.</div>}
                 <ul className="mt-2 space-y-2 text-sm">
                   {findings.map((f) => (
-                    <li key={f.id} className="bg-slate-50 p-2 rounded">
-                      <strong>{f.title}</strong>
-                      <div className="text-xs text-slate-600 mt-1">{f.suggestion ?? "No suggestion provided."}</div>
+                    <li key={f.id} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 p-2.5 rounded-lg">
+                      <strong className="text-slate-900 dark:text-slate-100">{f.title}</strong>
+                      <div className="text-xs text-slate-600 dark:text-slate-400 mt-1">{f.suggestion ?? "No suggestion provided."}</div>
                     </li>
                   ))}
                 </ul>
@@ -535,7 +534,7 @@ export default function WebSecurityScanner() {
         </section>
       )}
 
-      <footer className="mt-6 text-sm text-slate-400">
+      <footer className="mt-6 text-sm text-slate-500 dark:text-slate-400">
         Technical considerations: lightweight UI, minimal deps, implement server-side scan for
         deep checks to avoid CORS and improve accuracy.
       </footer>

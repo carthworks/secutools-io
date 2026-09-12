@@ -181,18 +181,18 @@ export default function PGPPage() {
     };
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-8 text-slate-900 dark:text-slate-100">
             <section className="text-center space-y-4">
-                <h1 className="text-3xl sm:text-4xl font-semibold text-slate-800">
+                <h1 className="text-3xl sm:text-4xl font-semibold text-slate-800 dark:text-slate-100">
                     PGP Key Generator & Encryptor
                 </h1>
-                <p className="text-slate-600 max-w-2xl mx-auto">
+                <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
                     Generate PGP key pairs, encrypt/decrypt messages, and sign/verify signatures
                 </p>
             </section>
 
             {/* Tabs */}
-            <div className="flex flex-wrap gap-2 border-b border-slate-200">
+            <div className="flex flex-wrap gap-2 border-b border-slate-200 dark:border-slate-800">
                 {[
                     { id: "generate", label: "Generate Keys", icon: Key },
                     { id: "encrypt", label: "Encrypt", icon: Lock },
@@ -206,8 +206,8 @@ export default function PGPPage() {
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id as Tab)}
                             className={`flex items-center gap-2 px-4 py-2 border-b-2 transition-colors ${activeTab === tab.id
-                                    ? "border-indigo-600 text-indigo-600 font-medium"
-                                    : "border-transparent text-slate-600 hover:text-slate-800"
+                                    ? "border-indigo-600 text-indigo-600 dark:text-indigo-400 font-medium"
+                                    : "border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"
                                 }`}
                         >
                             <Icon className="w-4 h-4" />
@@ -222,29 +222,29 @@ export default function PGPPage() {
                 <Section title="Generate PGP Key Pair" subtitle="Create new public and private keys">
                     <div className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">Name</label>
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Name</label>
                             <input
                                 type="text"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 placeholder="John Doe"
-                                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                className="w-full px-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Email</label>
                             <input
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="john@example.com"
-                                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                className="w-full px-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                                 Passphrase (optional)
                             </label>
                             <input
@@ -252,14 +252,14 @@ export default function PGPPage() {
                                 value={passphrase}
                                 onChange={(e) => setPassphrase(e.target.value)}
                                 placeholder="Leave empty for no passphrase"
-                                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                className="w-full px-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                             />
                         </div>
 
                         <button
                             onClick={generateKeyPair}
                             disabled={loading}
-                            className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium disabled:bg-slate-400"
+                            className="w-full px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors font-medium disabled:opacity-50"
                         >
                             {loading ? "Generating..." : "Generate Key Pair"}
                         </button>
@@ -268,17 +268,17 @@ export default function PGPPage() {
                             <div className="space-y-4 mt-6">
                                 <div>
                                     <div className="flex items-center justify-between mb-2">
-                                        <label className="text-sm font-medium text-slate-700">Public Key</label>
+                                        <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Public Key</label>
                                         <div className="flex gap-2">
                                             <button
                                                 onClick={() => copyToClipboard(publicKey)}
-                                                className="text-sm text-indigo-600 hover:text-indigo-700"
+                                                className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium"
                                             >
                                                 Copy
                                             </button>
                                             <button
                                                 onClick={() => downloadKey(publicKey, "public-key.asc")}
-                                                className="text-sm text-indigo-600 hover:text-indigo-700"
+                                                className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium"
                                             >
                                                 Download
                                             </button>
@@ -287,25 +287,25 @@ export default function PGPPage() {
                                     <textarea
                                         value={publicKey}
                                         readOnly
-                                        className="w-full h-32 px-4 py-2 border border-slate-300 rounded-lg bg-slate-50 font-mono text-xs"
+                                        className="w-full h-32 px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-950 font-mono text-xs text-slate-800 dark:text-slate-200 outline-none"
                                     />
                                 </div>
 
                                 <div>
                                     <div className="flex items-center justify-between mb-2">
-                                        <label className="text-sm font-medium text-slate-700">
+                                        <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
                                             Private Key (Keep Secret!)
                                         </label>
                                         <div className="flex gap-2">
                                             <button
                                                 onClick={() => copyToClipboard(privateKey)}
-                                                className="text-sm text-indigo-600 hover:text-indigo-700"
+                                                className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium"
                                             >
                                                 Copy
                                             </button>
                                             <button
                                                 onClick={() => downloadKey(privateKey, "private-key.asc")}
-                                                className="text-sm text-indigo-600 hover:text-indigo-700"
+                                                className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium"
                                             >
                                                 Download
                                             </button>
@@ -314,9 +314,9 @@ export default function PGPPage() {
                                     <textarea
                                         value={privateKey}
                                         readOnly
-                                        className="w-full h-32 px-4 py-2 border border-red-300 rounded-lg bg-red-50 font-mono text-xs"
+                                        className="w-full h-32 px-4 py-2 border border-red-300 dark:border-red-900/60 rounded-lg bg-red-50 dark:bg-red-950/30 font-mono text-xs text-red-900 dark:text-red-200 outline-none"
                                     />
-                                    <p className="text-xs text-red-600 mt-1">
+                                    <p className="text-xs text-red-600 dark:text-red-400 mt-1">
                                         ⚠️ Never share your private key with anyone!
                                     </p>
                                 </div>
@@ -331,31 +331,31 @@ export default function PGPPage() {
                 <Section title="Encrypt Message" subtitle="Encrypt a message with recipient's public key">
                     <div className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">Message</label>
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Message</label>
                             <textarea
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
                                 placeholder="Enter message to encrypt..."
-                                className="w-full h-32 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                className="w-full h-32 px-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                                 Recipient's Public Key
                             </label>
                             <textarea
                                 value={recipientPublicKey}
                                 onChange={(e) => setRecipientPublicKey(e.target.value)}
                                 placeholder="Paste recipient's public key here..."
-                                className="w-full h-32 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent font-mono text-xs"
+                                className="w-full h-32 px-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg focus:ring-2 focus:ring-indigo-500 font-mono text-xs outline-none"
                             />
                         </div>
 
                         <button
                             onClick={encryptMessage}
                             disabled={loading}
-                            className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium disabled:bg-slate-400"
+                            className="w-full px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors font-medium disabled:opacity-50"
                         >
                             {loading ? "Encrypting..." : "Encrypt Message"}
                         </button>
@@ -368,31 +368,31 @@ export default function PGPPage() {
                 <Section title="Decrypt Message" subtitle="Decrypt a message with your private key">
                     <div className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                                 Encrypted Message
                             </label>
                             <textarea
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
                                 placeholder="Paste encrypted message here..."
-                                className="w-full h-32 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent font-mono text-xs"
+                                className="w-full h-32 px-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg focus:ring-2 focus:ring-indigo-500 font-mono text-xs outline-none"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                                 Your Private Key
                             </label>
                             <textarea
                                 value={senderPrivateKey}
                                 onChange={(e) => setSenderPrivateKey(e.target.value)}
                                 placeholder="Paste your private key here..."
-                                className="w-full h-32 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent font-mono text-xs"
+                                className="w-full h-32 px-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg focus:ring-2 focus:ring-indigo-500 font-mono text-xs outline-none"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                                 Passphrase (if set)
                             </label>
                             <input
@@ -400,14 +400,14 @@ export default function PGPPage() {
                                 value={passphrase}
                                 onChange={(e) => setPassphrase(e.target.value)}
                                 placeholder="Enter passphrase if key is protected"
-                                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                className="w-full px-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                             />
                         </div>
 
                         <button
                             onClick={decryptMessage}
                             disabled={loading}
-                            className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium disabled:bg-slate-400"
+                            className="w-full px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors font-medium disabled:opacity-50"
                         >
                             {loading ? "Decrypting..." : "Decrypt Message"}
                         </button>
@@ -420,29 +420,29 @@ export default function PGPPage() {
                 <Section title="Sign Message" subtitle="Sign a message with your private key">
                     <div className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">Message</label>
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Message</label>
                             <textarea
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
                                 placeholder="Enter message to sign..."
-                                className="w-full h-32 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                className="w-full h-32 px-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                                 Your Private Key
                             </label>
                             <textarea
                                 value={senderPrivateKey}
                                 onChange={(e) => setSenderPrivateKey(e.target.value)}
                                 placeholder="Paste your private key here..."
-                                className="w-full h-32 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent font-mono text-xs"
+                                className="w-full h-32 px-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg focus:ring-2 focus:ring-indigo-500 font-mono text-xs outline-none"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                                 Passphrase (if set)
                             </label>
                             <input
@@ -450,14 +450,14 @@ export default function PGPPage() {
                                 value={passphrase}
                                 onChange={(e) => setPassphrase(e.target.value)}
                                 placeholder="Enter passphrase if key is protected"
-                                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                className="w-full px-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                             />
                         </div>
 
                         <button
                             onClick={signMessage}
                             disabled={loading}
-                            className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium disabled:bg-slate-400"
+                            className="w-full px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors font-medium disabled:opacity-50"
                         >
                             {loading ? "Signing..." : "Sign Message"}
                         </button>
@@ -470,33 +470,33 @@ export default function PGPPage() {
                 <Section title="Verify Signature" subtitle="Verify a signed message">
                     <div className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                                 Signed Message
                             </label>
                             <textarea
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
                                 placeholder="Paste signed message here..."
-                                className="w-full h-32 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent font-mono text-xs"
+                                className="w-full h-32 px-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg focus:ring-2 focus:ring-indigo-500 font-mono text-xs outline-none"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                                 Signer's Public Key
                             </label>
                             <textarea
                                 value={recipientPublicKey}
                                 onChange={(e) => setRecipientPublicKey(e.target.value)}
                                 placeholder="Paste signer's public key here..."
-                                className="w-full h-32 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent font-mono text-xs"
+                                className="w-full h-32 px-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg focus:ring-2 focus:ring-indigo-500 font-mono text-xs outline-none"
                             />
                         </div>
 
                         <button
                             onClick={verifyMessage}
                             disabled={loading}
-                            className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium disabled:bg-slate-400"
+                            className="w-full px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors font-medium disabled:opacity-50"
                         >
                             {loading ? "Verifying..." : "Verify Signature"}
                         </button>
@@ -506,8 +506,8 @@ export default function PGPPage() {
 
             {/* Error Display */}
             {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                    <p className="text-red-800 text-sm">
+                <div className="bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 rounded-xl p-4">
+                    <p className="text-red-800 dark:text-red-300 text-sm">
                         <strong>Error:</strong> {error}
                     </p>
                 </div>
@@ -520,33 +520,33 @@ export default function PGPPage() {
                         <div className="flex gap-2">
                             <button
                                 onClick={() => copyToClipboard(output)}
-                                className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors"
+                                className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors"
                             >
                                 {copied ? (
                                     <>
-                                        <Check className="w-4 h-4 text-green-600" />
-                                        <span className="text-sm">Copied!</span>
+                                        <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
+                                        <span className="text-sm font-medium">Copied!</span>
                                     </>
                                 ) : (
                                     <>
                                         <Copy className="w-4 h-4" />
-                                        <span className="text-sm">Copy</span>
+                                        <span className="text-sm font-medium">Copy</span>
                                     </>
                                 )}
                             </button>
                             <button
                                 onClick={() => downloadKey(output, "output.txt")}
-                                className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors"
+                                className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors"
                             >
                                 <Download className="w-4 h-4" />
-                                <span className="text-sm">Download</span>
+                                <span className="text-sm font-medium">Download</span>
                             </button>
                         </div>
 
                         <textarea
                             value={output}
                             readOnly
-                            className="w-full h-48 px-4 py-3 border border-slate-300 rounded-lg bg-slate-50 font-mono text-sm"
+                            className="w-full h-48 px-4 py-3 border border-slate-300 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-950 font-mono text-sm text-slate-900 dark:text-slate-100 outline-none"
                         />
                     </div>
                 </Section>
@@ -554,7 +554,7 @@ export default function PGPPage() {
 
             {/* Info Section */}
             <Section title="About PGP" subtitle="Pretty Good Privacy">
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-blue-800">
+                <div className="bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/50 rounded-xl p-4 text-sm text-blue-800 dark:text-blue-300">
                     <p className="mb-2">
                         <strong>PGP (Pretty Good Privacy)</strong> is an encryption program that provides
                         cryptographic privacy and authentication for data communication.

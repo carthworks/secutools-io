@@ -158,10 +158,10 @@ export default function Base64Page() {
     return (
         <div className="space-y-8">
             <section className="text-center space-y-4">
-                <h1 className="text-3xl sm:text-4xl font-semibold text-slate-800">
+                <h1 className="text-3xl sm:text-4xl font-semibold text-slate-900 dark:text-white">
                     Base64/Base32 Encoder/Decoder
                 </h1>
-                <p className="text-slate-600 max-w-2xl mx-auto">
+                <p className="text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
                     Encode and decode text using Base64, Base32, Base64URL, or Hex encoding
                 </p>
             </section>
@@ -169,15 +169,15 @@ export default function Base64Page() {
             <Section title="Configuration" subtitle="Choose your encoding options">
                 <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-2">
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                             Mode
                         </label>
                         <div className="flex gap-2">
                             <button
                                 onClick={() => setMode("encode")}
                                 className={`flex-1 px-4 py-2 rounded-lg border transition-colors ${mode === "encode"
-                                        ? "bg-indigo-600 text-white border-indigo-600"
-                                        : "bg-white text-slate-700 border-slate-300 hover:bg-slate-50"
+                                        ? "bg-indigo-600 text-white border-indigo-600 shadow-sm"
+                                        : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"
                                     }`}
                             >
                                 Encode
@@ -185,8 +185,8 @@ export default function Base64Page() {
                             <button
                                 onClick={() => setMode("decode")}
                                 className={`flex-1 px-4 py-2 rounded-lg border transition-colors ${mode === "decode"
-                                        ? "bg-indigo-600 text-white border-indigo-600"
-                                        : "bg-white text-slate-700 border-slate-300 hover:bg-slate-50"
+                                        ? "bg-indigo-600 text-white border-indigo-600 shadow-sm"
+                                        : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"
                                     }`}
                             >
                                 Decode
@@ -195,13 +195,13 @@ export default function Base64Page() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-2">
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                             Encoding Type
                         </label>
                         <select
                             value={encodingType}
                             onChange={(e) => setEncodingType(e.target.value as EncodingType)}
-                            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                            className="w-full px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
                         >
                             <option value="base64">Base64</option>
                             <option value="base64url">Base64 URL-Safe</option>
@@ -215,7 +215,7 @@ export default function Base64Page() {
             <Section title="Input" subtitle={mode === "encode" ? "Enter text to encode" : "Enter encoded text to decode"}>
                 <div className="space-y-3">
                     <div className="flex gap-2">
-                        <label className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg cursor-pointer hover:bg-slate-200 transition-colors">
+                        <label className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 rounded-lg cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
                             <Upload className="w-4 h-4" />
                             <span className="text-sm">Upload File</span>
                             <input
@@ -231,12 +231,12 @@ export default function Base64Page() {
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         placeholder={mode === "encode" ? "Enter text to encode..." : "Enter encoded text to decode..."}
-                        className="w-full h-48 px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent font-mono text-sm"
+                        className="w-full h-48 px-4 py-3 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500 focus:border-transparent font-mono text-sm outline-none"
                     />
 
                     <button
                         onClick={handleConvert}
-                        className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"
+                        className="w-full px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors font-medium shadow-sm"
                     >
                         {mode === "encode" ? "Encode" : "Decode"}
                     </button>
@@ -244,8 +244,8 @@ export default function Base64Page() {
             </Section>
 
             {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                    <p className="text-red-800 text-sm">
+                <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 rounded-lg p-4">
+                    <p className="text-red-800 dark:text-red-300 text-sm">
                         <strong>Error:</strong> {error}
                     </p>
                 </div>
@@ -257,11 +257,11 @@ export default function Base64Page() {
                         <div className="flex gap-2">
                             <button
                                 onClick={copyToClipboard}
-                                className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors"
+                                className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                             >
                                 {copied ? (
                                     <>
-                                        <Check className="w-4 h-4 text-green-600" />
+                                        <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
                                         <span className="text-sm">Copied!</span>
                                     </>
                                 ) : (
@@ -273,7 +273,7 @@ export default function Base64Page() {
                             </button>
                             <button
                                 onClick={downloadOutput}
-                                className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors"
+                                className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                             >
                                 <Download className="w-4 h-4" />
                                 <span className="text-sm">Download</span>
@@ -283,11 +283,11 @@ export default function Base64Page() {
                         <textarea
                             value={output}
                             readOnly
-                            className="w-full h-48 px-4 py-3 border border-slate-300 rounded-lg bg-slate-50 font-mono text-sm"
+                            className="w-full h-48 px-4 py-3 border border-slate-300 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-mono text-sm outline-none"
                         />
 
-                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                            <p className="text-sm text-blue-800">
+                        <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/50 rounded-lg p-4">
+                            <p className="text-sm text-blue-800 dark:text-blue-300">
                                 <strong>Output length:</strong> {output.length} characters
                             </p>
                         </div>
@@ -297,30 +297,30 @@ export default function Base64Page() {
 
             <Section title="About" subtitle="Encoding information">
                 <div className="grid md:grid-cols-2 gap-4 text-sm">
-                    <div className="bg-slate-50 rounded-lg p-4">
-                        <h3 className="font-semibold text-slate-800 mb-2">Base64</h3>
-                        <p className="text-slate-600">
+                    <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2">Base64</h3>
+                        <p className="text-slate-600 dark:text-slate-400">
                             Standard Base64 encoding using A-Z, a-z, 0-9, +, / characters with = padding.
                             Commonly used for encoding binary data in text format.
                         </p>
                     </div>
-                    <div className="bg-slate-50 rounded-lg p-4">
-                        <h3 className="font-semibold text-slate-800 mb-2">Base64 URL-Safe</h3>
-                        <p className="text-slate-600">
+                    <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2">Base64 URL-Safe</h3>
+                        <p className="text-slate-600 dark:text-slate-400">
                             URL-safe variant that replaces + with - and / with _, removes padding.
                             Safe for use in URLs and filenames.
                         </p>
                     </div>
-                    <div className="bg-slate-50 rounded-lg p-4">
-                        <h3 className="font-semibold text-slate-800 mb-2">Base32</h3>
-                        <p className="text-slate-600">
+                    <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2">Base32</h3>
+                        <p className="text-slate-600 dark:text-slate-400">
                             Uses A-Z and 2-7 characters. More human-readable than Base64,
                             case-insensitive, and avoids ambiguous characters.
                         </p>
                     </div>
-                    <div className="bg-slate-50 rounded-lg p-4">
-                        <h3 className="font-semibold text-slate-800 mb-2">Hexadecimal</h3>
-                        <p className="text-slate-600">
+                    <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2">Hexadecimal</h3>
+                        <p className="text-slate-600 dark:text-slate-400">
                             Base16 encoding using 0-9 and a-f characters. Each byte is represented
                             by two hex digits.
                         </p>

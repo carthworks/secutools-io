@@ -337,7 +337,6 @@ export default function PCAPPage() {
 
   /* render helpers */
   function renderFirstBytes(hex: string) {
-    // simple highlight: group by byte, colorize every 8 bytes using spans
     if (!hex) return null;
     const parts = hex.split(" ");
     return (
@@ -348,7 +347,7 @@ export default function PCAPPage() {
             className={`px-0.5 ${i % 8 === 7 ? "mr-2" : ""}`}
             aria-hidden
           >
-            <span className="inline-block w-6 text-slate-200">{b}</span>
+            <span className="inline-block w-6 text-slate-800 dark:text-slate-200 font-mono">{b}</span>
           </span>
         ))}
       </div>
@@ -363,7 +362,7 @@ export default function PCAPPage() {
         subtitle="Client-side PCAP summary & quick triage — timestamps, sizes, and first bytes"
       >
         {/* Tool description */}
-        <p className="text-sm text-muted-foreground max-w-2xl">
+        <p className="text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
           Upload a PCAP file (no upload to server). This tool quickly parses the
           global header and packet headers to show timestamps, captured/original
           sizes, and the first bytes of each packet — useful for fast triage and
@@ -372,114 +371,111 @@ export default function PCAPPage() {
         </p>
 
         {/* file input + drag-drop area */}
-      {/* file input + drag-drop area */}
-<div
-  ref={dropRef}
-  onDrop={handleDrop}
-  onDragOver={handleDragOver}
-  className="mt-4 rounded border-2 border-dashed border-slate-700 p-4 text-center bg-slate-950"
-  role="button"
-  tabIndex={0}
-  onKeyDown={(e) => {
-    if (e.key === "Enter") {
-      document.getElementById("pcap-file-input")?.click();
-    }
-  }}
-  aria-label="Drop PCAP file here or click to select"
->
-  <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-    <div className="text-sm">Drag & drop a <strong>.pcap</strong> file here</div>
-    <div className="text-sm">or</div>
+        <div
+          ref={dropRef}
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          className="mt-4 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 p-6 text-center bg-slate-50 dark:bg-slate-900/60 shadow-sm transition hover:border-indigo-500 dark:hover:border-indigo-500"
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              document.getElementById("pcap-file-input")?.click();
+            }
+          }}
+          aria-label="Drop PCAP file here or click to select"
+        >
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <div className="text-sm text-slate-700 dark:text-slate-300">Drag & drop a <strong className="text-slate-900 dark:text-white">.pcap</strong> file here</div>
+            <div className="text-sm text-slate-500">or</div>
 
-    {/* Fixed: label directly acts as button */}
-    <label
-      htmlFor="pcap-file-input"
-      className="px-4 py-2 border rounded bg-slate-900 hover:bg-slate-800 text-white cursor-pointer"
-    >
-      Choose file
-    </label>
+            <label
+              htmlFor="pcap-file-input"
+              className="px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100 font-medium text-sm cursor-pointer shadow-sm transition"
+            >
+              Choose file
+            </label>
 
-    <input
-      id="pcap-file-input"
-      type="file"
-      accept=".pcap,.pcapng"
-      onChange={handleFileInput}
-      className="hidden"
-    />
-  </div>
-  <div className="mt-2 text-xs text-slate-400">
-    Max recommended size: 10 MB. Large files may be slow or truncated.
-  </div>
-</div>
-
+            <input
+              id="pcap-file-input"
+              type="file"
+              accept=".pcap,.pcapng"
+              onChange={handleFileInput}
+              className="hidden"
+            />
+          </div>
+          <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+            Max recommended size: 10 MB. Large files may be slow or truncated.
+          </div>
+        </div>
 
         {/* feedback */}
-        <div className="flex items-center gap-3 mt-3">
-          {loading && <div className="text-sm">Parsing…</div>}
-          {error && <div className="text-sm text-amber-400">⚠ {error}</div>}
+        <div className="flex items-center gap-3 mt-3 flex-wrap">
+          {loading && <div className="text-sm text-indigo-600 dark:text-indigo-400 font-medium">Parsing…</div>}
+          {error && <div className="text-sm text-amber-600 dark:text-amber-400 font-medium">⚠ {error}</div>}
           {summary && !error && (
-            <div className="text-sm text-green-400">Parsed successfully</div>
+            <div className="text-sm text-emerald-600 dark:text-emerald-400 font-medium">Parsed successfully</div>
           )}
-          {fileName && <div className="ml-auto text-xs text-slate-400">File: {fileName}</div>}
+          {fileName && <div className="ml-auto text-xs text-slate-500 dark:text-slate-400 font-mono">File: {fileName}</div>}
         </div>
 
         {/* summary cards */}
         {summary && (
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 mt-4">
-            <div className="p-3 rounded border bg-slate-900 text-sm">
-              <div className="text-xs text-slate-400">Magic</div>
-              <div className="font-medium text-green-300">{summary.magic}</div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
+            <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm text-sm">
+              <div className="text-xs text-slate-500 dark:text-slate-400">Magic</div>
+              <div className="font-semibold text-indigo-600 dark:text-indigo-400 font-mono mt-1">{summary.magic}</div>
             </div>
-            <div className="p-3 rounded border bg-slate-900 text-sm">
-              <div className="text-xs text-slate-400">Version</div>
-              <div className="font-medium  text-green-300">{summary.version}</div>
+            <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm text-sm">
+              <div className="text-xs text-slate-500 dark:text-slate-400">Version</div>
+              <div className="font-semibold text-indigo-600 dark:text-indigo-400 font-mono mt-1">{summary.version}</div>
             </div>
-            <div className="p-3 rounded border bg-slate-900 text-sm">
-              <div className="text-xs text-slate-400">Snaplen</div>
-              <div className="font-medium  text-green-300">{summary.snaplen}</div>
+            <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm text-sm">
+              <div className="text-xs text-slate-500 dark:text-slate-400">Snaplen</div>
+              <div className="font-semibold text-indigo-600 dark:text-indigo-400 font-mono mt-1">{summary.snaplen}</div>
             </div>
-            <div className="p-3 rounded border bg-slate-900 text-sm">
-              <div className="text-xs text-slate-400">Packets</div>
-              <div className="font-medium  text-green-300">{summary.packetCount}</div>
+            <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm text-sm">
+              <div className="text-xs text-slate-500 dark:text-slate-400">Packets</div>
+              <div className="font-semibold text-emerald-600 dark:text-emerald-400 font-mono mt-1">{summary.packetCount}</div>
             </div>
           </div>
         )}
 
         {/* actions: copy/export/share/print/clear */}
-        <div className="flex gap-2 mt-4">
+        <div className="flex gap-2 mt-4 flex-wrap">
           <button
             onClick={async () => {
               if (!summary) return;
               const ok = await copyText(JSON.stringify(summary, null, 2));
               if (ok) alert("Summary JSON copied to clipboard");
             }}
-            className="flex items-center gap-2 px-3 py-2 border rounded"
+            className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium transition"
             aria-label="Copy summary JSON"
           >
-            <Copy size={16} /> Copy JSON
+            <Copy size={13} /> Copy JSON
           </button>
 
-          <button onClick={exportJSON} className="flex items-center gap-2 px-3 py-2 border rounded">
-            <FileText size={16} /> Download JSON
+          <button onClick={exportJSON} className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium transition">
+            <FileText size={13} /> JSON
           </button>
 
-          <button onClick={exportTXT} className="flex items-center gap-2 px-3 py-2 border rounded">
-            <File size={16} /> Download TXT
+          <button onClick={exportTXT} className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium transition">
+            <File size={13} /> TXT
           </button>
 
-          <button onClick={exportMarkdown} className="flex items-center gap-2 px-3 py-2 border rounded">
-            <FileText size={16} /> Download MD
+          <button onClick={exportMarkdown} className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium transition">
+            <FileText size={13} /> MD
           </button>
 
           <button
             onClick={() => printAsPDF(summary, fileName)}
-            className="flex items-center gap-2 px-3 py-2 border rounded"
+            className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium transition"
           >
-            Print / Save as PDF
+            Print / PDF
           </button>
 
-          <button onClick={shareSummary} className="flex items-center gap-2 px-3 py-2 border rounded ml-auto">
-            <Share2 size={16} /> Share
+          <button onClick={shareSummary} className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium transition">
+            <Share2 size={13} /> Share
           </button>
 
           <button
@@ -488,46 +484,46 @@ export default function PCAPPage() {
               setFileName(null);
               setError(null);
             }}
-            className="flex items-center gap-2 px-3 py-2 border rounded"
+            className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium transition ml-auto"
           >
-            <Trash2 size={16} /> Clear
+            <Trash2 size={13} /> Clear
           </button>
         </div>
 
         {/* packets table */}
         {summary && summary.packets && (
           <div className="mt-6">
-            <div className="text-sm text-slate-400 mb-2">Packets (first 5000 shown)</div>
-            <div className="overflow-auto rounded border bg-slate-900">
+            <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Packets (first 5000 shown)</div>
+            <div className="overflow-auto rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm max-h-[500px]">
               <table className="min-w-full text-sm">
-                <thead className="sticky top-0 bg-slate-800 text-green-700">
+                <thead className="sticky top-0 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 z-10">
                   <tr>
-                    <th className="px-2 py-2 text-left">#</th>
-                    <th className="px-2 py-2 text-left">Timestamp</th>
-                    <th className="px-2 py-2 text-left">incl / orig</th>
-                    <th className="px-2 py-2 text-left">First bytes (hex)</th>
-                    <th className="px-2 py-2 text-left">Actions</th>
+                    <th className="px-3 py-2.5 text-left font-semibold">#</th>
+                    <th className="px-3 py-2.5 text-left font-semibold">Timestamp</th>
+                    <th className="px-3 py-2.5 text-left font-semibold">incl / orig</th>
+                    <th className="px-3 py-2.5 text-left font-semibold">First bytes (hex)</th>
+                    <th className="px-3 py-2.5 text-left font-semibold">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="text-white">
+                <tbody className="divide-y divide-slate-200 dark:divide-slate-800 text-slate-900 dark:text-slate-100">
                   {summary.packets.map((p: any, i: number) => (
-                    <tr key={i} className={i % 2 === 0 ? "bg-slate-900" : "bg-slate-950/20 text-white"}>
-                      <td className="px-2 py-2 align-top text-white">{p.index ?? i}</td>
-                      <td className="px-2 py-2 align-top">{p.ts}</td>
-                      <td className="px-2 py-2 align-top">{p.inclLen} / {p.origLen}</td>
-                      <td className="px-2 py-2 align-top">
-                        {p.notice ? <em className="text-xs text-amber-400">{p.notice}</em> : renderFirstBytes(p.firstBytes)}
+                    <tr key={i} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+                      <td className="px-3 py-2 align-top font-mono text-xs text-slate-500 dark:text-slate-400">{p.index ?? i}</td>
+                      <td className="px-3 py-2 align-top font-mono text-xs text-slate-700 dark:text-slate-300">{p.ts}</td>
+                      <td className="px-3 py-2 align-top font-mono text-xs text-slate-700 dark:text-slate-300">{p.inclLen} / {p.origLen}</td>
+                      <td className="px-3 py-2 align-top">
+                        {p.notice ? <em className="text-xs text-amber-600 dark:text-amber-400">{p.notice}</em> : renderFirstBytes(p.firstBytes)}
                       </td>
-                      <td className="px-2 py-2 align-top">
-                        <div className="flex gap-1">
+                      <td className="px-3 py-2 align-top">
+                        <div className="flex gap-1.5">
                           <button
                             onClick={() => {
                               copyText(p.firstBytes || "");
                               alert("Hex copied");
                             }}
-                            className="px-2 py-1 border rounded text-xs"
+                            className="px-2 py-1 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded text-xs transition"
                           >
-                            Copy hex
+                            Copy
                           </button>
                           <button
                             onClick={() => {
@@ -538,9 +534,9 @@ export default function PCAPPage() {
                               };
                               downloadBlob(JSON.stringify(single, null, 2), `${fileName || "pcap"}-pkt-${p.index}.json`, "application/json");
                             }}
-                            className="px-2 py-1 border rounded text-xs"
+                            className="px-2 py-1 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded text-xs transition"
                           >
-                            Export pkt
+                            Export
                           </button>
                         </div>
                       </td>

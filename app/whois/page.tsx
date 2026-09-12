@@ -348,9 +348,9 @@ export default function WhoisPage() {
                 if (e.key === "Enter") lookup();
               }}
               placeholder="Enter domain (e.g., example.com)"
-              className={`w-full bg-white border-2 rounded-lg px-4 py-3 pr-10 transition-all focus:outline-none focus:ring-2 ${inputError
-                  ? "border-red-400 focus:ring-red-200"
-                  : "border-slate-300 focus:border-blue-500 focus:ring-blue-200"
+              className={`w-full bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 border-2 rounded-lg px-4 py-3 pr-10 transition-all focus:outline-none focus:ring-2 ${inputError
+                  ? "border-red-400 focus:ring-red-200 dark:focus:ring-red-900/30"
+                  : "border-slate-300 dark:border-slate-700 focus:border-blue-500 focus:ring-blue-200 dark:focus:ring-blue-900/30"
                 }`}
               aria-invalid={!!inputError}
               aria-describedby="domain-help"
@@ -378,17 +378,17 @@ export default function WhoisPage() {
 
         {/* Input Error */}
         {inputError && (
-          <div className="mt-4 p-4 rounded-lg bg-gradient-to-r from-red-50 to-rose-50 border-l-4 border-red-500">
+          <div className="mt-4 p-4 rounded-xl bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-950/40 dark:to-rose-950/40 border-l-4 border-red-500">
             <div className="flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+              <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" />
               <div>
-                <div className="font-semibold text-red-900">Invalid Domain Format</div>
-                <div className="text-sm text-red-700 mt-1">{inputError}</div>
+                <div className="font-semibold text-red-900 dark:text-red-200">Invalid Domain Format</div>
+                <div className="text-sm text-red-700 dark:text-red-300 mt-1">{inputError}</div>
                 <div className="mt-2 flex gap-2 flex-wrap">
-                  <code className="bg-white px-2 py-1 rounded text-xs text-red-800 border border-red-200">
+                  <code className="bg-white dark:bg-slate-900 px-2 py-1 rounded text-xs text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800">
                     example.com
                   </code>
-                  <code className="bg-white px-2 py-1 rounded text-xs text-red-800 border border-red-200">
+                  <code className="bg-white dark:bg-slate-900 px-2 py-1 rounded text-xs text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800">
                     sub.example.co.uk
                   </code>
                 </div>
@@ -399,10 +399,10 @@ export default function WhoisPage() {
 
         {/* API Error */}
         {error && (
-          <div className="mt-4 p-4 rounded-lg bg-gradient-to-r from-red-50 to-rose-50 border-l-4 border-red-500">
+          <div className="mt-4 p-4 rounded-xl bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-950/40 dark:to-rose-950/40 border-l-4 border-red-500">
             <div className="flex items-center gap-3">
-              <XCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
-              <div className="font-medium text-red-900">{error}</div>
+              <XCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0" />
+              <div className="font-medium text-red-900 dark:text-red-200">{error}</div>
             </div>
           </div>
         )}
@@ -411,25 +411,25 @@ export default function WhoisPage() {
         {summary && (
           <div className="mt-6 space-y-6">
             {/* Security Score Header */}
-            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 p-6">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-100/50 to-purple-100/50 rounded-full blur-3xl -z-0" />
+            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800/80 border border-slate-200 dark:border-slate-800 p-6">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-100/50 to-purple-100/50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-full blur-3xl -z-0" />
 
               <div className="relative z-10 flex items-center justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
-                    <Globe className="w-8 h-8 text-blue-600" />
+                    <Globe className="w-8 h-8 text-blue-600 dark:text-blue-400" />
                     <div>
-                      <div className="text-sm font-medium text-slate-600">Domain Information</div>
-                      <div className="text-2xl font-bold text-slate-900">{query}</div>
+                      <div className="text-sm font-medium text-slate-600 dark:text-slate-400">Domain Information</div>
+                      <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">{query}</div>
                     </div>
                   </div>
-                  <div className="text-sm text-slate-600 mt-1">
-                    <span className="font-medium">Registrar:</span> {summary.registrar}
+                  <div className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                    <span className="font-medium text-slate-900 dark:text-slate-200">Registrar:</span> {summary.registrar}
                   </div>
                 </div>
 
                 <div className="text-center">
-                  <div className="text-sm font-medium text-slate-600 mb-2">Security Score</div>
+                  <div className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">Security Score</div>
                   <div
                     className={`text-5xl font-bold bg-gradient-to-br ${getScoreBgColor(
                       securityScore
@@ -437,7 +437,7 @@ export default function WhoisPage() {
                   >
                     {securityScore ?? "—"}
                   </div>
-                  <div className="text-xs text-slate-500 mt-1">
+                  <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                     {summary.privacy ? "🔒 Privacy Protected" : "🔓 Public Registration"}
                   </div>
                 </div>
@@ -447,38 +447,38 @@ export default function WhoisPage() {
             {/* Main Info Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
               {/* Registration Dates */}
-              <div className="bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow">
+              <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 hover:shadow-md transition-shadow">
                 <div className="flex items-center gap-2 mb-3">
-                  <Calendar className="w-5 h-5 text-blue-600" />
-                  <h3 className="font-semibold text-slate-900">Registration Dates</h3>
+                  <Calendar className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  <h3 className="font-semibold text-slate-900 dark:text-slate-100">Registration Dates</h3>
                 </div>
                 <div className="space-y-3">
                   <div>
-                    <div className="text-xs text-slate-500 mb-1">Created</div>
-                    <div className="text-sm font-medium text-slate-900">
+                    <div className="text-xs text-slate-500 dark:text-slate-400 mb-1">Created</div>
+                    <div className="text-sm font-medium text-slate-900 dark:text-slate-100">
                       {formatDate(summary.created)}
                     </div>
                   </div>
                   <div>
-                    <div className="text-xs text-slate-500 mb-1">Last Updated</div>
-                    <div className="text-sm font-medium text-slate-900">
+                    <div className="text-xs text-slate-500 dark:text-slate-400 mb-1">Last Updated</div>
+                    <div className="text-sm font-medium text-slate-900 dark:text-slate-100">
                       {formatDate(summary.updated)}
                     </div>
                   </div>
                   <div>
-                    <div className="text-xs text-slate-500 mb-1">Expires</div>
-                    <div className="text-sm font-medium text-slate-900">
+                    <div className="text-xs text-slate-500 dark:text-slate-400 mb-1">Expires</div>
+                    <div className="text-sm font-medium text-slate-900 dark:text-slate-100">
                       {formatDate(summary.expires)}
                     </div>
                     {summary.expiryDays !== null && (
                       <div
                         className={`mt-2 inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${summary.expiryDays <= 0
-                            ? "bg-red-100 text-red-700"
+                            ? "bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300"
                             : summary.expiryDays <= 30
-                              ? "bg-red-100 text-red-700"
+                              ? "bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300"
                               : summary.expiryDays <= 90
-                                ? "bg-yellow-100 text-yellow-700"
-                                : "bg-green-100 text-green-700"
+                                ? "bg-yellow-100 dark:bg-yellow-950/60 text-yellow-700 dark:text-yellow-300"
+                                : "bg-green-100 dark:bg-green-950/60 text-green-700 dark:text-green-300"
                           }`}
                       >
                         <Clock className="w-3 h-3" />
@@ -492,30 +492,30 @@ export default function WhoisPage() {
               </div>
 
               {/* Status & Contact */}
-              <div className="bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow">
+              <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 hover:shadow-md transition-shadow">
                 <div className="flex items-center gap-2 mb-3">
-                  <Info className="w-5 h-5 text-purple-600" />
-                  <h3 className="font-semibold text-slate-900">Status & Contact</h3>
+                  <Info className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                  <h3 className="font-semibold text-slate-900 dark:text-slate-100">Status & Contact</h3>
                 </div>
                 <div className="space-y-3">
                   <div>
-                    <div className="text-xs text-slate-500 mb-1">Domain Status</div>
-                    <div className="text-sm font-medium text-slate-900 break-words">
+                    <div className="text-xs text-slate-500 dark:text-slate-400 mb-1">Domain Status</div>
+                    <div className="text-sm font-medium text-slate-900 dark:text-slate-100 break-words">
                       {summary.status}
                     </div>
                   </div>
                   <div>
-                    <div className="text-xs text-slate-500 mb-1">Abuse Contact</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400 mb-1">Abuse Contact</div>
                     {summary.abuse ? (
                       <a
                         href={`mailto:${summary.abuse}`}
-                        className="text-sm font-medium text-blue-600 hover:text-blue-700 underline flex items-center gap-1"
+                        className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 underline flex items-center gap-1"
                       >
                         <Mail className="w-4 h-4" />
                         {summary.abuse}
                       </a>
                     ) : (
-                      <div className="text-sm text-slate-400 flex items-center gap-1">
+                      <div className="text-sm text-slate-400 dark:text-slate-500 flex items-center gap-1">
                         <XCircle className="w-4 h-4" />
                         Not available
                       </div>
@@ -525,35 +525,35 @@ export default function WhoisPage() {
               </div>
 
               {/* Security Features */}
-              <div className="bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow">
+              <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 hover:shadow-md transition-shadow">
                 <div className="flex items-center gap-2 mb-3">
-                  <Lock className="w-5 h-5 text-green-600" />
-                  <h3 className="font-semibold text-slate-900">Security Features</h3>
+                  <Lock className="w-5 h-5 text-green-600 dark:text-green-400" />
+                  <h3 className="font-semibold text-slate-900 dark:text-slate-100">Security Features</h3>
                 </div>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-600">DNSSEC</span>
+                    <span className="text-sm text-slate-600 dark:text-slate-400">DNSSEC</span>
                     {summary.dnssec ? (
-                      <span className="flex items-center gap-1 text-green-600 font-medium text-sm">
+                      <span className="flex items-center gap-1 text-green-600 dark:text-green-400 font-medium text-sm">
                         <CheckCircle2 className="w-4 h-4" />
                         Enabled
                       </span>
                     ) : (
-                      <span className="flex items-center gap-1 text-slate-400 font-medium text-sm">
+                      <span className="flex items-center gap-1 text-slate-400 dark:text-slate-500 font-medium text-sm">
                         <XCircle className="w-4 h-4" />
                         Not enabled
                       </span>
                     )}
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-600">Privacy Protection</span>
+                    <span className="text-sm text-slate-600 dark:text-slate-400">Privacy Protection</span>
                     {summary.privacy ? (
-                      <span className="flex items-center gap-1 text-blue-600 font-medium text-sm">
+                      <span className="flex items-center gap-1 text-blue-600 dark:text-blue-400 font-medium text-sm">
                         <CheckCircle2 className="w-4 h-4" />
                         Active
                       </span>
                     ) : (
-                      <span className="flex items-center gap-1 text-slate-400 font-medium text-sm">
+                      <span className="flex items-center gap-1 text-slate-400 dark:text-slate-500 font-medium text-sm">
                         <XCircle className="w-4 h-4" />
                         Inactive
                       </span>
@@ -564,11 +564,11 @@ export default function WhoisPage() {
             </div>
 
             {/* Nameservers */}
-            <div className="bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow">
+            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 hover:shadow-md transition-shadow">
               <div className="flex items-center gap-2 mb-3">
-                <Server className="w-5 h-5 text-indigo-600" />
-                <h3 className="font-semibold text-slate-900">Nameservers</h3>
-                <span className="text-xs text-slate-500">
+                <Server className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                <h3 className="font-semibold text-slate-900 dark:text-slate-100">Nameservers</h3>
+                <span className="text-xs text-slate-500 dark:text-slate-400">
                   ({summary.nameservers?.length || 0} found)
                 </span>
               </div>
@@ -577,14 +577,14 @@ export default function WhoisPage() {
                   {summary.nameservers.map((ns: string, idx: number) => (
                     <div
                       key={idx}
-                      className="px-3 py-2 bg-slate-50 rounded border border-slate-200 text-sm font-mono text-slate-700"
+                      className="px-3 py-2 bg-slate-50 dark:bg-slate-950 rounded border border-slate-200 dark:border-slate-800 text-sm font-mono text-slate-700 dark:text-slate-300"
                     >
                       {ns}
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="text-sm text-slate-400 flex items-center gap-2">
+                <div className="text-sm text-slate-400 dark:text-slate-500 flex items-center gap-2">
                   <XCircle className="w-4 h-4" />
                   No nameservers found
                 </div>
@@ -592,39 +592,39 @@ export default function WhoisPage() {
             </div>
 
             {/* Security Insights */}
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border border-blue-200 p-5">
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/40 rounded-xl border border-blue-200 dark:border-blue-800/60 p-5">
               <div className="flex items-center gap-2 mb-4">
-                <Shield className="w-6 h-6 text-blue-600" />
-                <h3 className="font-semibold text-slate-900 text-lg">Security Insights</h3>
+                <Shield className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                <h3 className="font-semibold text-slate-900 dark:text-slate-100 text-lg">Security Insights</h3>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                <div className="bg-white rounded-lg p-3 border border-blue-100">
-                  <div className="text-xs text-slate-500 mb-1">Privacy / Proxy</div>
-                  <div className={`font-semibold ${summary.privacy ? "text-blue-600" : "text-slate-600"}`}>
+                <div className="bg-white dark:bg-slate-900 rounded-xl p-3 border border-blue-100 dark:border-blue-900/40">
+                  <div className="text-xs text-slate-500 dark:text-slate-400 mb-1">Privacy / Proxy</div>
+                  <div className={`font-semibold ${summary.privacy ? "text-blue-600 dark:text-blue-400" : "text-slate-600 dark:text-slate-400"}`}>
                     {summary.privacy ? "Detected" : "Not detected"}
                   </div>
                 </div>
 
-                <div className="bg-white rounded-lg p-3 border border-blue-100">
-                  <div className="text-xs text-slate-500 mb-1">Abuse Contact</div>
-                  <div className={`font-semibold ${summary.abuse ? "text-green-600" : "text-red-600"}`}>
+                <div className="bg-white dark:bg-slate-900 rounded-xl p-3 border border-blue-100 dark:border-blue-900/40">
+                  <div className="text-xs text-slate-500 dark:text-slate-400 mb-1">Abuse Contact</div>
+                  <div className={`font-semibold ${summary.abuse ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}>
                     {summary.abuse ? "Available" : "Missing"}
                   </div>
                 </div>
 
-                <div className="bg-white rounded-lg p-3 border border-blue-100">
-                  <div className="text-xs text-slate-500 mb-1">Expiry Risk</div>
+                <div className="bg-white dark:bg-slate-900 rounded-xl p-3 border border-blue-100 dark:border-blue-900/40">
+                  <div className="text-xs text-slate-500 dark:text-slate-400 mb-1">Expiry Risk</div>
                   <div
                     className={`font-semibold ${summary.expiryDays === null
                         ? "text-slate-400"
                         : summary.expiryDays <= 0
-                          ? "text-red-600"
+                          ? "text-red-600 dark:text-red-400"
                           : summary.expiryDays <= 30
-                            ? "text-red-600"
+                            ? "text-red-600 dark:text-red-400"
                             : summary.expiryDays <= 90
-                              ? "text-yellow-600"
-                              : "text-green-600"
+                              ? "text-yellow-600 dark:text-yellow-400"
+                              : "text-green-600 dark:text-green-400"
                       }`}
                   >
                     {summary.expiryDays === null
@@ -640,25 +640,25 @@ export default function WhoisPage() {
                 </div>
               </div>
 
-              <div className="bg-white rounded-lg p-4 border border-blue-100">
-                <div className="text-sm font-medium text-slate-700 mb-2">
+              <div className="bg-white dark:bg-slate-900 rounded-xl p-4 border border-blue-100 dark:border-blue-900/40">
+                <div className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                   💡 Recommended Actions
                 </div>
-                <ul className="space-y-1 text-sm text-slate-600">
+                <ul className="space-y-1 text-sm text-slate-600 dark:text-slate-400">
                   <li className="flex items-start gap-2">
-                    <span className="text-blue-600 mt-0.5">•</span>
+                    <span className="text-blue-600 dark:text-blue-400 mt-0.5">•</span>
                     <span>Monitor domain expiry and renew before expiration</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-blue-600 mt-0.5">•</span>
+                    <span className="text-blue-600 dark:text-blue-400 mt-0.5">•</span>
                     <span>Use abuse contact for reporting malicious activity</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-blue-600 mt-0.5">•</span>
+                    <span className="text-blue-600 dark:text-blue-400 mt-0.5">•</span>
                     <span>Enable DNSSEC for enhanced security if not already enabled</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-blue-600 mt-0.5">•</span>
+                    <span className="text-blue-600 dark:text-blue-400 mt-0.5">•</span>
                     <span>Verify nameserver configuration matches your DNS provider</span>
                   </li>
                 </ul>
@@ -669,28 +669,28 @@ export default function WhoisPage() {
             <div className="flex gap-3 flex-wrap">
               <button
                 onClick={copyData}
-                className="px-4 py-2 bg-white border-2 border-slate-300 hover:border-slate-400 rounded-lg flex items-center gap-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-all"
+                className="px-4 py-2 bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600 rounded-lg flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all"
               >
                 <Copy className="w-4 h-4" />
                 Copy JSON
               </button>
               <button
                 onClick={() => exportFile("json")}
-                className="px-4 py-2 bg-white border-2 border-slate-300 hover:border-slate-400 rounded-lg flex items-center gap-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-all"
+                className="px-4 py-2 bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600 rounded-lg flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all"
               >
                 <Download className="w-4 h-4" />
                 Export JSON
               </button>
               <button
                 onClick={() => exportFile("txt")}
-                className="px-4 py-2 bg-white border-2 border-slate-300 hover:border-slate-400 rounded-lg flex items-center gap-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-all"
+                className="px-4 py-2 bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600 rounded-lg flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all"
               >
                 <Download className="w-4 h-4" />
                 Export TXT
               </button>
               <button
                 onClick={shareData}
-                className="px-4 py-2 bg-white border-2 border-slate-300 hover:border-slate-400 rounded-lg flex items-center gap-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-all"
+                className="px-4 py-2 bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600 rounded-lg flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all"
               >
                 <Share2 className="w-4 h-4" />
                 Share
@@ -698,12 +698,12 @@ export default function WhoisPage() {
             </div>
 
             {/* Raw JSON Viewer */}
-            <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
+            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
               <button
                 onClick={() => setShowRawJson(!showRawJson)}
-                className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-50 transition-colors"
+                className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
               >
-                <span className="font-medium text-slate-900">Raw RDAP Response</span>
+                <span className="font-medium text-slate-900 dark:text-slate-100">Raw RDAP Response</span>
                 {showRawJson ? (
                   <ChevronUp className="w-5 h-5 text-slate-500" />
                 ) : (
@@ -711,7 +711,7 @@ export default function WhoisPage() {
                 )}
               </button>
               {showRawJson && (
-                <pre className="text-xs whitespace-pre-wrap bg-slate-900 text-green-400 p-4 max-h-96 overflow-y-auto font-mono border-t border-slate-200">
+                <pre className="text-xs whitespace-pre-wrap bg-slate-900 dark:bg-black text-green-400 p-4 max-h-96 overflow-y-auto font-mono border-t border-slate-200 dark:border-slate-800">
                   {JSON.stringify(data, null, 2)}
                 </pre>
               )}
@@ -721,34 +721,34 @@ export default function WhoisPage() {
       </Section>
 
       <Section title="What is WHOIS / RDAP?">
-        <div className="prose prose-slate max-w-none">
-          <p className="text-slate-600">
+        <div className="prose prose-slate dark:prose-invert max-w-none">
+          <p className="text-slate-600 dark:text-slate-400">
             WHOIS / RDAP (Registration Data Access Protocol) provides comprehensive ownership and
             registration details for domain names. This tool helps security professionals,
             researchers, and administrators investigate domains and monitor their status.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-            <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+            <div className="bg-blue-50 dark:bg-blue-950/40 rounded-xl p-4 border border-blue-200 dark:border-blue-800/60">
               <div className="text-2xl mb-2">🔎</div>
-              <h4 className="font-semibold text-slate-900 mb-1">Investigate Domains</h4>
-              <p className="text-sm text-slate-600">
+              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-1">Investigate Domains</h4>
+              <p className="text-sm text-slate-600 dark:text-slate-400">
                 Research suspicious domains and identify their owners, registrars, and registration dates
               </p>
             </div>
 
-            <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
+            <div className="bg-purple-50 dark:bg-purple-950/40 rounded-xl p-4 border border-purple-200 dark:border-purple-800/60">
               <div className="text-2xl mb-2">📅</div>
-              <h4 className="font-semibold text-slate-900 mb-1">Monitor Expiry</h4>
-              <p className="text-sm text-slate-600">
+              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-1">Monitor Expiry</h4>
+              <p className="text-sm text-slate-600 dark:text-slate-400">
                 Track domain expiration dates to prevent service disruptions or identify takedown opportunities
               </p>
             </div>
 
-            <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+            <div className="bg-green-50 dark:bg-green-950/40 rounded-xl p-4 border border-green-200 dark:border-green-800/60">
               <div className="text-2xl mb-2">🛡️</div>
-              <h4 className="font-semibold text-slate-900 mb-1">Security Analysis</h4>
-              <p className="text-sm text-slate-600">
+              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-1">Security Analysis</h4>
+              <p className="text-sm text-slate-600 dark:text-slate-400">
                 Verify DNSSEC status, identify abuse contacts, and assess domain security posture
               </p>
             </div>

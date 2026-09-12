@@ -133,18 +133,18 @@ export default function ContextTrimmer() {
     const savingsPercent = inputTokens > 0 ? ((tokensSaved / inputTokens) * 100).toFixed(1) : "0";
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8">
+        <div className="w-full space-y-6 text-slate-900 dark:text-slate-100">
             <div className="max-w-7xl mx-auto space-y-6">
                 {/* Header */}
                 <div className="text-center space-y-3">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/60 backdrop-blur-sm rounded-full border border-blue-200 shadow-sm">
-                        <Brain className="w-5 h-5 text-blue-600" />
-                        <span className="text-sm font-medium text-blue-900">AI Tools</span>
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-full border border-blue-200 dark:border-blue-900 shadow-sm">
+                        <Brain className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                        <span className="text-sm font-medium text-blue-900 dark:text-blue-300">AI Tools</span>
                     </div>
-                    <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                    <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 dark:from-cyan-400 dark:via-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
                         Context Trimmer
                     </h1>
-                    <p className="text-slate-600 max-w-2xl mx-auto">
+                    <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
                         Automatically trim your context to fit token limits. Smart truncation preserves important information
                         while staying within model constraints.
                     </p>
@@ -153,9 +153,9 @@ export default function ContextTrimmer() {
                 {/* Model Selection & Stats */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                     {/* Model Selector */}
-                    <div className="lg:col-span-2 bg-white/70 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 p-6">
-                        <label className="text-sm font-semibold text-slate-700 mb-3 block flex items-center gap-2">
-                            <Sparkles className="w-4 h-4 text-blue-600" />
+                    <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 p-6">
+                        <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 block flex items-center gap-2">
+                            <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                             Select Model
                         </label>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -163,25 +163,25 @@ export default function ContextTrimmer() {
                                 <button
                                     key={model.id}
                                     onClick={() => setSelectedModel(model)}
-                                    className={`p-4 rounded-xl border-2 transition-all ${selectedModel.id === model.id
-                                            ? "border-blue-500 bg-blue-50 shadow-md"
-                                            : "border-slate-200 hover:border-blue-300 bg-white"
+                                    className={`p-4 rounded-xl border-2 transition-all text-left ${selectedModel.id === model.id
+                                            ? "border-blue-500 bg-blue-50 dark:bg-blue-950/40 shadow-md"
+                                            : "border-slate-200 dark:border-slate-800 hover:border-blue-300 dark:hover:border-blue-700 bg-white dark:bg-slate-950"
                                         }`}
                                 >
-                                    <div className="font-semibold text-slate-800 text-sm">{model.name}</div>
-                                    <div className="text-xs text-slate-500 mt-1">{model.maxTokens.toLocaleString()} tokens</div>
+                                    <div className="font-semibold text-slate-800 dark:text-slate-200 text-sm">{model.name}</div>
+                                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">{model.maxTokens.toLocaleString()} tokens</div>
                                 </button>
                             ))}
                         </div>
 
                         <div className="mt-4 flex items-center gap-3">
-                            <label className="text-sm font-medium text-slate-700">Custom Limit:</label>
+                            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Custom Limit:</label>
                             <input
                                 type="number"
                                 value={customLimit || ""}
                                 onChange={(e) => setCustomLimit(e.target.value ? parseInt(e.target.value) : null)}
                                 placeholder={selectedModel.maxTokens.toString()}
-                                className="flex-1 px-4 py-2 rounded-lg border-2 border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all"
+                                className="flex-1 px-4 py-2 rounded-lg border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 outline-none transition-all"
                             />
                         </div>
                     </div>
@@ -217,9 +217,9 @@ export default function ContextTrimmer() {
                 </div>
 
                 {/* Truncation Strategy */}
-                <div className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 p-6">
-                    <label className="text-sm font-semibold text-slate-700 mb-3 block flex items-center gap-2">
-                        <Scissors className="w-4 h-4 text-blue-600" />
+                <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 p-6">
+                    <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 block flex items-center gap-2">
+                        <Scissors className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                         Truncation Strategy
                     </label>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -233,13 +233,13 @@ export default function ContextTrimmer() {
                                 key={strat.id}
                                 onClick={() => setStrategy(strat.id as TruncationStrategy)}
                                 className={`p-4 rounded-xl border-2 transition-all text-left ${strategy === strat.id
-                                        ? "border-blue-500 bg-blue-50 shadow-md"
-                                        : "border-slate-200 hover:border-blue-300 bg-white"
+                                        ? "border-blue-500 bg-blue-50 dark:bg-blue-950/40 shadow-md"
+                                        : "border-slate-200 dark:border-slate-800 hover:border-blue-300 dark:hover:border-blue-700 bg-white dark:bg-slate-950"
                                     }`}
                             >
-                                <strat.icon className="w-5 h-5 text-blue-600 mb-2" />
-                                <div className="font-semibold text-slate-800 text-sm">{strat.label}</div>
-                                <div className="text-xs text-slate-500 mt-1">{strat.desc}</div>
+                                <strat.icon className="w-5 h-5 text-blue-600 dark:text-blue-400 mb-2" />
+                                <div className="font-semibold text-slate-800 dark:text-slate-200 text-sm">{strat.label}</div>
+                                <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">{strat.desc}</div>
                             </button>
                         ))}
                     </div>
@@ -248,7 +248,7 @@ export default function ContextTrimmer() {
                 {/* Input/Output */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Input */}
-                    <div className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 overflow-hidden">
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
                         <div className="px-6 py-4 bg-gradient-to-r from-cyan-600 to-blue-600 flex items-center justify-between">
                             <h2 className="text-lg font-semibold text-white flex items-center gap-2">
                                 <FileText className="w-5 h-5" />
@@ -263,13 +263,13 @@ export default function ContextTrimmer() {
                                 value={inputText}
                                 onChange={(e) => setInputText(e.target.value)}
                                 placeholder="Paste your context here..."
-                                className="w-full h-96 px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all resize-none font-mono text-sm"
+                                className="w-full h-96 px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 outline-none transition-all resize-none font-mono text-sm"
                             />
                         </div>
                     </div>
 
                     {/* Output */}
-                    <div className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 overflow-hidden">
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
                         <div className="px-6 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-between">
                             <h2 className="text-lg font-semibold text-white flex items-center gap-2">
                                 <Zap className="w-5 h-5" />
@@ -290,16 +290,16 @@ export default function ContextTrimmer() {
                             <textarea
                                 value={trimmedText}
                                 readOnly
-                                className="w-full h-96 px-4 py-3 rounded-xl border-2 border-slate-200 bg-slate-50 resize-none font-mono text-sm"
+                                className="w-full h-96 px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 resize-none font-mono text-sm"
                             />
                         </div>
-                        <div className="px-6 py-4 bg-slate-50 border-t flex flex-wrap gap-2">
+                        <div className="px-6 py-4 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-200 dark:border-slate-800 flex flex-wrap gap-2">
                             <button
                                 onClick={() => copyText(trimmedText, () => {
                                     setCopied(true);
                                     setTimeout(() => setCopied(false), 2000);
                                 })}
-                                className="px-4 py-2 bg-white border-2 border-slate-300 hover:border-blue-400 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-all flex items-center gap-2"
+                                className="px-4 py-2 bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center gap-2"
                             >
                                 <Copy className="w-4 h-4" />
                                 {copied ? "Copied!" : "Copy"}
@@ -318,31 +318,31 @@ export default function ContextTrimmer() {
                 {/* Stats Summary */}
                 {inputText && (
                     <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                        <div className="bg-white/70 backdrop-blur-xl rounded-xl border border-white/20 p-4">
-                            <div className="text-slate-600 text-sm mb-1">Input Tokens</div>
-                            <div className="text-2xl font-bold text-slate-800">{inputTokens.toLocaleString()}</div>
+                        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4">
+                            <div className="text-slate-600 dark:text-slate-400 text-sm mb-1">Input Tokens</div>
+                            <div className="text-2xl font-bold text-slate-800 dark:text-slate-200">{inputTokens.toLocaleString()}</div>
                         </div>
-                        <div className="bg-white/70 backdrop-blur-xl rounded-xl border border-white/20 p-4">
-                            <div className="text-slate-600 text-sm mb-1">Output Tokens</div>
-                            <div className="text-2xl font-bold text-blue-600">{outputTokens.toLocaleString()}</div>
+                        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4">
+                            <div className="text-slate-600 dark:text-slate-400 text-sm mb-1">Output Tokens</div>
+                            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{outputTokens.toLocaleString()}</div>
                         </div>
-                        <div className="bg-white/70 backdrop-blur-xl rounded-xl border border-white/20 p-4">
-                            <div className="text-slate-600 text-sm mb-1">Tokens Saved</div>
-                            <div className="text-2xl font-bold text-emerald-600">{tokensSaved.toLocaleString()}</div>
+                        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4">
+                            <div className="text-slate-600 dark:text-slate-400 text-sm mb-1">Tokens Saved</div>
+                            <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{tokensSaved.toLocaleString()}</div>
                         </div>
-                        <div className="bg-white/70 backdrop-blur-xl rounded-xl border border-white/20 p-4">
-                            <div className="text-slate-600 text-sm mb-1">Reduction</div>
-                            <div className="text-2xl font-bold text-purple-600">{savingsPercent}%</div>
+                        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4">
+                            <div className="text-slate-600 dark:text-slate-400 text-sm mb-1">Reduction</div>
+                            <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{savingsPercent}%</div>
                         </div>
                     </div>
                 )}
 
                 {/* Info Card */}
-                <div className="bg-white/50 backdrop-blur-sm rounded-xl border border-slate-200 p-6">
+                <div className="bg-white dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800 p-6">
                     <div className="flex items-start gap-3">
-                        <BarChart3 className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                        <div className="text-sm text-slate-600">
-                            <strong className="text-slate-900">Token Estimation:</strong> Token counts are estimates based on average character-to-token ratios.
+                        <BarChart3 className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                        <div className="text-sm text-slate-600 dark:text-slate-400">
+                            <strong className="text-slate-900 dark:text-slate-100">Token Estimation:</strong> Token counts are estimates based on average character-to-token ratios.
                             Actual token counts may vary slightly depending on the specific tokenizer used by each model.
                             For production use, consider using the official tokenizer libraries for precise counts.
                         </div>

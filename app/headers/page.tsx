@@ -375,125 +375,125 @@ export default function HeadersClientOnly() {
           This tool runs in your browser only. Because of browser security (CORS, mixed-content), results may be **inconclusive** for some targets — the UI will explain when that happens.
         </p>
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <input
             value={target}
             onChange={(e) => setTarget(e.target.value)}
-            className="flex-1 bg-white border border-slate-300 rounded p-2 text-sm"
+            className="flex-1 min-w-[240px] bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             placeholder="https://example.com"
             aria-label="Target URL"
           />
           <button
             onClick={runClientTests}
             disabled={loading}
-            className="px-4 py-2 rounded bg-blue-600 text-white font-medium hover:bg-blue-700 disabled:opacity-50"
+            className="px-4 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition shadow-sm disabled:opacity-50"
           >
             {loading ? "Testing…" : "Run Client Tests"}
           </button>
         </div>
 
-        {error && <div className="text-red-500 text-sm mt-2">⚠ {error}</div>}
+        {error && <div className="text-rose-600 dark:text-rose-400 text-sm mt-2 font-medium">⚠ {error}</div>}
 
         {tests && (
           <>
             <div className="flex flex-wrap gap-2 mt-4">
-              <button onClick={() => copyText(JSON.stringify({ url: target, tests }, null, 2))} className="flex items-center gap-1 px-3 py-1 border rounded text-sm"><Copy size={14} /> Copy JSON</button>
-              <button onClick={exportJSON} className="flex items-center gap-1 px-3 py-1 border rounded text-sm"><Download size={14} /> Export JSON</button>
-              <button onClick={() => { setRawHeaders(null); setTests(null); setTarget("https://example.com"); }} className="flex items-center gap-1 px-3 py-1 border rounded text-sm"><Trash2 size={14} /> Clear</button>
+              <button onClick={() => copyText(JSON.stringify({ url: target, tests }, null, 2))} className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs transition"><Copy size={13} /> Copy JSON</button>
+              <button onClick={exportJSON} className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs transition"><Download size={13} /> Export JSON</button>
+              <button onClick={() => { setRawHeaders(null); setTests(null); setTarget("https://example.com"); }} className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs transition"><Trash2 size={13} /> Clear</button>
             </div>
 
             <div className="mt-5 space-y-4">
               <div className="grid md:grid-cols-3 gap-3">
-                <div className="p-3 rounded border bg-slate-900 text-slate-50">
+                <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm">
                   <div className="flex justify-between items-start">
-                    <h3 className="text-sm font-semibold">CORS</h3>
+                    <h3 className="text-sm font-semibold text-slate-900 dark:text-white">CORS</h3>
                     {renderStatusBadge(tests.cors?.status)}
                   </div>
-                  <div className="mt-2 text-xs text-slate-300">
+                  <div className="mt-2 text-xs text-slate-600 dark:text-slate-300">
                     {(tests.cors?.notes || []).map((n: string, i: number) => <div key={i} className="mb-1">- {n}</div>)}
                   </div>
-                  <details className="mt-2 text-xs text-slate-400">
-                    <summary>Details</summary>
-                    <pre className="mt-2 text-xs bg-slate-800 rounded p-2 overflow-auto">{JSON.stringify(tests.cors?.details ?? {}, null, 2)}</pre>
+                  <details className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                    <summary className="cursor-pointer font-medium hover:text-indigo-600 dark:hover:text-indigo-400">Details</summary>
+                    <pre className="mt-2 text-xs bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 overflow-auto">{JSON.stringify(tests.cors?.details ?? {}, null, 2)}</pre>
                   </details>
                 </div>
 
-                <div className="p-3 rounded border bg-slate-900 text-slate-50">
+                <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm">
                   <div className="flex justify-between items-start">
-                    <h3 className="text-sm font-semibold">Preflight (heuristic)</h3>
+                    <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Preflight (heuristic)</h3>
                     {renderStatusBadge(tests.preflight?.status)}
                   </div>
-                  <div className="mt-2 text-xs text-slate-300">
+                  <div className="mt-2 text-xs text-slate-600 dark:text-slate-300">
                     {(tests.preflight?.notes || []).map((n: string, i: number) => <div key={i} className="mb-1">- {n}</div>)}
                   </div>
-                  <details className="mt-2 text-xs text-slate-400">
-                    <summary>Attempt result</summary>
-                    <pre className="mt-2 text-xs bg-slate-800 rounded p-2 overflow-auto">{JSON.stringify(tests.preflight?.details ?? {}, null, 2)}</pre>
+                  <details className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                    <summary className="cursor-pointer font-medium hover:text-indigo-600 dark:hover:text-indigo-400">Attempt result</summary>
+                    <pre className="mt-2 text-xs bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 overflow-auto">{JSON.stringify(tests.preflight?.details ?? {}, null, 2)}</pre>
                   </details>
                 </div>
 
-                <div className="p-3 rounded border bg-slate-900 text-slate-50">
+                <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm">
                   <div className="flex justify-between items-start">
-                    <h3 className="text-sm font-semibold">Credentials (heuristic)</h3>
+                    <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Credentials (heuristic)</h3>
                     {renderStatusBadge(tests.credentials?.status)}
                   </div>
-                  <div className="mt-2 text-xs text-slate-300">
+                  <div className="mt-2 text-xs text-slate-600 dark:text-slate-300">
                     {(tests.credentials?.notes || []).map((n: string, i: number) => <div key={i} className="mb-1">- {n}</div>)}
                   </div>
-                  <details className="mt-2 text-xs text-slate-400">
-                    <summary>Attempt result</summary>
-                    <pre className="mt-2 text-xs bg-slate-800 rounded p-2 overflow-auto">{JSON.stringify(tests.credentials?.details ?? {}, null, 2)}</pre>
+                  <details className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                    <summary className="cursor-pointer font-medium hover:text-indigo-600 dark:hover:text-indigo-400">Attempt result</summary>
+                    <pre className="mt-2 text-xs bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 overflow-auto">{JSON.stringify(tests.credentials?.details ?? {}, null, 2)}</pre>
                   </details>
                 </div>
               </div>
 
               <div className="grid md:grid-cols-2 gap-3">
-                <div className="p-3 rounded border bg-slate-900 text-slate-50">
+                <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm">
                   <div className="flex justify-between items-start">
-                    <h3 className="text-sm font-semibold">CSP (heuristic)</h3>
+                    <h3 className="text-sm font-semibold text-slate-900 dark:text-white">CSP (heuristic)</h3>
                     {renderStatusBadge(tests.csp?.status)}
                   </div>
-                  <div className="mt-2 text-xs text-slate-300">
+                  <div className="mt-2 text-xs text-slate-600 dark:text-slate-300">
                     {(tests.csp?.notes || []).map((n: string, i: number) => <div key={i} className="mb-1">- {n}</div>)}
-                    <div className="mt-2 text-xs text-slate-400">Note: client-only CSP checks are heuristic and may be inconclusive. For full CSP header inspection use a server-side fetch (or curl).</div>
+                    <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">Note: client-only CSP checks are heuristic and may be inconclusive. For full CSP header inspection use a server-side fetch (or curl).</div>
                   </div>
-                  <details className="mt-2 text-xs text-slate-400">
-                    <summary>Heuristic details</summary>
-                    <pre className="mt-2 text-xs bg-slate-800 rounded p-2 overflow-auto">{JSON.stringify(tests.csp?.details ?? {}, null, 2)}</pre>
+                  <details className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                    <summary className="cursor-pointer font-medium hover:text-indigo-600 dark:hover:text-indigo-400">Heuristic details</summary>
+                    <pre className="mt-2 text-xs bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 overflow-auto">{JSON.stringify(tests.csp?.details ?? {}, null, 2)}</pre>
                   </details>
                 </div>
 
-                <div className="p-3 rounded border bg-slate-900 text-slate-50">
+                <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm">
                   <div className="flex justify-between items-start">
-                    <h3 className="text-sm font-semibold">HSTS (heuristic)</h3>
+                    <h3 className="text-sm font-semibold text-slate-900 dark:text-white">HSTS (heuristic)</h3>
                     {renderStatusBadge(tests.hsts?.status)}
                   </div>
-                  <div className="mt-2 text-xs text-slate-300">
+                  <div className="mt-2 text-xs text-slate-600 dark:text-slate-300">
                     {(tests.hsts?.notes || []).map((n: string, i: number) => <div key={i} className="mb-1">- {n}</div>)}
-                    <div className="mt-2 text-xs text-slate-400">Note: HSTS cannot be reliably detected from an HTTPS client page due to browser mixed-content protections.</div>
+                    <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">Note: HSTS cannot be reliably detected from an HTTPS client page due to browser mixed-content protections.</div>
                   </div>
-                  <details className="mt-2 text-xs text-slate-400">
-                    <summary>Heuristic details</summary>
-                    <pre className="mt-2 text-xs bg-slate-800 rounded p-2 overflow-auto">{JSON.stringify(tests.hsts?.details ?? {}, null, 2)}</pre>
+                  <details className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                    <summary className="cursor-pointer font-medium hover:text-indigo-600 dark:hover:text-indigo-400">Heuristic details</summary>
+                    <pre className="mt-2 text-xs bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 overflow-auto">{JSON.stringify(tests.hsts?.details ?? {}, null, 2)}</pre>
                   </details>
                 </div>
               </div>
 
               {/* Raw headers if available */}
               {rawHeaders && (
-                <div className="rounded border bg-slate-900 text-slate-50 overflow-auto">
+                <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 overflow-hidden shadow-sm">
                   <table className="min-w-full text-sm">
-                    <thead className="bg-slate-800">
+                    <thead className="bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100">
                       <tr>
-                        <th className="text-left px-3 py-2">Header</th>
-                        <th className="text-left px-3 py-2">Value</th>
+                        <th className="text-left px-4 py-3 font-semibold">Header</th>
+                        <th className="text-left px-4 py-3 font-semibold">Value</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
                       {Object.entries(rawHeaders).map(([key, val]) => (
-                        <tr key={key} className="border-t border-slate-700">
-                          <td className="px-3 py-1 text-slate-200 font-medium">{key}</td>
-                          <td className="px-3 py-1 text-slate-300 break-all">{safeString(val)}</td>
+                        <tr key={key} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                          <td className="px-4 py-2 font-mono text-xs text-slate-700 dark:text-slate-300 font-medium">{key}</td>
+                          <td className="px-4 py-2 font-mono text-xs text-slate-900 dark:text-slate-100 break-all">{safeString(val)}</td>
                         </tr>
                       ))}
                     </tbody>

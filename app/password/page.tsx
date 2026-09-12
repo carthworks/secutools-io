@@ -168,44 +168,44 @@ export default function PasswordToolPage() {
   return (
     <div className="space-y-8">
       <Section title="Password Strength Checker" subtitle="Estimate entropy and generate secure passwords (client-side only)">
-        <p className="text-sm text-slate-600 max-w-2xl">
+        <p className="text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
           This tool runs entirely in your browser. No password data is sent to any server. Use the generator for strong,
           random passwords and the checker to understand strength and improvement suggestions.
         </p>
 
         {/* Checker */}
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
-          <div className="space-y-3">
-            <label className="block text-sm font-medium">Password</label>
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <div className="space-y-3 p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800">
+            <label className="block text-sm font-medium text-slate-900 dark:text-slate-100">Password</label>
             <div className="flex items-center gap-2">
               <input
                 type={show ? "text" : "password"}
                 value={pwd}
                 onChange={(e) => setPwd(e.target.value)}
                 placeholder="Enter or generate a password"
-                className="flex-1 border rounded p-2 bg-white"
+                className="flex-1 border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 aria-label="Password input"
               />
-              <button onClick={() => setShow((s) => !s)} className="px-2 py-1 border rounded" aria-label="Toggle show password">
+              <button onClick={() => setShow((s) => !s)} className="p-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition" aria-label="Toggle show password">
                 {show ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
-              <button onClick={handleCopy} className="px-3 py-1 border rounded text-sm" aria-label="Copy password">
+              <button onClick={handleCopy} className="px-3 py-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition text-sm flex items-center gap-1.5" aria-label="Copy password">
                 <Copy size={14} /> {copied ? "Copied" : "Copy"}
               </button>
-              <button onClick={() => { setPwd(''); }} className="px-3 py-1 border rounded text-sm" aria-label="Clear password">Clear</button>
+              <button onClick={() => { setPwd(''); }} className="px-3 py-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition text-sm" aria-label="Clear password">Clear</button>
             </div>
 
             <div className="mt-2">
-              <div className="text-xs text-slate-500">Entropy: <span className="font-medium">{entropy.toFixed(1)} bits</span> — <span className="font-semibold">{verdict}</span> {inCommon && <span className="text-amber-600 font-medium"> (Common password!)</span>}</div>
+              <div className="text-xs text-slate-500 dark:text-slate-400">Entropy: <span className="font-medium text-slate-900 dark:text-slate-200">{entropy.toFixed(1)} bits</span> — <span className="font-semibold text-slate-900 dark:text-slate-100">{verdict}</span> {inCommon && <span className="text-amber-600 dark:text-amber-400 font-medium"> (Common password!)</span>}</div>
 
               {/* strength bar */}
-              <div className="mt-2 h-3 w-full bg-slate-200 rounded overflow-hidden">
+              <div className="mt-2 h-3 w-full bg-slate-200 dark:bg-slate-800 rounded overflow-hidden">
                 <div
                   role="progressbar"
                   aria-valuenow={score}
                   aria-valuemin={0}
                   aria-valuemax={100}
-                  className={`h-full rounded`}
+                  className={`h-full rounded transition-all duration-300`}
                   style={{
                     width: `${Math.max(2, score)}%`,
                     background:
@@ -219,74 +219,74 @@ export default function PasswordToolPage() {
 
               {/* suggestions */}
               <div className="mt-3 text-sm">
-                <div className="font-medium text-sm">Suggestions</div>
+                <div className="font-medium text-sm text-slate-900 dark:text-slate-100">Suggestions</div>
                 {suggestions.length ? (
-                  <ul className="list-disc pl-5 text-sm mt-1 space-y-1">
+                  <ul className="list-disc pl-5 text-sm mt-1 space-y-1 text-slate-700 dark:text-slate-300">
                     {suggestions.map((s, i) => <li key={i}>{s}</li>)}
                   </ul>
                 ) : (
-                  <div className="text-sm text-slate-500 mt-1">Looks good — strong password.</div>
+                  <div className="text-sm text-slate-500 dark:text-slate-400 mt-1">Looks good — strong password.</div>
                 )}
               </div>
             </div>
           </div>
 
           {/* Generator */}
-          <div className="space-y-3">
-            <label className="block text-sm font-medium">Secure Password Generator (cryptographically random)</label>
+          <div className="space-y-3 p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800">
+            <label className="block text-sm font-medium text-slate-900 dark:text-slate-100">Secure Password Generator (cryptographically random)</label>
 
-            <div className="grid gap-2">
-              <div className="flex items-center gap-2 flex-wrap">
-                <label className="inline-flex items-center gap-2 text-sm">
-                  <input type="checkbox" checked={opts.lower} onChange={(e) => setOpts({ ...opts, lower: e.target.checked })} />
+            <div className="grid gap-3">
+              <div className="flex items-center gap-4 flex-wrap">
+                <label className="inline-flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 cursor-pointer">
+                  <input type="checkbox" checked={opts.lower} onChange={(e) => setOpts({ ...opts, lower: e.target.checked })} className="rounded text-indigo-600 focus:ring-indigo-500" />
                   <span>lower</span>
                 </label>
-                <label className="inline-flex items-center gap-2 text-sm">
-                  <input type="checkbox" checked={opts.upper} onChange={(e) => setOpts({ ...opts, upper: e.target.checked })} />
+                <label className="inline-flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 cursor-pointer">
+                  <input type="checkbox" checked={opts.upper} onChange={(e) => setOpts({ ...opts, upper: e.target.checked })} className="rounded text-indigo-600 focus:ring-indigo-500" />
                   <span>upper</span>
                 </label>
-                <label className="inline-flex items-center gap-2 text-sm">
-                  <input type="checkbox" checked={opts.digits} onChange={(e) => setOpts({ ...opts, digits: e.target.checked })} />
+                <label className="inline-flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 cursor-pointer">
+                  <input type="checkbox" checked={opts.digits} onChange={(e) => setOpts({ ...opts, digits: e.target.checked })} className="rounded text-indigo-600 focus:ring-indigo-500" />
                   <span>digits</span>
                 </label>
-                <label className="inline-flex items-center gap-2 text-sm">
-                  <input type="checkbox" checked={opts.symbols} onChange={(e) => setOpts({ ...opts, symbols: e.target.checked })} />
+                <label className="inline-flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 cursor-pointer">
+                  <input type="checkbox" checked={opts.symbols} onChange={(e) => setOpts({ ...opts, symbols: e.target.checked })} className="rounded text-indigo-600 focus:ring-indigo-500" />
                   <span>symbols</span>
                 </label>
               </div>
 
               <div className="flex items-center gap-3">
-                <label className="text-sm">Length</label>
+                <label className="text-sm text-slate-700 dark:text-slate-300">Length</label>
                 <input
                   type="range"
                   min={4}
                   max={64}
                   value={len}
                   onChange={(e) => setLen(Number(e.target.value))}
-                  className="flex-1"
+                  className="flex-1 accent-indigo-600"
                 />
-                <div className="w-20 text-right text-sm font-medium">{len}</div>
+                <div className="w-12 text-right text-sm font-semibold text-slate-900 dark:text-slate-100">{len}</div>
               </div>
 
               <div className="flex gap-2 flex-wrap">
-                <button onClick={handleGenerate} className="px-3 py-1 bg-primary text-black rounded font-medium">Generate</button>
-                <button onClick={() => { setPwd(generatePassword(len, opts.lower, opts.upper, opts.digits, opts.symbols)); }} className="px-3 py-1 border rounded">Generate & Use</button>
-                <button onClick={() => quickPreset("alpha")} className="px-3 py-1 border rounded text-sm">Alpha</button>
-                <button onClick={() => quickPreset("complex")} className="px-3 py-1 border rounded text-sm">Complex</button>
-                <button onClick={() => quickPreset("digits")} className="px-3 py-1 border rounded text-sm">Digits</button>
-                <button onClick={() => quickPreset("memorable")} className="px-3 py-1 border rounded text-sm">Memorable</button>
-                <button onClick={() => { setPwd(''); setLen(16); setOpts({lower:true,upper:true,digits:true,symbols:true}); }} className="px-3 py-1 border rounded text-sm" title="Reset">Reset</button>
+                <button onClick={handleGenerate} className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium shadow-sm transition">Generate</button>
+                <button onClick={() => { setPwd(generatePassword(len, opts.lower, opts.upper, opts.digits, opts.symbols)); }} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-sm transition">Generate & Use</button>
+                <button onClick={() => quickPreset("alpha")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-sm transition">Alpha</button>
+                <button onClick={() => quickPreset("complex")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-sm transition">Complex</button>
+                <button onClick={() => quickPreset("digits")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-sm transition">Digits</button>
+                <button onClick={() => quickPreset("memorable")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-sm transition">Memorable</button>
+                <button onClick={() => { setPwd(''); setLen(16); setOpts({lower:true,upper:true,digits:true,symbols:true}); }} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-sm transition" title="Reset">Reset</button>
               </div>
 
-              <div className="flex gap-2 mt-2">
-                <button onClick={handleCopy} className="px-3 py-1 border rounded flex items-center gap-2"><Copy size={14} /> Copy</button>
-                <button onClick={() => exportFile("txt")} className="px-3 py-1 border rounded flex items-center gap-2"><Download size={14} /> Export TXT</button>
-                <button onClick={() => exportFile("md")} className="px-3 py-1 border rounded flex items-center gap-2"><Download size={14} /> Export MD</button>
-                <button onClick={() => exportFile("json")} className="px-3 py-1 border rounded flex items-center gap-2"><Download size={14} /> Export JSON</button>
-                <button onClick={share} className="px-3 py-1 border rounded flex items-center gap-2"><Share2 size={14} /> Share</button>
+              <div className="flex gap-2 flex-wrap mt-1">
+                <button onClick={handleCopy} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs flex items-center gap-1.5 transition"><Copy size={13} /> Copy</button>
+                <button onClick={() => exportFile("txt")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs flex items-center gap-1.5 transition"><Download size={13} /> TXT</button>
+                <button onClick={() => exportFile("md")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs flex items-center gap-1.5 transition"><Download size={13} /> MD</button>
+                <button onClick={() => exportFile("json")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs flex items-center gap-1.5 transition"><Download size={13} /> JSON</button>
+                <button onClick={share} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs flex items-center gap-1.5 transition"><Share2 size={13} /> Share</button>
               </div>
 
-              <div className="text-xs text-slate-500 mt-1">All generation happens in your browser — nothing is sent to a server.</div>
+              <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">All generation happens in your browser — nothing is sent to a server.</div>
             </div>
           </div>
         </div>

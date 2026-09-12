@@ -60,15 +60,15 @@ const CertificateParser = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Certificate Parser</h1>
+    <div className="max-w-4xl mx-auto p-6 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+      <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">Certificate Parser</h1>
       
       <div className="mb-6">
         <div className="flex items-center space-x-4 mb-4">
-          <label className="inline-flex items-center">
+          <label className="inline-flex items-center cursor-pointer text-slate-700 dark:text-slate-300">
             <input
               type="radio"
-              className="form-radio text-blue-600"
+              className="form-radio text-indigo-600 focus:ring-indigo-500"
               name="certType"
               value="PEM"
               checked={certificateType === 'PEM'}
@@ -76,10 +76,10 @@ const CertificateParser = () => {
             />
             <span className="ml-2">PEM Format</span>
           </label>
-          <label className="inline-flex items-center">
+          <label className="inline-flex items-center cursor-pointer text-slate-700 dark:text-slate-300">
             <input
               type="radio"
-              className="form-radio text-blue-600"
+              className="form-radio text-indigo-600 focus:ring-indigo-500"
               name="certType"
               value="DER"
               checked={certificateType === 'DER'}
@@ -89,11 +89,11 @@ const CertificateParser = () => {
           </label>
         </div>
 
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
           Certificate Content
         </label>
         <textarea
-          className="w-full h-64 p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+          className="w-full h-64 p-3 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-mono text-sm placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           placeholder={
             certificateType === 'PEM' 
               ? 'Paste PEM certificate (-----BEGIN CERTIFICATE----- ... -----END CERTIFICATE-----)' 
@@ -104,42 +104,42 @@ const CertificateParser = () => {
         />
       </div>
 
-      <div className="flex space-x-4 mb-6">
+      <div className="flex space-x-3 mb-6">
         <button
           onClick={parseCertificate}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition shadow-sm"
         >
           Parse Certificate
         </button>
         <button
           onClick={clearAll}
-          className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+          className="px-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 transition"
         >
           Clear
         </button>
       </div>
 
       {error && (
-        <div className="p-4 mb-6 bg-red-50 border-l-4 border-red-500 text-red-700">
+        <div className="p-4 mb-6 bg-rose-50 dark:bg-rose-950/40 border-l-4 border-rose-500 text-rose-700 dark:text-rose-300 rounded-r-lg">
           <p>{error}</p>
         </div>
       )}
 
       {parsedDetails && (
-        <div className="border border-gray-200 rounded-md overflow-hidden">
-          <h2 className="bg-gray-100 px-4 py-3 font-medium text-gray-800">Certificate Details</h2>
-          <div className="divide-y divide-gray-200">
+        <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
+          <h2 className="bg-slate-100 dark:bg-slate-800 px-4 py-3 font-semibold text-slate-900 dark:text-slate-100">Certificate Details</h2>
+          <div className="divide-y divide-slate-200 dark:divide-slate-800 bg-white dark:bg-slate-900">
             {Object.entries(parsedDetails).map(([key, value]) => (
               <div key={key} className="px-4 py-3 flex">
-                <div className="w-1/3 font-medium text-gray-700">{key}</div>
-                <div className="w-2/3 text-gray-900 break-all">{value}</div>
+                <div className="w-1/3 font-medium text-slate-700 dark:text-slate-300">{key}</div>
+                <div className="w-2/3 text-slate-900 dark:text-slate-100 break-all font-mono text-sm">{value}</div>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      <div className="mt-6 text-sm text-gray-500">
+      <div className="mt-6 text-sm text-slate-500 dark:text-slate-400">
         <p>Note: This is a simulation. In a real application, you would use a proper certificate parsing library.</p>
       </div>
     </div>

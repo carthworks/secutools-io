@@ -287,21 +287,21 @@ export default function JailbreakTester() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 p-4 sm:p-6 lg:p-8">
+        <div className="w-full space-y-6 text-slate-900 dark:text-slate-100">
             <div className="max-w-7xl mx-auto space-y-6">
                 {/* Header */}
                 <header className="text-center space-y-3">
                     <div className="flex items-center justify-center gap-3">
-                        <Shield className="w-10 h-10 text-purple-600" />
-                        <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                        <Shield className="w-10 h-10 text-purple-600 dark:text-purple-400" />
+                        <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
                             AI Jailbreak Tester
                         </h1>
                     </div>
-                    <p className="text-slate-600 max-w-2xl mx-auto">
+                    <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
                         Test prompt injection and jailbreak attacks against AI models. Educational tool for security researchers and red teams.
                     </p>
-                    <div className="flex items-center justify-center gap-2 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-3 max-w-2xl mx-auto">
-                        <AlertTriangle className="w-4 h-4" />
+                    <div className="flex items-center justify-center gap-2 text-sm text-amber-800 dark:text-amber-200 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-xl p-3 max-w-2xl mx-auto">
+                        <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
                         <span>For educational and authorized testing only. Do not use against production systems without permission.</span>
                     </div>
                 </header>
@@ -309,21 +309,21 @@ export default function JailbreakTester() {
                 <div className="grid lg:grid-cols-3 gap-6">
                     {/* Left Sidebar - Templates */}
                     <aside className="lg:col-span-1 space-y-4">
-                        <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-4">
+                        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-lg border border-slate-200 dark:border-slate-800 p-4">
                             <div className="flex items-center justify-between mb-4">
-                                <h2 className="font-semibold text-lg">Attack Templates</h2>
-                                <span className="text-xs text-slate-500">{filteredTemplates.length} templates</span>
+                                <h2 className="font-semibold text-lg text-slate-900 dark:text-slate-100">Attack Templates</h2>
+                                <span className="text-xs text-slate-500 dark:text-slate-400">{filteredTemplates.length} templates</span>
                             </div>
 
                             {/* Category Filter */}
                             <div className="space-y-2 mb-4">
-                                <div className="text-xs font-medium text-slate-600 mb-2">Filter by Category</div>
+                                <div className="text-xs font-medium text-slate-600 dark:text-slate-400 mb-2">Filter by Category</div>
                                 <div className="flex flex-wrap gap-2">
                                     <button
                                         onClick={() => setSelectedCategory("all")}
                                         className={`text-xs px-3 py-1.5 rounded-full border transition-all ${selectedCategory === "all"
                                                 ? "bg-purple-600 text-white border-purple-600"
-                                                : "bg-white text-slate-700 border-slate-300 hover:border-purple-400"
+                                                : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:border-purple-400"
                                             }`}
                                     >
                                         All ({categoryCounts.all})
@@ -334,7 +334,7 @@ export default function JailbreakTester() {
                                             onClick={() => setSelectedCategory(cat as AttackCategory)}
                                             className={`text-xs px-3 py-1.5 rounded-full border transition-all ${selectedCategory === cat
                                                     ? "bg-purple-600 text-white border-purple-600"
-                                                    : "bg-white text-slate-700 border-slate-300 hover:border-purple-400"
+                                                    : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:border-purple-400"
                                                 }`}
                                         >
                                             {info.label} ({categoryCounts[cat] || 0})
@@ -353,40 +353,42 @@ export default function JailbreakTester() {
                                     return (
                                         <div
                                             key={template.id}
-                                            className={`border rounded-lg p-3 transition-all ${isSelected ? "border-purple-500 bg-purple-50" : "border-slate-200 bg-white hover:border-purple-300"
+                                            className={`border rounded-lg p-3 transition-all ${isSelected 
+                                                ? "border-purple-500 bg-purple-50 dark:bg-purple-950/40 dark:border-purple-600" 
+                                                : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-purple-300 dark:hover:border-purple-700"
                                                 }`}
                                         >
                                             <div className="flex items-start gap-2">
                                                 <CategoryIcon className={`w-4 h-4 mt-0.5 ${CATEGORY_INFO[template.category].color}`} />
                                                 <div className="flex-1 min-w-0">
                                                     <div className="flex items-center gap-2 mb-1">
-                                                        <h3 className="font-medium text-sm truncate">{template.name}</h3>
+                                                        <h3 className="font-medium text-sm truncate text-slate-900 dark:text-slate-100">{template.name}</h3>
                                                         <span className={`text-xs px-2 py-0.5 rounded-full border ${SEVERITY_COLORS[template.severity]}`}>
                                                             {template.severity}
                                                         </span>
                                                     </div>
-                                                    <p className="text-xs text-slate-600 mb-2">{template.description}</p>
+                                                    <p className="text-xs text-slate-600 dark:text-slate-400 mb-2">{template.description}</p>
                                                     <div className="flex items-center gap-2">
                                                         <button
                                                             onClick={() => {
                                                                 setSelectedTemplate(template);
                                                                 setTestMode("template");
                                                             }}
-                                                            className="text-xs px-3 py-1 rounded bg-purple-600 text-white hover:bg-purple-700 transition-colors"
+                                                            className="text-xs px-3 py-1 rounded-lg bg-purple-600 hover:bg-purple-700 text-white transition-colors"
                                                         >
                                                             Load Template
                                                         </button>
                                                         <button
                                                             onClick={() => toggleExpanded(template.id)}
-                                                            className="text-xs px-2 py-1 rounded border border-slate-300 hover:bg-slate-50 flex items-center gap-1"
+                                                            className="text-xs px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center gap-1"
                                                         >
                                                             {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
                                                             {isExpanded ? "Hide" : "Preview"}
                                                         </button>
                                                     </div>
                                                     {isExpanded && (
-                                                        <div className="mt-3 p-2 bg-slate-50 rounded border border-slate-200">
-                                                            <pre className="text-xs text-slate-700 whitespace-pre-wrap font-mono">{template.prompt}</pre>
+                                                        <div className="mt-3 p-2 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800">
+                                                            <pre className="text-xs text-slate-700 dark:text-slate-300 whitespace-pre-wrap font-mono">{template.prompt}</pre>
                                                         </div>
                                                     )}
                                                 </div>
@@ -401,13 +403,13 @@ export default function JailbreakTester() {
                     {/* Main Content - Testing Area */}
                     <main className="lg:col-span-2 space-y-4">
                         {/* Mode Selector */}
-                        <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-4">
+                        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-lg border border-slate-200 dark:border-slate-800 p-4">
                             <div className="flex items-center gap-4 mb-4">
                                 <button
                                     onClick={() => setTestMode("template")}
                                     className={`flex-1 px-4 py-2 rounded-lg border transition-all ${testMode === "template"
                                             ? "bg-purple-600 text-white border-purple-600"
-                                            : "bg-white text-slate-700 border-slate-300 hover:border-purple-400"
+                                            : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:border-purple-400"
                                         }`}
                                 >
                                     <Shield className="w-4 h-4 inline mr-2" />
@@ -417,7 +419,7 @@ export default function JailbreakTester() {
                                     onClick={() => setTestMode("custom")}
                                     className={`flex-1 px-4 py-2 rounded-lg border transition-all ${testMode === "custom"
                                             ? "bg-purple-600 text-white border-purple-600"
-                                            : "bg-white text-slate-700 border-slate-300 hover:border-purple-400"
+                                            : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:border-purple-400"
                                         }`}
                                 >
                                     <FileText className="w-4 h-4 inline mr-2" />
@@ -426,18 +428,18 @@ export default function JailbreakTester() {
                             </div>
 
                             {testMode === "template" && selectedTemplate && (
-                                <div className="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                                <div className="mb-4 p-3 bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800/60 rounded-xl">
                                     <div className="flex items-start gap-2">
-                                        <Info className="w-4 h-4 text-purple-600 mt-0.5" />
+                                        <Info className="w-4 h-4 text-purple-600 dark:text-purple-400 mt-0.5" />
                                         <div className="flex-1">
-                                            <div className="font-medium text-sm text-purple-900">{selectedTemplate.name}</div>
-                                            <div className="text-xs text-purple-700 mt-1">{selectedTemplate.description}</div>
+                                            <div className="font-medium text-sm text-purple-900 dark:text-purple-200">{selectedTemplate.name}</div>
+                                            <div className="text-xs text-purple-700 dark:text-purple-300 mt-1">{selectedTemplate.description}</div>
                                             {selectedTemplate.reference && (
                                                 <a
                                                     href={selectedTemplate.reference}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="text-xs text-purple-600 hover:underline mt-1 inline-flex items-center gap-1"
+                                                    className="text-xs text-purple-600 dark:text-purple-400 hover:underline mt-1 inline-flex items-center gap-1"
                                                 >
                                                     Learn more <ExternalLink className="w-3 h-3" />
                                                 </a>
@@ -450,14 +452,14 @@ export default function JailbreakTester() {
                             {/* Prompt Display/Editor */}
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between">
-                                    <label className="font-medium text-sm">
+                                    <label className="font-medium text-sm text-slate-900 dark:text-slate-100">
                                         {testMode === "template" ? "Template Prompt" : "Custom Jailbreak Prompt"}
                                     </label>
                                     <div className="flex items-center gap-2">
                                         <button
                                             onClick={handleCopy}
                                             disabled={!currentPrompt}
-                                            className="text-xs px-3 py-1 rounded border border-slate-300 hover:bg-slate-50 disabled:opacity-50 flex items-center gap-1"
+                                            className="text-xs px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 disabled:opacity-50 flex items-center gap-1 transition-colors"
                                         >
                                             <Copy className="w-3 h-3" />
                                             Copy
@@ -465,7 +467,7 @@ export default function JailbreakTester() {
                                         <button
                                             onClick={handleExportJSON}
                                             disabled={!currentPrompt}
-                                            className="text-xs px-3 py-1 rounded border border-slate-300 hover:bg-slate-50 disabled:opacity-50 flex items-center gap-1"
+                                            className="text-xs px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 disabled:opacity-50 flex items-center gap-1 transition-colors"
                                         >
                                             <Download className="w-3 h-3" />
                                             JSON
@@ -473,7 +475,7 @@ export default function JailbreakTester() {
                                         <button
                                             onClick={handleExportMarkdown}
                                             disabled={!currentPrompt}
-                                            className="text-xs px-3 py-1 rounded border border-slate-300 hover:bg-slate-50 disabled:opacity-50 flex items-center gap-1"
+                                            className="text-xs px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 disabled:opacity-50 flex items-center gap-1 transition-colors"
                                         >
                                             <FileText className="w-3 h-3" />
                                             MD
@@ -482,11 +484,11 @@ export default function JailbreakTester() {
                                 </div>
 
                                 {testMode === "template" ? (
-                                    <div className="p-4 bg-slate-50 rounded-lg border border-slate-200 min-h-[300px]">
+                                    <div className="p-4 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 min-h-[300px]">
                                         {selectedTemplate ? (
-                                            <pre className="text-sm text-slate-800 whitespace-pre-wrap font-mono">{selectedTemplate.prompt}</pre>
+                                            <pre className="text-sm text-slate-800 dark:text-slate-200 whitespace-pre-wrap font-mono">{selectedTemplate.prompt}</pre>
                                         ) : (
-                                            <div className="text-center text-slate-400 py-12">
+                                            <div className="text-center text-slate-400 dark:text-slate-500 py-12">
                                                 <Shield className="w-12 h-12 mx-auto mb-3 opacity-50" />
                                                 <p>Select a template from the sidebar to begin testing</p>
                                             </div>
@@ -497,58 +499,58 @@ export default function JailbreakTester() {
                                         value={customPrompt}
                                         onChange={(e) => setCustomPrompt(e.target.value)}
                                         placeholder="Enter your custom jailbreak prompt here..."
-                                        className="w-full p-4 border border-slate-300 rounded-lg min-h-[300px] font-mono text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                                        className="w-full p-4 border border-slate-300 dark:border-slate-700 rounded-xl min-h-[300px] font-mono text-sm bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none"
                                     />
                                 )}
                             </div>
                         </div>
 
                         {/* Instructions */}
-                        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl shadow-lg border border-blue-200 p-6">
-                            <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                                <Info className="w-5 h-5 text-blue-600" />
+                        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/40 rounded-xl shadow-lg border border-blue-200 dark:border-blue-900/60 p-6">
+                            <h3 className="font-semibold text-lg mb-3 flex items-center gap-2 text-slate-900 dark:text-slate-100">
+                                <Info className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                                 How to Use This Tool
                             </h3>
-                            <ol className="space-y-2 text-sm text-slate-700">
+                            <ol className="space-y-2 text-sm text-slate-700 dark:text-slate-300">
                                 <li className="flex gap-2">
-                                    <span className="font-semibold text-blue-600">1.</span>
+                                    <span className="font-semibold text-blue-600 dark:text-blue-400">1.</span>
                                     <span>Select a pre-loaded jailbreak template or create your own custom prompt</span>
                                 </li>
                                 <li className="flex gap-2">
-                                    <span className="font-semibold text-blue-600">2.</span>
+                                    <span className="font-semibold text-blue-600 dark:text-blue-400">2.</span>
                                     <span>Copy the prompt using the "Copy" button</span>
                                 </li>
                                 <li className="flex gap-2">
-                                    <span className="font-semibold text-blue-600">3.</span>
+                                    <span className="font-semibold text-blue-600 dark:text-blue-400">3.</span>
                                     <span>Test it against your AI model in a controlled environment</span>
                                 </li>
                                 <li className="flex gap-2">
-                                    <span className="font-semibold text-blue-600">4.</span>
+                                    <span className="font-semibold text-blue-600 dark:text-blue-400">4.</span>
                                     <span>Document results and implement appropriate safeguards</span>
                                 </li>
                                 <li className="flex gap-2">
-                                    <span className="font-semibold text-blue-600">5.</span>
+                                    <span className="font-semibold text-blue-600 dark:text-blue-400">5.</span>
                                     <span>Export your test cases for reporting and compliance</span>
                                 </li>
                             </ol>
                         </div>
 
                         {/* Educational Info */}
-                        <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-6">
-                            <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                                <Unlock className="w-5 h-5 text-purple-600" />
+                        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-lg border border-slate-200 dark:border-slate-800 p-6">
+                            <h3 className="font-semibold text-lg mb-3 flex items-center gap-2 text-slate-900 dark:text-slate-100">
+                                <Unlock className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                                 Understanding Jailbreak Categories
                             </h3>
                             <div className="grid sm:grid-cols-2 gap-4">
                                 {Object.entries(CATEGORY_INFO).map(([cat, info]) => {
                                     const Icon = info.icon;
                                     return (
-                                        <div key={cat} className="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <div key={cat} className="p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800">
                                             <div className="flex items-center gap-2 mb-2">
                                                 <Icon className={`w-4 h-4 ${info.color}`} />
-                                                <h4 className="font-medium text-sm">{info.label}</h4>
+                                                <h4 className="font-medium text-sm text-slate-900 dark:text-slate-100">{info.label}</h4>
                                             </div>
-                                            <p className="text-xs text-slate-600">
+                                            <p className="text-xs text-slate-600 dark:text-slate-400">
                                                 {cat === "role-playing" && "Tricks AI into adopting unrestricted personas or roles"}
                                                 {cat === "encoding" && "Uses encoding/obfuscation to bypass content filters"}
                                                 {cat === "multi-turn" && "Builds context across multiple interactions"}

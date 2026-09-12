@@ -108,13 +108,13 @@ export default function S3Checker() {
           <input
             value={bucket}
             onChange={(e) => setBucket(e.target.value)}
-            className="flex-1 border rounded p-2"
+            className="flex-1 bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-indigo-500"
             placeholder="my-example-bucket"
           />
           <button
             onClick={checkBucket}
             disabled={loading}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+            className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg disabled:opacity-50 transition"
           >
             {loading ? "Checking…" : "Check"}
           </button>
@@ -124,41 +124,41 @@ export default function S3Checker() {
               setResult(null);
               setError(null);
             }}
-            className="px-3 py-2 border rounded flex items-center gap-2"
+            className="px-3 py-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg flex items-center gap-2 transition"
           >
             <Trash2 size={14} /> Clear
           </button>
         </div>
 
-        {error && <div className="text-sm text-amber-500 mt-2">⚠ {error}</div>}
+        {error && <div className="text-sm text-amber-600 dark:text-amber-400 mt-2">⚠ {error}</div>}
 
         {/* Results */}
         {result && (
           <div className="mt-4 space-y-4">
-            <div className="p-4 rounded border bg-white">
-              <h3 className="text-sm font-medium mb-2">Results</h3>
-              <ul className="space-y-1 text-sm">
-                <li><strong>Bucket:</strong> {result.bucket}</li>
-                <li><strong>Exists:</strong> {result.exists ? "✅ Yes" : "❌ No"}</li>
-                <li><strong>Public Read:</strong> {result.publicRead ? "⚠️ Yes" : "No"}</li>
-                <li><strong>Public List:</strong> {result.publicList ? "⚠️ Yes" : "No"}</li>
-                <li><strong>Public Write:</strong> {result.publicWrite ? "⚠️ Yes" : "No"}</li>
-                <li><strong>Region:</strong> {result.region || "?"}</li>
-                {result.error && <li><strong>Error:</strong> {result.error}</li>}
+            <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">Results</h3>
+              <ul className="space-y-1.5 text-sm text-slate-800 dark:text-slate-200">
+                <li><strong className="text-slate-900 dark:text-white">Bucket:</strong> {result.bucket}</li>
+                <li><strong className="text-slate-900 dark:text-white">Exists:</strong> {result.exists ? "✅ Yes" : "❌ No"}</li>
+                <li><strong className="text-slate-900 dark:text-white">Public Read:</strong> {result.publicRead ? "⚠️ Yes" : "No"}</li>
+                <li><strong className="text-slate-900 dark:text-white">Public List:</strong> {result.publicList ? "⚠️ Yes" : "No"}</li>
+                <li><strong className="text-slate-900 dark:text-white">Public Write:</strong> {result.publicWrite ? "⚠️ Yes" : "No"}</li>
+                <li><strong className="text-slate-900 dark:text-white">Region:</strong> {result.region || "?"}</li>
+                {result.error && <li><strong className="text-slate-900 dark:text-white">Error:</strong> {result.error}</li>}
               </ul>
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <button onClick={() => copyText(JSON.stringify(result, null, 2))} className="px-3 py-1 border rounded flex items-center gap-1">
+              <button onClick={() => copyText(JSON.stringify(result, null, 2))} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg flex items-center gap-1.5 text-xs font-medium transition">
                 <Copy size={14} /> Copy JSON
               </button>
-              <button onClick={() => exportFile("txt")} className="px-3 py-1 border rounded flex items-center gap-1">
+              <button onClick={() => exportFile("txt")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg flex items-center gap-1.5 text-xs font-medium transition">
                 <Download size={14} /> Export TXT
               </button>
-              <button onClick={() => exportFile("md")} className="px-3 py-1 border rounded flex items-center gap-1">
+              <button onClick={() => exportFile("md")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg flex items-center gap-1.5 text-xs font-medium transition">
                 <Download size={14} /> Export MD
               </button>
-              <button onClick={share} className="px-3 py-1 border rounded flex items-center gap-1">
+              <button onClick={share} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg flex items-center gap-1.5 text-xs font-medium transition">
                 <Share2 size={14} /> Share
               </button>
             </div>

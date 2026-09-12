@@ -61,22 +61,22 @@ export default function PortPage() {
         title="Port Check Helper (Client-Only)"
         subtitle="Generate URLs to test ports manually. Note: Full port scanning requires a server."
       >
-        <div className="flex gap-2 mb-3">
+        <div className="flex gap-3 mb-4 flex-wrap">
           <input
             value={host}
             onChange={(e) => setHost(e.target.value)}
             placeholder="example.com"
-            className="flex-1 border rounded p-2"
+            className="flex-1 min-w-[200px] bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
           <input
             value={ports}
             onChange={(e) => setPorts(e.target.value)}
             placeholder="80,443"
-            className="w-40 border rounded p-2"
+            className="w-36 bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
           <button
             onClick={checkPorts}
-            className="px-3 py-2 rounded bg-blue-600 text-white"
+            className="px-4 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition shadow-sm"
           >
             Check
           </button>
@@ -85,27 +85,27 @@ export default function PortPage() {
         {results.length > 0 && (
           <div className="space-y-3">
             <div className="flex gap-2">
-              <button onClick={copyResults} className="px-3 py-1 border rounded flex items-center gap-1">
-                <Copy size={14} /> Copy
+              <button onClick={copyResults} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs flex items-center gap-1.5 transition">
+                <Copy size={13} /> Copy
               </button>
-              <button onClick={exportResults} className="px-3 py-1 border rounded flex items-center gap-1">
-                <Download size={14} /> Export
+              <button onClick={exportResults} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs flex items-center gap-1.5 transition">
+                <Download size={13} /> Export
               </button>
             </div>
 
             <ul className="space-y-2 text-sm">
               {results.map((r, i) => (
-                <li key={i} className="flex items-center justify-between border rounded p-2 bg-slate-50">
+                <li key={i} className="flex items-center justify-between border border-slate-200 dark:border-slate-800 rounded-xl p-3 bg-slate-50 dark:bg-slate-950/60 text-slate-900 dark:text-slate-100 shadow-sm">
                   <span>
-                    <strong>{r.port}</strong> — {r.status}
+                    <strong className="text-indigo-600 dark:text-indigo-400 font-mono">{r.port}</strong> — <span className="text-slate-600 dark:text-slate-300">{r.status}</span>
                   </span>
                   <a
                     href={r.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-primary flex items-center gap-1"
+                    className="text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 text-xs font-semibold"
                   >
-                    Test <ExternalLink size={14} />
+                    Test <ExternalLink size={13} />
                   </a>
                 </li>
               ))}

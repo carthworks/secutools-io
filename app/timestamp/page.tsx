@@ -83,44 +83,44 @@ export default function TimestampPage() {
       <Section title="Timestamp Converter" subtitle="Unix ↔ Human">
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className="text-xs text-slate-400">Unix Timestamp</label>
-            <div className="flex gap-2">
+            <label className="text-xs text-slate-500 dark:text-slate-400">Unix Timestamp</label>
+            <div className="flex gap-2 mt-1">
               <input
                 type="number"
                 value={unix}
                 onChange={(e) => setUnix(Number(e.target.value))}
-                className="w-full bg-slate-950 border border-slate-800 rounded p-2"
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 rounded-lg p-2.5 font-mono text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
               />
               <button
                 onClick={() => copy(String(unix), "unix")}
-                className="p-2 border rounded hover:bg-slate-800"
+                className="p-2.5 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition"
               >
                 <Copy size={16} />
               </button>
             </div>
             {copied === "unix" && (
-              <p className="text-xs text-green-500">Copied!</p>
+              <p className="text-xs text-green-500 mt-1">Copied!</p>
             )}
           </div>
 
           <div>
-            <label className="text-xs text-slate-400">Human Readable</label>
-            <div className="flex gap-2">
+            <label className="text-xs text-slate-500 dark:text-slate-400">Human Readable</label>
+            <div className="flex gap-2 mt-1">
               <input
                 value={human}
                 onChange={(e) => setHuman(e.target.value)}
                 onBlur={fromHuman}
-                className="w-full bg-slate-950 border border-slate-800 rounded p-2"
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
               />
               <button
                 onClick={() => copy(human, "human")}
-                className="p-2 border rounded hover:bg-slate-800"
+                className="p-2.5 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition"
               >
                 <Copy size={16} />
               </button>
             </div>
             {copied === "human" && (
-              <p className="text-xs text-green-500">Copied!</p>
+              <p className="text-xs text-green-500 mt-1">Copied!</p>
             )}
           </div>
         </div>
@@ -130,7 +130,7 @@ export default function TimestampPage() {
           <select
             value={tz}
             onChange={(e) => setTz(e.target.value)}
-            className="bg-slate-950 border border-slate-800 rounded p-2"
+            className="bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
           >
             {timezones.map((z) => (
               <option key={z} value={z}>
@@ -140,7 +140,7 @@ export default function TimestampPage() {
           </select>
           <button
             onClick={() => setUnix(toUnix(new Date()))}
-            className="flex items-center gap-1 px-3 py-2 border rounded hover:bg-slate-800"
+            className="flex items-center gap-1.5 px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition text-sm font-medium"
           >
             <RefreshCw size={14} /> Now
           </button>
@@ -156,20 +156,18 @@ export default function TimestampPage() {
           value={batchInput}
           onChange={(e) => setBatchInput(e.target.value)}
           rows={6}
-          className="w-full bg-slate-950 border border-slate-800 rounded p-2"
-          placeholder="1706932000
-1706932123
-2025-10-02T18:47:03Z"
+          className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg p-3 font-mono text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+          placeholder="1706932000&#10;1706932123&#10;2025-10-02T18:47:03Z"
         />
         <button
           onClick={convertBatch}
-          className="mt-3 px-4 py-2 border rounded bg-blue-500 hover:bg-slate-800"
+          className="mt-3 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition"
         >
           Convert
         </button>
 
         {batchOutput.length > 0 && (
-          <div className="mt-4 space-y-2 text-sm bg-white-900 p-3 rounded border border-slate-700">
+          <div className="mt-4 space-y-2 text-sm bg-slate-50 dark:bg-slate-950 p-4 rounded-lg border border-slate-200 dark:border-slate-800 font-mono text-slate-800 dark:text-slate-200">
             {batchOutput.map((line, i) => (
               <div key={i}>{line}</div>
             ))}

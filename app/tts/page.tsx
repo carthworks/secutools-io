@@ -11,8 +11,8 @@ export default function TtsPage() {
   return (
     <main className="p-6 max-w-4xl mx-auto">
       <header className="mb-4">
-        <h1 className="text-2xl font-semibold">Text → Voice (TTS)</h1>
-        <p className="text-sm text-slate-500 mt-1">
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Text → Voice (TTS)</h1>
+        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
           Convert text to speech directly in your browser using the Web Speech API.  
           All processing happens client-side — no data leaves your device.
         </p>

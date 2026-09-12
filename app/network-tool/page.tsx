@@ -257,7 +257,7 @@ export default function NetworkTools() {
   return (
     <div className="space-y-8">
       <Section title="Network Tools" subtitle="IPv4/IPv6 utilities, MAC helpers, and quick math — client-side">
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-slate-600 dark:text-slate-400">
           Handy network utilities for students and SOC engineers. All processing runs in your browser — no data is uploaded.
         </p>
 
@@ -275,7 +275,11 @@ export default function NetworkTools() {
             <button
               key={k}
               onClick={() => setTab(k as any)}
-              className={`px-3 py-1 rounded text-sm border ${tab === k ? "bg-indigo-600 text-white" : "bg-white text-slate-700"}`}
+              className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium border transition ${
+                tab === k
+                  ? "bg-indigo-600 border-indigo-600 text-white shadow-xs"
+                  : "bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
+              }`}
             >
               {label}
             </button>
@@ -283,34 +287,36 @@ export default function NetworkTools() {
         </div>
 
         {/* Content */}
-        <div className="mt-4">
+        <div className="mt-5">
           {tab === "subnet" && (
             <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="text-xs text-slate-500">CIDR</label>
-                <input value={cidr} onChange={(e) => setCidr(e.target.value)} className="w-full border rounded p-2" />
-                <div className="mt-3 space-y-2 text-sm">
+              <div className="space-y-3">
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">CIDR</label>
+                  <input value={cidr} onChange={(e) => setCidr(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono" />
+                </div>
+                <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 space-y-1.5 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
                   {subnetRes.error ? (
-                    <div className="text-rose-600">Error: {String((subnetRes as any).error)}</div>
+                    <div className="text-rose-600 dark:text-rose-400 font-medium">Error: {String((subnetRes as any).error)}</div>
                   ) : (
                     <>
-                      <div><strong>Network:</strong> {subnetRes.network}</div>
-                      <div><strong>Broadcast:</strong> {subnetRes.broadcast}</div>
-                      <div><strong>First host:</strong> {subnetRes.firstHost}</div>
-                      <div><strong>Last host:</strong> {subnetRes.lastHost}</div>
-                      <div><strong>Netmask:</strong> {subnetRes.netmask}</div>
-                      <div><strong>Total hosts:</strong> {subnetRes.totalHosts}</div>
+                      <div><strong className="text-slate-900 dark:text-white">Network:</strong> <span className="font-mono">{subnetRes.network}</span></div>
+                      <div><strong className="text-slate-900 dark:text-white">Broadcast:</strong> <span className="font-mono">{subnetRes.broadcast}</span></div>
+                      <div><strong className="text-slate-900 dark:text-white">First host:</strong> <span className="font-mono">{subnetRes.firstHost}</span></div>
+                      <div><strong className="text-slate-900 dark:text-white">Last host:</strong> <span className="font-mono">{subnetRes.lastHost}</span></div>
+                      <div><strong className="text-slate-900 dark:text-white">Netmask:</strong> <span className="font-mono">{subnetRes.netmask}</span></div>
+                      <div><strong className="text-slate-900 dark:text-white">Total hosts:</strong> <span className="font-mono">{subnetRes.totalHosts}</span></div>
                     </>
                   )}
                 </div>
               </div>
 
               <div>
-                <div className="flex gap-2">
-                  <button onClick={() => handleCopyResult(JSON.stringify(subnetRes, null, 2), "Copied subnet JSON")} className="px-3 py-1 border rounded flex items-center gap-2"><Copy className="w-4 h-4" /> Copy</button>
-                  <button onClick={() => exportResult("subnet", JSON.stringify(subnetRes, null, 2), "json")} className="px-3 py-1 border rounded">Export JSON</button>
-                  <button onClick={() => shareText(JSON.stringify(subnetRes, null, 2))} className="px-3 py-1 border rounded"><Share2 className="w-4 h-4" /> Share</button>
-                  <button onClick={() => printHtml("Subnet Result", `<pre>${JSON.stringify(subnetRes, null, 2)}</pre>`)} className="px-3 py-1 border rounded ml-auto">Print</button>
+                <div className="flex gap-2 flex-wrap">
+                  <button onClick={() => handleCopyResult(JSON.stringify(subnetRes, null, 2), "Copied subnet JSON")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium flex items-center gap-1.5 transition"><Copy className="w-3.5 h-3.5" /> Copy</button>
+                  <button onClick={() => exportResult("subnet", JSON.stringify(subnetRes, null, 2), "json")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium transition">Export JSON</button>
+                  <button onClick={() => shareText(JSON.stringify(subnetRes, null, 2))} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium flex items-center gap-1.5 transition"><Share2 className="w-3.5 h-3.5" /> Share</button>
+                  <button onClick={() => printHtml("Subnet Result", `<pre>${JSON.stringify(subnetRes, null, 2)}</pre>`)} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium ml-auto transition">Print</button>
                 </div>
               </div>
             </div>
@@ -318,24 +324,26 @@ export default function NetworkTools() {
 
           {tab === "conv" && (
             <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="text-xs text-slate-500">IPv4 address</label>
-                <input value={convIp} onChange={(e) => setConvIp(e.target.value)} className="w-full border rounded p-2" />
-                <div className="mt-3 text-sm">
-                  {convInt === null ? <div className="text-rose-600">Invalid IPv4</div> : (
+              <div className="space-y-3">
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">IPv4 address</label>
+                  <input value={convIp} onChange={(e) => setConvIp(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono" />
+                </div>
+                <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs sm:text-sm text-slate-700 dark:text-slate-300 space-y-1.5">
+                  {convInt === null ? <div className="text-rose-600 dark:text-rose-400 font-medium">Invalid IPv4</div> : (
                     <>
-                      <div><strong>Integer:</strong> {convInt.int}</div>
-                      <div><strong>Binary:</strong> <code className="text-xs font-mono">{convInt.bin}</code></div>
-                      <div><strong>Hex:</strong> {convInt.hex}</div>
+                      <div><strong className="text-slate-900 dark:text-white">Integer:</strong> <span className="font-mono">{convInt.int}</span></div>
+                      <div><strong className="text-slate-900 dark:text-white">Binary:</strong> <code className="text-xs font-mono bg-slate-200/60 dark:bg-slate-900 px-1 py-0.5 rounded">{convInt.bin}</code></div>
+                      <div><strong className="text-slate-900 dark:text-white">Hex:</strong> <span className="font-mono">{convInt.hex}</span></div>
                     </>
                   )}
                 </div>
               </div>
               <div>
-                <div className="flex gap-2">
-                  <button onClick={() => convInt && handleCopyResult(String(convInt.int))} className="px-3 py-1 border rounded">Copy Int</button>
-                  <button onClick={() => convInt && exportResult("ipv4", JSON.stringify(convInt, null, 2), "json")} className="px-3 py-1 border rounded">Export</button>
-                  <button onClick={() => convInt && shareText(JSON.stringify(convInt, null, 2))} className="px-3 py-1 border rounded">Share</button>
+                <div className="flex gap-2 flex-wrap">
+                  <button onClick={() => convInt && handleCopyResult(String(convInt.int))} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium transition">Copy Int</button>
+                  <button onClick={() => convInt && exportResult("ipv4", JSON.stringify(convInt, null, 2), "json")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium transition">Export</button>
+                  <button onClick={() => convInt && shareText(JSON.stringify(convInt, null, 2))} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium transition">Share</button>
                 </div>
               </div>
             </div>
@@ -343,24 +351,28 @@ export default function NetworkTools() {
 
           {tab === "range" && (
             <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="text-xs text-slate-500">Start IP</label>
-                <input value={rangeStart} onChange={(e) => setRangeStart(e.target.value)} className="w-full border rounded p-2" />
-                <label className="text-xs text-slate-500 mt-2">End IP</label>
-                <input value={rangeEnd} onChange={(e) => setRangeEnd(e.target.value)} className="w-full border rounded p-2" />
-                <div className="mt-3 text-sm">
-                  {("error" in (rangeRes as any)) ? <div className="text-rose-600">{(rangeRes as any).error}</div> : (
-                    <div>Count: {(rangeRes as any).count}</div>
+              <div className="space-y-3">
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">Start IP</label>
+                  <input value={rangeStart} onChange={(e) => setRangeStart(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono" />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">End IP</label>
+                  <input value={rangeEnd} onChange={(e) => setRangeEnd(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono" />
+                </div>
+                <div className="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                  {("error" in (rangeRes as any)) ? <div className="text-rose-600 dark:text-rose-400 font-medium">{(rangeRes as any).error}</div> : (
+                    <div><strong className="text-slate-900 dark:text-white">Count:</strong> {(rangeRes as any).count}</div>
                   )}
                 </div>
               </div>
               <div>
                 <div className="flex gap-2 mb-2">
-                  <button onClick={() => { if (!("error" in (rangeRes as any))) handleCopyResult(((rangeRes as any).list).join("\n"), "Copied list"); }} className="px-3 py-1 border rounded">Copy list</button>
-                  <button onClick={() => { if (!("error" in (rangeRes as any))) exportResult("range", ((rangeRes as any).list).join("\n"), "txt"); }} className="px-3 py-1 border rounded">Export</button>
+                  <button onClick={() => { if (!("error" in (rangeRes as any))) handleCopyResult(((rangeRes as any).list).join("\n"), "Copied list"); }} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium transition">Copy list</button>
+                  <button onClick={() => { if (!("error" in (rangeRes as any))) exportResult("range", ((rangeRes as any).list).join("\n"), "txt"); }} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium transition">Export</button>
                 </div>
-                <div className="overflow-auto max-h-60 border rounded p-2 bg-white text-sm">
-                  {("error" in (rangeRes as any)) ? <div className="text-rose-600">{(rangeRes as any).error}</div> : ((rangeRes as any).list || []).map((ip: string) => <div key={ip} className="py-0.5">{ip}</div>)}
+                <div className="overflow-auto max-h-60 border border-slate-200 dark:border-slate-800 rounded-xl p-3 bg-slate-50 dark:bg-slate-950 text-xs font-mono text-slate-800 dark:text-slate-200">
+                  {("error" in (rangeRes as any)) ? <div className="text-rose-600 dark:text-rose-400 font-medium">{(rangeRes as any).error}</div> : ((rangeRes as any).list || []).map((ip: string) => <div key={ip} className="py-0.5">{ip}</div>)}
                 </div>
               </div>
             </div>
@@ -368,18 +380,20 @@ export default function NetworkTools() {
 
           {tab === "maclookup" && (
             <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="text-xs text-slate-500">MAC address</label>
-                <input value={macQuery} onChange={(e) => setMacQuery(e.target.value)} className="w-full border rounded p-2" />
-                <div className="mt-3 text-sm">
-                  <div><strong>Normalized:</strong> {macNormalized || <span className="text-rose-600">Invalid</span>}</div>
-                  <div><strong>Vendor:</strong> {macVendor}</div>
+              <div className="space-y-3">
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">MAC address</label>
+                  <input value={macQuery} onChange={(e) => setMacQuery(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono" />
+                </div>
+                <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs sm:text-sm text-slate-700 dark:text-slate-300 space-y-1.5">
+                  <div><strong className="text-slate-900 dark:text-white">Normalized:</strong> <span className="font-mono">{macNormalized || <span className="text-rose-600 dark:text-rose-400">Invalid</span>}</span></div>
+                  <div><strong className="text-slate-900 dark:text-white">Vendor:</strong> {macVendor}</div>
                 </div>
               </div>
               <div>
                 <div className="flex gap-2">
-                  <button onClick={() => macNormalized && handleCopyResult(macNormalized, "MAC copied")} className="px-3 py-1 border rounded">Copy</button>
-                  <button onClick={() => macNormalized && exportResult("mac", JSON.stringify({ mac: macNormalized, vendor: macVendor }, null, 2), "json")} className="px-3 py-1 border rounded">Export</button>
+                  <button onClick={() => macNormalized && handleCopyResult(macNormalized, "MAC copied")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium transition">Copy</button>
+                  <button onClick={() => macNormalized && exportResult("mac", JSON.stringify({ mac: macNormalized, vendor: macVendor }, null, 2), "json")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium transition">Export</button>
                 </div>
               </div>
             </div>
@@ -387,66 +401,70 @@ export default function NetworkTools() {
 
           {tab === "macgen" && (
             <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="text-xs text-slate-500">Options</label>
-                <div className="flex gap-2 items-center mt-2">
-                  <label className="flex items-center gap-1 text-sm">
+              <div className="space-y-3">
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">Options</label>
+                <div className="flex gap-3 items-center">
+                  <label className="flex items-center gap-1.5 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
                     <input type="checkbox" checked={macOpts.multicast} onChange={(e) => setMacOpts({ ...macOpts, multicast: e.target.checked })} /> Multicast
                   </label>
-                  <label className="flex items-center gap-1 text-sm">
+                  <label className="flex items-center gap-1.5 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
                     <input type="checkbox" checked={macOpts.local} onChange={(e) => setMacOpts({ ...macOpts, local: e.target.checked })} /> Locally administered
                   </label>
-                  <button onClick={() => setMacOpts({ ...macOpts })} className="px-2 py-1 border rounded text-xs ml-auto">Refresh</button>
+                  <button onClick={() => setMacOpts({ ...macOpts })} className="px-2.5 py-1 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md text-xs ml-auto transition">Refresh</button>
                 </div>
 
-                <div className="mt-4 text-sm">
-                  <div><strong>Generated MAC:</strong> {generatedMac}</div>
+                <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                  <div><strong className="text-slate-900 dark:text-white">Generated MAC:</strong> <span className="font-mono text-indigo-600 dark:text-indigo-400 font-semibold">{generatedMac}</span></div>
                 </div>
               </div>
               <div>
                 <div className="flex gap-2">
-                  <button onClick={() => handleCopyResult(generatedMac, "MAC copied")} className="px-3 py-1 border rounded">Copy</button>
-                  <button onClick={() => exportResult("mac-gen", generatedMac, "txt")} className="px-3 py-1 border rounded">Export</button>
+                  <button onClick={() => handleCopyResult(generatedMac, "MAC copied")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium transition">Copy</button>
+                  <button onClick={() => exportResult("mac-gen", generatedMac, "txt")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium transition">Export</button>
                 </div>
-                <div className="text-xs text-slate-500 mt-3">Tip: Locally-administered addresses set internal network device addressing.</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-3">Tip: Locally-administered addresses set internal network device addressing.</div>
               </div>
             </div>
           )}
 
           {tab === "ula" && (
             <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="text-xs text-slate-500">Generate ULA /48</label>
-                <div className="mt-2">
-                  <button onClick={() => setUlaRes(generateUla())} className="px-3 py-1 border rounded">Generate</button>
+              <div className="space-y-3">
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">Generate ULA /48</label>
+                <div>
+                  <button onClick={() => setUlaRes(generateUla())} className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs sm:text-sm font-medium transition">Generate</button>
                 </div>
-                <div className="mt-3 text-sm">{ulaRes ? <div><strong>ULA:</strong> {ulaRes}</div> : <div className="text-slate-500">No ULA generated yet</div>}</div>
+                <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                  {ulaRes ? <div><strong className="text-slate-900 dark:text-white">ULA:</strong> <span className="font-mono text-indigo-600 dark:text-indigo-400 font-semibold">{ulaRes}</span></div> : <div className="text-slate-500">No ULA generated yet</div>}
+                </div>
               </div>
               <div>
                 <div className="flex gap-2">
-                  <button onClick={() => ulaRes && handleCopyResult(ulaRes, "ULA copied")} className="px-3 py-1 border rounded">Copy</button>
-                  <button onClick={() => ulaRes && exportResult("ula", ulaRes, "txt")} className="px-3 py-1 border rounded">Export</button>
+                  <button onClick={() => ulaRes && handleCopyResult(ulaRes, "ULA copied")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium transition">Copy</button>
+                  <button onClick={() => ulaRes && exportResult("ula", ulaRes, "txt")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium transition">Export</button>
                 </div>
-                <div className="text-xs text-slate-500 mt-3">ULA prefixes start with <code>fd</code> and are for local networks (not globally routable).</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-3">ULA prefixes start with <code className="bg-slate-200/60 dark:bg-slate-900 px-1 py-0.5 rounded">fd</code> and are for local networks (not globally routable).</div>
               </div>
             </div>
           )}
 
           {tab === "math" && (
             <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="text-xs text-slate-500">Expression</label>
-                <input value={expr} onChange={(e) => setExpr(e.target.value)} className="w-full border rounded p-2 font-mono" />
-                <div className="mt-3 text-sm">
-                  {("error" in (mathRes as any)) ? <div className="text-rose-600">{(mathRes as any).error}</div> : <div><strong>Result:</strong> {(mathRes as any).value}</div>}
+              <div className="space-y-3">
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">Expression</label>
+                  <input value={expr} onChange={(e) => setExpr(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono" />
+                </div>
+                <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                  {("error" in (mathRes as any)) ? <div className="text-rose-600 dark:text-rose-400 font-medium">{(mathRes as any).error}</div> : <div><strong className="text-slate-900 dark:text-white">Result:</strong> <span className="font-mono text-indigo-600 dark:text-indigo-400 font-bold">{(mathRes as any).value}</span></div>}
                 </div>
               </div>
               <div>
                 <div className="flex gap-2">
-                  <button onClick={async () => { if (!("error" in (mathRes as any))) { await copyText(String((mathRes as any).value)); alert("Copied"); } }} className="px-3 py-1 border rounded">Copy</button>
-                  <button onClick={() => exportResult("calc", JSON.stringify(mathRes, null, 2), "json")} className="px-3 py-1 border rounded">Export</button>
+                  <button onClick={async () => { if (!("error" in (mathRes as any))) { await copyText(String((mathRes as any).value)); alert("Copied"); } }} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium transition">Copy</button>
+                  <button onClick={() => exportResult("calc", JSON.stringify(mathRes, null, 2), "json")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium transition">Export</button>
                 </div>
-                <div className="text-xs text-slate-500 mt-3">Supports + - * / % ^ and parentheses. Example: <code>2^8 + (1024/4)</code></div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-3">Supports + - * / % ^ and parentheses. Example: <code className="bg-slate-200/60 dark:bg-slate-900 px-1 py-0.5 rounded">2^8 + (1024/4)</code></div>
               </div>
             </div>
           )}

@@ -122,41 +122,41 @@ export default function UrlTracer() {
   const redirectCount = hops.filter(h => h.status >= 300 && h.status < 400).length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4 sm:p-6 lg:p-8">
+    <div className="w-full space-y-6 text-slate-900 dark:text-slate-100">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/60 backdrop-blur-sm rounded-full border border-indigo-200 shadow-sm">
-            <LinkIcon className="w-5 h-5 text-indigo-600" />
-            <span className="text-sm font-medium text-indigo-900">URL Intelligence</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-full border border-indigo-200 dark:border-indigo-900 shadow-sm">
+            <LinkIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+            <span className="text-sm font-medium text-indigo-900 dark:text-indigo-300">URL Intelligence</span>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+          <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
             URL Unshortener & Redirect Tracer
           </h1>
-          <p className="text-slate-600 max-w-2xl mx-auto">
+          <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
             Expand shortened links, trace redirect chains, and detect suspicious URLs.
             See the complete journey from source to final destination.
           </p>
         </div>
 
         {/* Input Card */}
-        <div className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 p-6 sm:p-8">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8">
           <div className="space-y-4">
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="flex-1 relative group">
-                <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
+                <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-indigo-600 dark:group-focus-within:text-indigo-400 transition-colors" />
                 <input
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && !loading && trace()}
-                  className="w-full pl-12 pr-4 py-4 rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 outline-none transition-all text-slate-800 placeholder:text-slate-400"
+                  className="w-full pl-12 pr-4 py-4 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 dark:focus:ring-indigo-900/30 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
                   placeholder="https://bit.ly/example or any shortened URL..."
                 />
               </div>
               <button
                 onClick={trace}
                 disabled={loading || !url}
-                className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all flex items-center justify-center gap-2"
+                className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all flex items-center justify-center gap-2"
               >
                 {loading ? (
                   <>
@@ -173,9 +173,9 @@ export default function UrlTracer() {
             </div>
 
             {error && (
-              <div className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl">
-                <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                <div className="text-sm text-amber-800">{error}</div>
+              <div className="flex items-start gap-3 p-4 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-xl">
+                <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                <div className="text-sm text-amber-800 dark:text-amber-200">{error}</div>
               </div>
             )}
           </div>
@@ -201,7 +201,7 @@ export default function UrlTracer() {
 
         {/* Redirect Chain */}
         {hops.length > 0 && (
-          <div className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 overflow-hidden">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
             <div className="px-6 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <ArrowRight className="w-5 h-5 text-white" />
@@ -235,18 +235,18 @@ export default function UrlTracer() {
               {hops.map((hop, index) => (
                 <div
                   key={index}
-                  className="group relative bg-white rounded-xl border-2 border-slate-200 hover:border-indigo-300 hover:shadow-md transition-all p-5"
+                  className="group relative bg-white dark:bg-slate-950 rounded-xl border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700 hover:shadow-md transition-all p-5"
                   style={{
                     animation: `slideIn 0.3s ease-out ${index * 0.1}s both`
                   }}
                 >
                   <div className="flex items-start gap-4">
                     <div className="flex-shrink-0 flex flex-col items-center">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center text-indigo-700 font-bold text-sm">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/60 dark:to-purple-900/60 flex items-center justify-center text-indigo-700 dark:text-indigo-300 font-bold text-sm">
                         {index + 1}
                       </div>
                       {index < hops.length - 1 && (
-                        <div className="w-0.5 h-8 bg-gradient-to-b from-indigo-300 to-purple-300 my-2" />
+                        <div className="w-0.5 h-8 bg-gradient-to-b from-indigo-300 to-purple-300 dark:from-indigo-700 dark:to-purple-700 my-2" />
                       )}
                     </div>
 
@@ -257,7 +257,7 @@ export default function UrlTracer() {
                           {hop.status}
                         </span>
                         {index === hops.length - 1 && (
-                          <span className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-lg text-xs font-semibold border border-emerald-300">
+                          <span className="px-3 py-1 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 rounded-lg text-xs font-semibold border border-emerald-300 dark:border-emerald-800">
                             Final Destination
                           </span>
                         )}
@@ -265,12 +265,12 @@ export default function UrlTracer() {
 
                       <div className="space-y-2">
                         <div className="flex items-start gap-2">
-                          <span className="text-xs text-slate-500 font-medium mt-1 flex-shrink-0">URL:</span>
+                          <span className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1 flex-shrink-0">URL:</span>
                           <a
                             href={hop.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-sm text-indigo-600 hover:text-indigo-800 font-mono break-all group-hover:underline flex items-center gap-1"
+                            className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-mono break-all group-hover:underline flex items-center gap-1"
                           >
                             {hop.url}
                             <ExternalLink className="w-3 h-3 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -278,11 +278,11 @@ export default function UrlTracer() {
                         </div>
 
                         {hop.location && (
-                          <div className="flex items-start gap-2 pl-4 border-l-2 border-purple-200">
-                            <ArrowRight className="w-4 h-4 text-purple-500 flex-shrink-0 mt-0.5" />
+                          <div className="flex items-start gap-2 pl-4 border-l-2 border-purple-200 dark:border-purple-800">
+                            <ArrowRight className="w-4 h-4 text-purple-500 dark:text-purple-400 flex-shrink-0 mt-0.5" />
                             <div className="flex-1 min-w-0">
-                              <span className="text-xs text-slate-500 font-medium">Redirects to:</span>
-                              <div className="text-sm text-purple-600 font-mono break-all mt-0.5">
+                              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Redirects to:</span>
+                              <div className="text-sm text-purple-600 dark:text-purple-400 font-mono break-all mt-0.5">
                                 {hop.location}
                               </div>
                             </div>
@@ -297,36 +297,36 @@ export default function UrlTracer() {
 
             {/* Final Destination Summary */}
             {finalDestination && (
-              <div className="px-6 py-4 bg-gradient-to-r from-emerald-50 to-teal-50 border-t-2 border-emerald-200">
+              <div className="px-6 py-4 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/40 dark:to-teal-950/40 border-t-2 border-emerald-200 dark:border-emerald-800">
                 <div className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-semibold text-emerald-900 mb-1">Final Destination</div>
-                    <div className="text-sm text-emerald-700 font-mono break-all">{finalDestination}</div>
+                    <div className="text-sm font-semibold text-emerald-900 dark:text-emerald-200 mb-1">Final Destination</div>
+                    <div className="text-sm text-emerald-700 dark:text-emerald-300 font-mono break-all">{finalDestination}</div>
                   </div>
                 </div>
               </div>
             )}
 
             {/* Export Options */}
-            <div className="px-6 py-4 bg-slate-50 border-t flex flex-wrap gap-2">
+            <div className="px-6 py-4 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-200 dark:border-slate-800 flex flex-wrap gap-2">
               <button
                 onClick={() => exportFile("txt")}
-                className="px-4 py-2 bg-white border border-slate-300 hover:border-slate-400 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors flex items-center gap-2"
+                className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors flex items-center gap-2"
               >
                 <Download className="w-4 h-4" />
                 Export TXT
               </button>
               <button
                 onClick={() => exportFile("md")}
-                className="px-4 py-2 bg-white border border-slate-300 hover:border-slate-400 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors flex items-center gap-2"
+                className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors flex items-center gap-2"
               >
                 <Download className="w-4 h-4" />
                 Export Markdown
               </button>
               <button
                 onClick={share}
-                className="px-4 py-2 bg-white border border-slate-300 hover:border-slate-400 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors flex items-center gap-2"
+                className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors flex items-center gap-2"
               >
                 <Share2 className="w-4 h-4" />
                 Share
@@ -336,11 +336,11 @@ export default function UrlTracer() {
         )}
 
         {/* Info Card */}
-        <div className="bg-white/50 backdrop-blur-sm rounded-xl border border-slate-200 p-6">
+        <div className="bg-white dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800 p-6">
           <div className="flex items-start gap-3">
-            <Shield className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
-            <div className="text-sm text-slate-600">
-              <strong className="text-slate-900">Privacy First:</strong> All URL tracing happens server-side with no logging.
+            <Shield className="w-5 h-5 text-indigo-600 dark:text-indigo-400 flex-shrink-0 mt-0.5" />
+            <div className="text-sm text-slate-600 dark:text-slate-400">
+              <strong className="text-slate-900 dark:text-slate-100">Privacy First:</strong> All URL tracing happens server-side with no logging.
               Use this tool to verify shortened links before clicking, detect phishing attempts, and understand redirect chains.
             </div>
           </div>

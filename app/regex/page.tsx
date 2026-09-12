@@ -148,9 +148,9 @@ export default function RegexTester() {
   }
 
   return (
-    <section className="max-w-4xl mx-auto p-4">
-      <div className="rounded-lg border bg-white dark:bg-slate-900 dark:border-slate-700 shadow-sm overflow-hidden">
-        <div className="flex items-start gap-4 p-4">
+    <section className="max-w-4xl mx-auto p-4 text-slate-900 dark:text-slate-100">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 shadow-sm overflow-hidden">
+        <div className="flex flex-col md:flex-row items-start gap-6 p-4 sm:p-6">
           {/* left column */}
           <div className="w-full md:w-1/2">
             <div className="flex items-center justify-between gap-2">
@@ -159,11 +159,11 @@ export default function RegexTester() {
                 <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Build, test and share regex patterns — instant feedback for security work.</p>
               </div>
               <div className="flex items-center gap-2">
-                <button onClick={copyPattern} title="Copy pattern" className="p-2 rounded bg-slate-50 dark:bg-slate-800 hover:bg-slate-100">
+                <button onClick={copyPattern} title="Copy pattern" className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors">
                   <Copy className="w-4 h-4" />
                 </button>
                 <div className="relative">
-                  <button onClick={share} title="Share" className="p-2 rounded bg-slate-50 dark:bg-slate-800 hover:bg-slate-100">
+                  <button onClick={share} title="Share" className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors">
                     <Share2 className="w-4 h-4" />
                   </button>
                 </div>
@@ -176,17 +176,17 @@ export default function RegexTester() {
                 id="regex-pattern-input"
                 value={pattern}
                 onChange={(e) => setPattern(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded font-mono text-sm"
+                className="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 px-3 py-2 rounded-lg font-mono text-sm outline-none focus:ring-2 focus:ring-indigo-500"
                 aria-label="Regex pattern"
               />
 
-              <div className="mt-2 text-xs text-slate-500">Flags</div>
+              <div className="mt-3 text-xs text-slate-500 dark:text-slate-400 font-medium">Flags</div>
               <div className="mt-1 flex gap-2 flex-wrap">
                 {(["g", "i", "m", "s", "u"] as const).map((f) => (
                   <button
                     key={f}
                     onClick={() => setFlags((s) => ({ ...s, [f]: !s[f] }))}
-                    className={`text-xs px-2 py-1 rounded border ${flags[f] ? "bg-indigo-600 text-white" : "bg-white text-slate-700"}`}
+                    className={`text-xs px-2.5 py-1 rounded-lg border font-mono transition-colors ${flags[f] ? "bg-indigo-600 border-indigo-600 text-white font-semibold" : "bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"}`}
                     aria-pressed={!!flags[f]}
                   >
                     {f}
@@ -196,28 +196,28 @@ export default function RegexTester() {
 
               {/* syntax highlight preview for pattern */}
               <div className="mt-3 text-xs font-mono text-slate-700 dark:text-slate-200">
-                <div className="px-3 py-2 rounded bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+                <div className="px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
                   <div dangerouslySetInnerHTML={{ __html: renderPatternHighlighted(pattern) }} />
                 </div>
               </div>
 
               {lastError && (
-                <div className="mt-2 text-xs text-rose-600 flex items-center gap-2">
-                  <X className="w-4 h-4" /> <span>{lastError}</span>
+                <div className="mt-2 text-xs text-rose-600 dark:text-rose-400 flex items-center gap-2 bg-rose-50 dark:bg-rose-950/30 p-2 rounded-lg border border-rose-200 dark:border-rose-900/50">
+                  <X className="w-4 h-4 flex-shrink-0" /> <span>{lastError}</span>
                 </div>
               )}
 
-              <div className="mt-4 flex gap-2">
-                <button onClick={exportText} className="px-3 py-2 rounded bg-slate-50 border text-sm">Export .txt</button>
-                <button onClick={exportMarkdown} className="px-3 py-2 rounded bg-slate-50 border text-sm">Export .md</button>
-                <button onClick={exportSnippet} className="px-3 py-2 rounded bg-indigo-600 text-white text-sm">Download snippet</button>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <button onClick={exportText} className="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-sm transition-colors">Export .txt</button>
+                <button onClick={exportMarkdown} className="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-sm transition-colors">Export .md</button>
+                <button onClick={exportSnippet} className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors">Download snippet</button>
               </div>
 
-              <div className="mt-3 text-xs text-slate-500">Suggestions</div>
-              <div className="mt-2 flex gap-2 flex-wrap">
+              <div className="mt-4 text-xs text-slate-500 dark:text-slate-400 font-medium">Suggestions</div>
+              <div className="mt-1.5 flex gap-2 flex-wrap">
                 {["^https?://","\\b\\w+@\\w+\\.\\w+\\b","\\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b","\\d{4}-\\d{2}-\\d{2}"]
                   .map((sug) => (
-                    <button key={sug} onClick={() => setPattern(sug)} className="px-2 py-1 text-xs rounded border bg-white">{sug}</button>
+                    <button key={sug} onClick={() => setPattern(sug)} className="px-2.5 py-1 text-xs rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-mono transition-colors">{sug}</button>
                   ))}
               </div>
             </div>
@@ -228,26 +228,26 @@ export default function RegexTester() {
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-sm font-medium text-slate-700 dark:text-slate-200">Test Input</div>
-                <div className="text-xs text-slate-500">Type or paste sample text to see matches highlighted in real time.</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400">Type or paste sample text to see matches highlighted in real time.</div>
               </div>
               <div className="flex items-center gap-2">
-                <button onClick={() => { setTestText(''); }} title="Clear" className="p-2 rounded hover:bg-slate-50">Clear</button>
-                <button onClick={() => { setTestText((s)=>s+"\nexample@domain.test"); }} title="Append example" className="p-2 rounded hover:bg-slate-50">Append</button>
+                <button onClick={() => { setTestText(''); }} title="Clear" className="px-2.5 py-1 text-xs rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors">Clear</button>
+                <button onClick={() => { setTestText((s)=>s+"\nexample@domain.test"); }} title="Append example" className="px-2.5 py-1 text-xs rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors">Append</button>
               </div>
             </div>
 
             <textarea
               value={testText}
               onChange={(e) => setTestText(e.target.value)}
-              className="mt-3 w-full h-48 md:h-56 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded p-3 font-mono text-sm text-slate-800 dark:text-slate-100"
+              className="mt-3 w-full h-48 md:h-56 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-lg p-3 font-mono text-sm text-slate-900 dark:text-slate-100 outline-none focus:ring-2 focus:ring-indigo-500"
               aria-label="Test text area"
             />
 
             <div className="mt-3">
-              <div className="text-xs text-slate-500">Preview</div>
-              <div className="mt-2 p-3 rounded bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 overflow-auto text-sm font-mono leading-relaxed">
+              <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Preview</div>
+              <div className="mt-1.5 p-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 overflow-auto text-sm font-mono leading-relaxed text-slate-800 dark:text-slate-200">
                 {previewNodes.map((n, idx) => (
-                  <span key={idx} className={n.match ? "bg-yellow-200 dark:bg-yellow-600/30" : ""}>
+                  <span key={idx} className={n.match ? "bg-yellow-200 dark:bg-yellow-500/30 text-slate-900 dark:text-yellow-200 rounded px-0.5" : ""}>
                     {n.text}
                   </span>
                 ))}
@@ -255,13 +255,13 @@ export default function RegexTester() {
             </div>
 
             <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-              <div className="rounded p-2 bg-slate-50 dark:bg-slate-800 border">
-                <div className="font-medium">Matches</div>
-                <div className="text-slate-500">{matches.length}</div>
+              <div className="rounded-lg p-2.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                <div className="font-semibold text-slate-700 dark:text-slate-300">Matches</div>
+                <div className="text-slate-900 dark:text-slate-100 text-sm font-bold mt-0.5">{matches.length}</div>
               </div>
-              <div className="rounded p-2 bg-slate-50 dark:bg-slate-800 border">
-                <div className="font-medium">Last index</div>
-                <div className="text-slate-500">{matches.length ? matches[matches.length - 1].index : "—"}</div>
+              <div className="rounded-lg p-2.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                <div className="font-semibold text-slate-700 dark:text-slate-300">Last index</div>
+                <div className="text-slate-900 dark:text-slate-100 text-sm font-bold mt-0.5">{matches.length ? matches[matches.length - 1].index : "—"}</div>
               </div>
             </div>
 
@@ -269,13 +269,13 @@ export default function RegexTester() {
         </div>
 
         {/* footer description + accessibility */}
-        <div className="border-t px-4 py-2 bg-slate-50 dark:bg-slate-900 text-xs text-slate-600 dark:text-slate-300">
-          <div className="flex items-center justify-between">
+        <div className="border-t border-slate-200 dark:border-slate-800 px-4 py-3 bg-slate-50 dark:bg-slate-900 text-xs text-slate-600 dark:text-slate-400">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div>
-              <strong>About this tool:</strong> Build and test regex patterns with instant highlighting, export and share options, and friendly error messages for quick debugging.
+              <strong className="text-slate-800 dark:text-slate-200">About this tool:</strong> Build and test regex patterns with instant highlighting, export and share options, and friendly error messages for quick debugging.
             </div>
             <div className="flex items-center gap-2">
-              <button onClick={() => setDescOpen(s => !s)} className="text-xs px-2 py-1 rounded border">{descOpen ? 'Hide' : 'Quick start'}</button>
+              <button onClick={() => setDescOpen(s => !s)} className="text-xs px-2.5 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">{descOpen ? 'Hide' : 'Quick start'}</button>
             </div>
           </div>
 

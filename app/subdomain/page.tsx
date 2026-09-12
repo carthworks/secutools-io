@@ -27,18 +27,24 @@ export default function SubdomainPage(){
 
 	return (
 		<div className="space-y-8">
-			<Section title="Subdomain Brute-Force (light)">
-				<div className="grid sm:grid-cols-2 gap-3">
-					<div className="space-y-2">
-						<input value={domain} onChange={e=>setDomain(e.target.value)} className="w-full bg-white border border-slate-300 rounded p-2" />
-						<textarea value={words} onChange={e=>setWords(e.target.value)} className="w-full h-48 bg-white border border-slate-300 rounded p-2" />
-						<button disabled={busy} onClick={run} className="px-3 py-1 rounded bg-primary text-white font-medium disabled:opacity-60">{busy? 'Running...' : 'Start'}</button>
+			<Section title="Subdomain Brute-Force (light)" subtitle="Enumerate subdomains using client-configured wordlists">
+				<div className="grid sm:grid-cols-2 gap-4">
+					<div className="space-y-3">
+						<label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">Target Domain</label>
+						<input value={domain} onChange={e=>setDomain(e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="example.com" />
+						<label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">Wordlist (one per line)</label>
+						<textarea value={words} onChange={e=>setWords(e.target.value)} className="w-full h-48 bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg p-2.5 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+						<button disabled={busy} onClick={run} className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition shadow-sm disabled:opacity-60">{busy? 'Running...' : 'Start Scan'}</button>
 					</div>
-					<div className="space-y-2">
-						<div className="text-sm text-slate-600">Found:</div>
-						<ul className="text-sm list-disc pl-5">
-							{found.map((f,i)=>(<li key={i} className="font-mono text-slate-800">{f}</li>))}
-						</ul>
+					<div className="space-y-3 p-4 bg-slate-50 dark:bg-slate-950/60 rounded-xl border border-slate-200 dark:border-slate-800">
+						<div className="text-sm font-semibold text-slate-700 dark:text-slate-300">Found Subdomains ({found.length}):</div>
+						{found.length === 0 ? (
+							<div className="text-xs text-slate-400 dark:text-slate-500 font-mono">Discovered records will appear here...</div>
+						) : (
+							<ul className="text-xs space-y-1.5 max-h-72 overflow-auto">
+								{found.map((f,i)=>(<li key={i} className="font-mono text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-2 rounded-lg">{f}</li>))}
+							</ul>
+						)}
 					</div>
 				</div>
 			</Section>

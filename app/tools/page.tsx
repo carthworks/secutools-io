@@ -1,4 +1,4 @@
-﻿import Link from "next/link"
+import Link from "next/link"
 
 const tools = [
 { slug: "hash", title: "Hash Tools", desc: "MD5, SHA1, SHA256, SHA512, identifier" },
@@ -22,43 +22,43 @@ const tools = [
 
 export default function ToolsPage() {
 return (
-<div className="space-y-8">
+<div className="space-y-8 text-slate-900 dark:text-slate-100">
 <section className="text-center space-y-4">
-<h1 className="text-3xl sm:text-4xl font-semibold text-slate-800">All Cybersecurity Tools</h1>
-<p className="text-slate-600 max-w-2xl mx-auto">Complete toolkit for cybersecurity students and professionals. All tools are free and privacy-focused.</p>
+<h1 className="text-3xl sm:text-4xl font-semibold text-slate-800 dark:text-slate-100">All Cybersecurity Tools</h1>
+<p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">Complete toolkit for cybersecurity students and professionals. All tools are free and privacy-focused.</p>
 </section>
 
 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
 {tools.map(t => (
-<Link key={t.slug} href={`/${t.slug}`} className="rounded-lg border border-slate-200 bg-white hover:bg-slate-50 p-4 block transition-colors">
-<div className="font-medium text-slate-800">{t.title}</div>
-<div className="text-sm text-slate-500 mt-1">{t.desc}</div>
+<Link key={t.slug} href={`/${t.slug}`} className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:bg-slate-50 dark:hover:bg-slate-800/80 p-5 block transition-all shadow-sm hover:shadow-md hover:border-indigo-400 dark:hover:border-indigo-600">
+<div className="font-semibold text-slate-800 dark:text-slate-200">{t.title}</div>
+<div className="text-sm text-slate-500 dark:text-slate-400 mt-1">{t.desc}</div>
 </Link>
 ))}
 </div>
 
 <section className="text-center space-y-4 mt-12">
-<h2 className="text-2xl font-semibold text-slate-800">Tool Categories</h2>
+<h2 className="text-2xl font-semibold text-slate-800 dark:text-slate-100">Tool Categories</h2>
 <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-<div className="text-center">
-<div className="text-2xl mb-2"></div>
-<h3 className="font-semibold text-slate-800 mb-2">Cryptography</h3>
-<p className="text-sm text-slate-600">Hash calculators, JWT decoders, password utilities</p>
+<div className="text-center p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60">
+<div className="text-2xl mb-2">🔐</div>
+<h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2">Cryptography</h3>
+<p className="text-sm text-slate-600 dark:text-slate-400">Hash calculators, JWT decoders, password utilities</p>
 </div>
-<div className="text-center">
-<div className="text-2xl mb-2"></div>
-<h3 className="font-semibold text-slate-800 mb-2">Network Analysis</h3>
-<p className="text-sm text-slate-600">DNS lookups, SSL checks, port scanning</p>
+<div className="text-center p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60">
+<div className="text-2xl mb-2">🌐</div>
+<h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2">Network Analysis</h3>
+<p className="text-sm text-slate-600 dark:text-slate-400">DNS lookups, SSL checks, port scanning</p>
 </div>
-<div className="text-center">
-<div className="text-2xl mb-2"></div>
-<h3 className="font-semibold text-slate-800 mb-2">Threat Intelligence</h3>
-<p className="text-sm text-slate-600">IOC extraction, CVE lookups, threat intel</p>
+<div className="text-center p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60">
+<div className="text-2xl mb-2">🛡️</div>
+<h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2">Threat Intelligence</h3>
+<p className="text-sm text-slate-600 dark:text-slate-400">IOC extraction, CVE lookups, threat intel</p>
 </div>
-<div className="text-center">
-<div className="text-2xl mb-2"></div>
-<h3 className="font-semibold text-slate-800 mb-2">Analysis Tools</h3>
-<p className="text-sm text-slate-600">Log parsing, PCAP analysis, timestamps</p>
+<div className="text-center p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60">
+<div className="text-2xl mb-2">📊</div>
+<h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2">Analysis Tools</h3>
+<p className="text-sm text-slate-600 dark:text-slate-400">Log parsing, PCAP analysis, timestamps</p>
 </div>
 </div>
 </section>

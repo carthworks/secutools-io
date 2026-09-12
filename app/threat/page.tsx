@@ -16,13 +16,13 @@ export default function ThreatPage(){
 	return (
 		<div className="space-y-8">
 			<Section title="Threat Intel Quick-Check" subtitle="VirusTotal and AbuseIPDB when API keys are configured in env">
-				<div className="grid sm:grid-cols-3 gap-2">
-					<input placeholder="IP" value={ip} onChange={e=>setIp(e.target.value)} className="bg-slate-950 border border-slate-800 rounded p-2" />
-					<input placeholder="URL" value={url} onChange={e=>setUrl(e.target.value)} className="bg-slate-950 border border-slate-800 rounded p-2" />
-					<input placeholder="File hash" value={hash} onChange={e=>setHash(e.target.value)} className="bg-slate-950 border border-slate-800 rounded p-2" />
+				<div className="grid sm:grid-cols-3 gap-3">
+					<input placeholder="IP (e.g. 1.1.1.1)" value={ip} onChange={e=>setIp(e.target.value)} className="bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg p-2.5 text-sm font-mono focus:ring-2 focus:ring-indigo-500 outline-none" />
+					<input placeholder="URL (e.g. https://...)" value={url} onChange={e=>setUrl(e.target.value)} className="bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg p-2.5 text-sm font-mono focus:ring-2 focus:ring-indigo-500 outline-none" />
+					<input placeholder="File hash (MD5/SHA256)" value={hash} onChange={e=>setHash(e.target.value)} className="bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg p-2.5 text-sm font-mono focus:ring-2 focus:ring-indigo-500 outline-none" />
 				</div>
-				<button onClick={check} className="mt-2 px-3 py-1 rounded bg-primary text-black font-medium">Query</button>
-				<pre className="mt-2 text-xs whitespace-pre-wrap bg-slate-950 border border-slate-800 rounded p-2">{data? JSON.stringify(data, null, 2): ''}</pre>
+				<button onClick={check} className="mt-3 px-4 py-2 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition">Query</button>
+				<pre className="mt-3 text-xs whitespace-pre-wrap bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg p-3 text-slate-800 dark:text-slate-200 font-mono overflow-auto">{data? JSON.stringify(data, null, 2): ''}</pre>
 			</Section>
 		</div>
 	)

@@ -45,7 +45,7 @@ export default function HashCollisionPage() {
             const byte2 = hex2.substr(i, 2);
             if (byte1 !== byte2) {
                 elements.push(
-                    <span key={i} className="bg-red-200 text-red-800 font-bold px-0.5 rounded">
+                    <span key={i} className="bg-rose-200 dark:bg-rose-950 text-rose-900 dark:text-rose-300 font-bold px-0.5 rounded">
                         {byte1}
                     </span>
                 );

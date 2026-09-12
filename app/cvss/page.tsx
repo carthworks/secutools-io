@@ -118,16 +118,16 @@ export default function CVSSCalculator() {
         title="CVE Severity Calculator"
         subtitle="Compute CVSS v3.1 Base Score from vulnerability metrics"
       >
-        <p className="text-sm text-muted-foreground mb-4">
+        <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
           Enter vulnerability characteristics below to calculate the CVSS v3.1
           Base Score. The calculator outputs a severity rating (None, Low,
           Medium, High, Critical) along with the vector string.
         </p>
 
         {/* Score Preview */}
-        <div className="p-4 border rounded bg-slate-900 text-white flex items-center justify-between">
-          <div className="text-xl font-semibold">Score: {score}</div>
-          <div className={`px-3 py-1 rounded text-sm font-bold ${sev.color}`}>
+        <div className="p-4 border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white flex items-center justify-between shadow-sm">
+          <div className="text-xl font-bold">Score: <span className="text-indigo-600 dark:text-indigo-400">{score}</span></div>
+          <div className={`px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider ${sev.color}`}>
             {sev.label}
           </div>
         </div>
@@ -147,13 +147,13 @@ export default function CVSSCalculator() {
             ] as [string, keyof Selection, Record<string, string>][]
           ).map(([label, key, options]) => (
             <div key={key}>
-              <label className="block text-sm font-medium mb-1">{label}</label>
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">{label}</label>
               <select
                 value={sel[key]}
                 onChange={(e) =>
                   setSel((prev) => ({ ...prev, [key]: e.target.value }))
                 }
-                className="w-full border rounded p-2 bg-white"
+                className="w-full border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm"
               >
                 {Object.entries(options).map(([val, name]) => (
                   <option key={val} value={val}>
@@ -167,33 +167,33 @@ export default function CVSSCalculator() {
 
         {/* Vector + Actions */}
         <div className="mt-6 space-y-3">
-          <div className="bg-slate-800 text-green-200 rounded p-3 text-sm font-mono overflow-x-auto">
+          <div className="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-800 rounded-xl p-3.5 text-xs font-mono overflow-x-auto shadow-sm">
             {vector}
           </div>
           <div className="flex flex-wrap gap-2">
             <button
               onClick={copyVector}
-              className="flex items-center gap-1 px-3 py-1 border rounded hover:bg-slate-100"
+              className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium transition"
             >
-              <Copy size={14} /> Copy Vector
+              <Copy size={13} /> Copy Vector
             </button>
             <button
               onClick={() => exportFile("txt")}
-              className="flex items-center gap-1 px-3 py-1 border rounded hover:bg-slate-100"
+              className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium transition"
             >
-              <Download size={14} /> Export TXT
+              <Download size={13} /> Export TXT
             </button>
             <button
               onClick={() => exportFile("json")}
-              className="flex items-center gap-1 px-3 py-1 border rounded hover:bg-slate-100"
+              className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium transition"
             >
-              <Download size={14} /> Export JSON
+              <Download size={13} /> Export JSON
             </button>
             <button
               onClick={() => setSel(defaultSel)}
-              className="flex items-center gap-1 px-3 py-1 border rounded hover:bg-slate-100"
+              className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs font-medium transition ml-auto"
             >
-              <RefreshCw size={14} /> Reset
+              <RefreshCw size={13} /> Reset
             </button>
           </div>
         </div>

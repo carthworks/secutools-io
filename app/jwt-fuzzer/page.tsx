@@ -172,28 +172,28 @@ export default function JWTFuzzer() {
     const exampleToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJyb2xlIjoidXNlciJ9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 p-4 sm:p-6 lg:p-8">
+        <div className="w-full space-y-6 text-slate-900 dark:text-slate-100">
             <div className="max-w-7xl mx-auto space-y-6">
                 {/* Header */}
                 <div className="text-center space-y-3">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/60 backdrop-blur-sm rounded-full border border-orange-200 shadow-sm">
-                        <Key className="w-5 h-5 text-orange-600" />
-                        <span className="text-sm font-medium text-orange-900">Penetration Testing</span>
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-full border border-orange-200 dark:border-orange-900 shadow-sm">
+                        <Key className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                        <span className="text-sm font-medium text-orange-900 dark:text-orange-300">Penetration Testing</span>
                     </div>
-                    <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 bg-clip-text text-transparent">
+                    <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 dark:from-orange-400 dark:via-red-400 dark:to-pink-400 bg-clip-text text-transparent">
                         JWT Fuzzer
                     </h1>
-                    <p className="text-slate-600 max-w-2xl mx-auto">
+                    <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
                         Test JWT security by manipulating tokens, testing algorithm confusion attacks,
                         and exploring common JWT vulnerabilities.
                     </p>
                 </div>
 
                 {/* Warning Banner */}
-                <div className="bg-amber-50 border-2 border-amber-200 rounded-xl p-4">
+                <div className="bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-200 dark:border-amber-800/60 rounded-xl p-4">
                     <div className="flex items-start gap-3">
-                        <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                        <div className="text-sm text-amber-800">
+                        <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                        <div className="text-sm text-amber-800 dark:text-amber-200">
                             <strong className="font-semibold">Ethical Use Only:</strong> This tool is for authorized security testing and educational purposes.
                             Test only on systems you own or have permission to test.
                         </div>
@@ -201,16 +201,16 @@ export default function JWTFuzzer() {
                 </div>
 
                 {/* Input Section */}
-                <div className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 p-6">
+                <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 p-6">
                     <div className="space-y-4">
                         <div className="flex items-center justify-between">
-                            <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
-                                <Code className="w-4 h-4 text-orange-600" />
+                            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                                <Code className="w-4 h-4 text-orange-600 dark:text-orange-400" />
                                 Input JWT Token
                             </label>
                             <button
                                 onClick={() => setInputToken(exampleToken)}
-                                className="text-sm text-orange-600 hover:text-orange-700 font-medium"
+                                className="text-sm text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 font-medium"
                             >
                                 Load Example
                             </button>
@@ -219,19 +219,19 @@ export default function JWTFuzzer() {
                             value={inputToken}
                             onChange={(e) => setInputToken(e.target.value)}
                             placeholder="Paste your JWT token here..."
-                            className="w-full h-32 px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-100 outline-none transition-all resize-none font-mono text-sm"
+                            className="w-full h-32 px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 focus:border-orange-500 focus:ring-4 focus:ring-orange-100 dark:focus:ring-orange-900/30 outline-none transition-all resize-none font-mono text-sm"
                         />
                         {inputToken && (
                             <div className="flex items-center gap-2 text-sm">
                                 {isValid ? (
                                     <>
-                                        <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                                        <span className="text-emerald-700 font-medium">Valid JWT format</span>
+                                        <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                                        <span className="text-emerald-700 dark:text-emerald-300 font-medium">Valid JWT format</span>
                                     </>
                                 ) : (
                                     <>
-                                        <XCircle className="w-4 h-4 text-red-600" />
-                                        <span className="text-red-700 font-medium">Invalid JWT format</span>
+                                        <XCircle className="w-4 h-4 text-red-600 dark:text-red-400" />
+                                        <span className="text-red-700 dark:text-red-300 font-medium">Invalid JWT format</span>
                                     </>
                                 )}
                             </div>
@@ -242,9 +242,9 @@ export default function JWTFuzzer() {
                 {isValid && (
                     <>
                         {/* Attack Templates */}
-                        <div className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 p-6">
-                            <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                                <Zap className="w-5 h-5 text-orange-600" />
+                        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 p-6">
+                            <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-4 flex items-center gap-2">
+                                <Zap className="w-5 h-5 text-orange-600 dark:text-orange-400" />
                                 Attack Templates
                             </h2>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -253,25 +253,25 @@ export default function JWTFuzzer() {
                                         key={key}
                                         onClick={() => setSelectedAttack(key as AttackType)}
                                         className={`p-4 rounded-xl border-2 transition-all text-left ${selectedAttack === key
-                                            ? "border-orange-500 bg-orange-50 shadow-md"
-                                            : "border-slate-200 hover:border-orange-300 bg-white"
+                                            ? "border-orange-500 bg-orange-50 dark:bg-orange-950/40 shadow-md"
+                                            : "border-slate-200 dark:border-slate-800 hover:border-orange-300 dark:hover:border-orange-700 bg-white dark:bg-slate-950"
                                             }`}
                                     >
                                         <div className="flex items-center gap-2 mb-2">
                                             {attack.severity === "high" ? (
-                                                <AlertTriangle className="w-4 h-4 text-red-600" />
+                                                <AlertTriangle className="w-4 h-4 text-red-600 dark:text-red-400" />
                                             ) : (
-                                                <Shield className="w-4 h-4 text-amber-600" />
+                                                <Shield className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                                             )}
                                             <span className={`text-xs font-semibold px-2 py-0.5 rounded ${attack.severity === "high"
-                                                ? "bg-red-100 text-red-700"
-                                                : "bg-amber-100 text-amber-700"
+                                                ? "bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300"
+                                                : "bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300"
                                                 }`}>
                                                 {attack.severity.toUpperCase()}
                                             </span>
                                         </div>
-                                        <div className="font-semibold text-slate-800 text-sm mb-1">{attack.name}</div>
-                                        <div className="text-xs text-slate-600">{attack.description}</div>
+                                        <div className="font-semibold text-slate-800 dark:text-slate-200 text-sm mb-1">{attack.name}</div>
+                                        <div className="text-xs text-slate-600 dark:text-slate-400">{attack.description}</div>
                                     </button>
                                 ))}
                             </div>
@@ -280,7 +280,7 @@ export default function JWTFuzzer() {
                         {/* Token Editor */}
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             {/* Header Editor */}
-                            <div className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 overflow-hidden">
+                            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
                                 <div className="px-6 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 flex items-center justify-between">
                                     <h2 className="text-lg font-semibold text-white flex items-center gap-2">
                                         <Lock className="w-5 h-5" />
@@ -291,13 +291,13 @@ export default function JWTFuzzer() {
                                     <textarea
                                         value={headerJson}
                                         onChange={(e) => setHeaderJson(e.target.value)}
-                                        className="w-full h-64 px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all resize-none font-mono text-sm bg-slate-50"
+                                        className="w-full h-64 px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 outline-none transition-all resize-none font-mono text-sm bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100"
                                     />
                                 </div>
                             </div>
 
                             {/* Payload Editor */}
-                            <div className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 overflow-hidden">
+                            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
                                 <div className="px-6 py-4 bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-between">
                                     <h2 className="text-lg font-semibold text-white flex items-center gap-2">
                                         <Edit3 className="w-5 h-5" />
@@ -308,14 +308,14 @@ export default function JWTFuzzer() {
                                     <textarea
                                         value={payloadJson}
                                         onChange={(e) => setPayloadJson(e.target.value)}
-                                        className="w-full h-64 px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 outline-none transition-all resize-none font-mono text-sm bg-slate-50"
+                                        className="w-full h-64 px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 dark:focus:ring-purple-900/30 outline-none transition-all resize-none font-mono text-sm bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100"
                                     />
                                 </div>
                             </div>
                         </div>
 
                         {/* Modified Token Output */}
-                        <div className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 overflow-hidden">
+                        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
                             <div className="px-6 py-4 bg-gradient-to-r from-orange-600 to-red-600 flex items-center justify-between">
                                 <h2 className="text-lg font-semibold text-white flex items-center gap-2">
                                     <Unlock className="w-5 h-5" />
@@ -342,7 +342,7 @@ export default function JWTFuzzer() {
                                 </div>
                             </div>
                             <div className="p-6">
-                                <div className="bg-slate-900 rounded-xl p-4">
+                                <div className="bg-slate-950 dark:bg-black rounded-xl p-4 border border-slate-800">
                                     <code className="text-orange-400 font-mono text-sm break-all">
                                         {modifiedToken || "No modified token generated"}
                                     </code>
@@ -352,21 +352,21 @@ export default function JWTFuzzer() {
 
                         {/* Token Breakdown */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
-                                <div className="text-blue-700 font-semibold text-sm mb-2">Header</div>
-                                <div className="text-xs text-blue-600 font-mono break-all">
+                            <div className="bg-blue-50 dark:bg-blue-950/40 border-2 border-blue-200 dark:border-blue-800/60 rounded-xl p-4">
+                                <div className="text-blue-700 dark:text-blue-300 font-semibold text-sm mb-2">Header</div>
+                                <div className="text-xs text-blue-600 dark:text-blue-400 font-mono break-all">
                                     {modifiedToken.split('.')[0] || "—"}
                                 </div>
                             </div>
-                            <div className="bg-purple-50 border-2 border-purple-200 rounded-xl p-4">
-                                <div className="text-purple-700 font-semibold text-sm mb-2">Payload</div>
-                                <div className="text-xs text-purple-600 font-mono break-all">
+                            <div className="bg-purple-50 dark:bg-purple-950/40 border-2 border-purple-200 dark:border-purple-800/60 rounded-xl p-4">
+                                <div className="text-purple-700 dark:text-purple-300 font-semibold text-sm mb-2">Payload</div>
+                                <div className="text-xs text-purple-600 dark:text-purple-400 font-mono break-all">
                                     {modifiedToken.split('.')[1] || "—"}
                                 </div>
                             </div>
-                            <div className="bg-orange-50 border-2 border-orange-200 rounded-xl p-4">
-                                <div className="text-orange-700 font-semibold text-sm mb-2">Signature</div>
-                                <div className="text-xs text-orange-600 font-mono break-all">
+                            <div className="bg-orange-50 dark:bg-orange-950/40 border-2 border-orange-200 dark:border-orange-800/60 rounded-xl p-4">
+                                <div className="text-orange-700 dark:text-orange-300 font-semibold text-sm mb-2">Signature</div>
+                                <div className="text-xs text-orange-600 dark:text-orange-400 font-mono break-all">
                                     {modifiedToken.split('.')[2] || "(removed)"}
                                 </div>
                             </div>
@@ -375,11 +375,11 @@ export default function JWTFuzzer() {
                 )}
 
                 {/* Info Card */}
-                <div className="bg-white/50 backdrop-blur-sm rounded-xl border border-slate-200 p-6">
+                <div className="bg-white dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800 p-6">
                     <div className="flex items-start gap-3">
-                        <Shield className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
-                        <div className="text-sm text-slate-600">
-                            <strong className="text-slate-900">Common JWT Vulnerabilities:</strong> Algorithm confusion (none attack),
+                        <Shield className="w-5 h-5 text-orange-600 dark:text-orange-400 flex-shrink-0 mt-0.5" />
+                        <div className="text-sm text-slate-600 dark:text-slate-400">
+                            <strong className="text-slate-900 dark:text-slate-100">Common JWT Vulnerabilities:</strong> Algorithm confusion (none attack),
                             weak signing keys, missing signature verification, expired token acceptance, and insufficient claim validation.
                             Always verify signatures server-side and use strong algorithms like RS256 or ES256.
                         </div>

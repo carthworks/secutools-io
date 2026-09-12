@@ -270,10 +270,10 @@ export default function AESRSAPage() {
     return (
         <div className="space-y-8">
             <section className="text-center space-y-4">
-                <h1 className="text-3xl sm:text-4xl font-semibold text-slate-800">
+                <h1 className="text-3xl sm:text-4xl font-semibold text-slate-900 dark:text-white">
                     AES/RSA Encryptor
                 </h1>
-                <p className="text-slate-600 max-w-2xl mx-auto">
+                <p className="text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
                     Client-side encryption and decryption using AES and RSA algorithms
                 </p>
             </section>
@@ -281,11 +281,11 @@ export default function AESRSAPage() {
             <Section title="Configuration" subtitle="Choose encryption settings">
                 <div className="grid md:grid-cols-3 gap-4">
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-2">Algorithm</label>
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Algorithm</label>
                         <select
                             value={algorithm}
                             onChange={(e) => setAlgorithm(e.target.value as Algorithm)}
-                            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                            className="w-full px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
                         >
                             <option value="AES-GCM">AES-GCM (Recommended)</option>
                             <option value="AES-CBC">AES-CBC</option>
@@ -294,13 +294,13 @@ export default function AESRSAPage() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-2">Mode</label>
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Mode</label>
                         <div className="flex gap-2">
                             <button
                                 onClick={() => setMode("encrypt")}
                                 className={`flex-1 px-4 py-2 rounded-lg border transition-colors ${mode === "encrypt"
-                                        ? "bg-indigo-600 text-white border-indigo-600"
-                                        : "bg-white text-slate-700 border-slate-300 hover:bg-slate-50"
+                                        ? "bg-indigo-600 text-white border-indigo-600 shadow-sm"
+                                        : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"
                                     }`}
                             >
                                 <Lock className="w-4 h-4 inline mr-2" />
@@ -309,8 +309,8 @@ export default function AESRSAPage() {
                             <button
                                 onClick={() => setMode("decrypt")}
                                 className={`flex-1 px-4 py-2 rounded-lg border transition-colors ${mode === "decrypt"
-                                        ? "bg-indigo-600 text-white border-indigo-600"
-                                        : "bg-white text-slate-700 border-slate-300 hover:bg-slate-50"
+                                        ? "bg-indigo-600 text-white border-indigo-600 shadow-sm"
+                                        : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"
                                     }`}
                             >
                                 <Unlock className="w-4 h-4 inline mr-2" />
@@ -321,13 +321,13 @@ export default function AESRSAPage() {
 
                     {algorithm === "RSA-OAEP" && (
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-2">
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                                 RSA Key Pair
                             </label>
                             <button
                                 onClick={generateRSAKeyPair}
                                 disabled={loading}
-                                className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:bg-slate-400"
+                                className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:bg-slate-400 font-medium shadow-sm"
                             >
                                 <Key className="w-4 h-4 inline mr-2" />
                                 Generate Keys
@@ -343,10 +343,10 @@ export default function AESRSAPage() {
                     <div className="space-y-4">
                         <div>
                             <div className="flex items-center justify-between mb-2">
-                                <label className="text-sm font-medium text-slate-700">Public Key (JWK)</label>
+                                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Public Key (JWK)</label>
                                 <button
                                     onClick={() => copyToClipboard(generatedPublicKey)}
-                                    className="text-sm text-indigo-600 hover:text-indigo-700"
+                                    className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
                                 >
                                     Copy
                                 </button>
@@ -354,18 +354,18 @@ export default function AESRSAPage() {
                             <textarea
                                 value={generatedPublicKey}
                                 readOnly
-                                className="w-full h-32 px-4 py-2 border border-slate-300 rounded-lg bg-slate-50 font-mono text-xs"
+                                className="w-full h-32 px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-950 font-mono text-xs text-slate-800 dark:text-slate-200 outline-none"
                             />
                         </div>
 
                         <div>
                             <div className="flex items-center justify-between mb-2">
-                                <label className="text-sm font-medium text-slate-700">
+                                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
                                     Private Key (JWK) - Keep Secret!
                                 </label>
                                 <button
                                     onClick={() => copyToClipboard(generatedPrivateKey)}
-                                    className="text-sm text-indigo-600 hover:text-indigo-700"
+                                    className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
                                 >
                                     Copy
                                 </button>
@@ -373,9 +373,9 @@ export default function AESRSAPage() {
                             <textarea
                                 value={generatedPrivateKey}
                                 readOnly
-                                className="w-full h-32 px-4 py-2 border border-red-300 rounded-lg bg-red-50 font-mono text-xs"
+                                className="w-full h-32 px-4 py-2 border border-red-300 dark:border-red-900/60 rounded-lg bg-red-50 dark:bg-red-950/20 font-mono text-xs text-red-900 dark:text-red-300 outline-none"
                             />
-                            <p className="text-xs text-red-600 mt-1">
+                            <p className="text-xs text-red-600 dark:text-red-400 mt-1">
                                 ⚠️ Never share your private key!
                             </p>
                         </div>
@@ -397,46 +397,46 @@ export default function AESRSAPage() {
                                 ? "Enter message to encrypt..."
                                 : "Enter encrypted message (Base64)..."
                         }
-                        className="w-full h-32 px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent font-mono text-sm"
+                        className="w-full h-32 px-4 py-3 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500 focus:border-transparent font-mono text-sm outline-none"
                     />
 
                     {algorithm.startsWith("AES") && (
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">Password</label>
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Password</label>
                             <input
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="Enter encryption password"
-                                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                className="w-full px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
                             />
                         </div>
                     )}
 
                     {algorithm === "RSA-OAEP" && mode === "encrypt" && (
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                                 Public Key (JWK)
                             </label>
                             <textarea
                                 value={rsaPublicKey}
                                 onChange={(e) => setRsaPublicKey(e.target.value)}
                                 placeholder="Paste public key JSON here..."
-                                className="w-full h-24 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent font-mono text-xs"
+                                className="w-full h-24 px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500 focus:border-transparent font-mono text-xs outline-none"
                             />
                         </div>
                     )}
 
                     {algorithm === "RSA-OAEP" && mode === "decrypt" && (
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                                 Private Key (JWK)
                             </label>
                             <textarea
                                 value={rsaPrivateKey}
                                 onChange={(e) => setRsaPrivateKey(e.target.value)}
                                 placeholder="Paste private key JSON here..."
-                                className="w-full h-24 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent font-mono text-xs"
+                                className="w-full h-24 px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500 focus:border-transparent font-mono text-xs outline-none"
                             />
                         </div>
                     )}
@@ -444,7 +444,7 @@ export default function AESRSAPage() {
                     <button
                         onClick={handleEncryptDecrypt}
                         disabled={loading}
-                        className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium disabled:bg-slate-400"
+                        className="w-full px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors font-medium disabled:bg-slate-400 shadow-sm"
                     >
                         {loading ? "Processing..." : mode === "encrypt" ? "Encrypt" : "Decrypt"}
                     </button>
@@ -453,8 +453,8 @@ export default function AESRSAPage() {
 
             {/* Error Display */}
             {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                    <p className="text-red-800 text-sm">
+                <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 rounded-lg p-4">
+                    <p className="text-red-800 dark:text-red-300 text-sm">
                         <strong>Error:</strong> {error}
                     </p>
                 </div>
@@ -467,11 +467,11 @@ export default function AESRSAPage() {
                         <div className="flex gap-2">
                             <button
                                 onClick={() => copyToClipboard(output)}
-                                className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors"
+                                className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                             >
                                 {copied ? (
                                     <>
-                                        <Check className="w-4 h-4 text-green-600" />
+                                        <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
                                         <span className="text-sm">Copied!</span>
                                     </>
                                 ) : (
@@ -483,7 +483,7 @@ export default function AESRSAPage() {
                             </button>
                             <button
                                 onClick={() => downloadOutput(output, mode === "encrypt" ? "encrypted.txt" : "decrypted.txt")}
-                                className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors"
+                                className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                             >
                                 <Download className="w-4 h-4" />
                                 <span className="text-sm">Download</span>
@@ -493,11 +493,11 @@ export default function AESRSAPage() {
                         <textarea
                             value={output}
                             readOnly
-                            className="w-full h-48 px-4 py-3 border border-slate-300 rounded-lg bg-slate-50 font-mono text-sm"
+                            className="w-full h-48 px-4 py-3 border border-slate-300 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-mono text-sm outline-none"
                         />
 
-                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                            <p className="text-sm text-blue-800">
+                        <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/50 rounded-lg p-4">
+                            <p className="text-sm text-blue-800 dark:text-blue-300">
                                 <strong>Output length:</strong> {output.length} characters
                             </p>
                         </div>
@@ -508,31 +508,31 @@ export default function AESRSAPage() {
             {/* Info Section */}
             <Section title="About Encryption" subtitle="Algorithm information">
                 <div className="grid md:grid-cols-3 gap-4 text-sm">
-                    <div className="bg-slate-50 rounded-lg p-4">
-                        <h3 className="font-semibold text-slate-800 mb-2">AES-GCM</h3>
-                        <p className="text-slate-600">
+                    <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2">AES-GCM</h3>
+                        <p className="text-slate-600 dark:text-slate-400">
                             Advanced Encryption Standard with Galois/Counter Mode. Provides both encryption
                             and authentication. Recommended for most use cases.
                         </p>
                     </div>
-                    <div className="bg-slate-50 rounded-lg p-4">
-                        <h3 className="font-semibold text-slate-800 mb-2">AES-CBC</h3>
-                        <p className="text-slate-600">
+                    <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2">AES-CBC</h3>
+                        <p className="text-slate-600 dark:text-slate-400">
                             AES with Cipher Block Chaining mode. Classic symmetric encryption algorithm.
                             Requires separate authentication.
                         </p>
                     </div>
-                    <div className="bg-slate-50 rounded-lg p-4">
-                        <h3 className="font-semibold text-slate-800 mb-2">RSA-OAEP</h3>
-                        <p className="text-slate-600">
+                    <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2">RSA-OAEP</h3>
+                        <p className="text-slate-600 dark:text-slate-400">
                             Asymmetric encryption using RSA with Optimal Asymmetric Encryption Padding.
                             Slower but allows encryption without sharing keys.
                         </p>
                     </div>
                 </div>
 
-                <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                    <p className="text-sm text-yellow-800">
+                <div className="mt-4 bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-900/50 rounded-lg p-4">
+                    <p className="text-sm text-yellow-800 dark:text-yellow-300">
                         <strong>⚠️ Security Note:</strong> All encryption happens client-side in your browser.
                         Your keys and data never leave your device. However, for production use, consider
                         using established libraries and proper key management systems.

@@ -63,28 +63,28 @@ export default function DailyTipsPage() {
         subtitle="Bite-sized advice for students, professionals, and SOC teams"
       >
         {tip ? (
-          <div className="p-6 rounded-lg shadow-md bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100 text-center">
-            <h2 className="text-lg font-semibold text-indigo-700 mb-2">{tip.category}</h2>
-            <p className="text-slate-800 text-base">{tip.text}</p>
+          <div className="p-6 rounded-xl shadow-xs bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-950/40 dark:to-slate-900 border border-indigo-100 dark:border-indigo-900/50 text-center">
+            <h2 className="text-lg font-bold text-indigo-700 dark:text-indigo-300 mb-2">{tip.category}</h2>
+            <p className="text-slate-800 dark:text-slate-200 text-base max-w-xl mx-auto leading-relaxed">{tip.text}</p>
 
-            <div className="flex justify-center gap-3 mt-4">
+            <div className="flex justify-center gap-3 mt-5 flex-wrap">
               <button
                 onClick={randomTip}
-                className="flex items-center gap-2 px-3 py-2 text-sm border rounded bg-white hover:bg-slate-50"
+                className="flex items-center gap-2 px-3.5 py-2 text-xs sm:text-sm font-medium border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
               >
-                <RefreshCw size={16} /> Next Tip
+                <RefreshCw size={15} /> Next Tip
               </button>
               <button
                 onClick={copyTip}
-                className="flex items-center gap-2 px-3 py-2 text-sm border rounded bg-white hover:bg-slate-50"
+                className="flex items-center gap-2 px-3.5 py-2 text-xs sm:text-sm font-medium border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
               >
-                <Copy size={16} /> Copy
+                <Copy size={15} /> Copy
               </button>
               <button
                 onClick={shareTip}
-                className="flex items-center gap-2 px-3 py-2 text-sm border rounded bg-white hover:bg-slate-50"
+                className="flex items-center gap-2 px-3.5 py-2 text-xs sm:text-sm font-medium border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
               >
-                <Share2 size={16} /> Share
+                <Share2 size={15} /> Share
               </button>
             </div>
           </div>

@@ -127,7 +127,7 @@ export default function StringObfuscatorPage() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Enter text here..."
-          className="w-full h-32 bg-black-950 border border-black-800 rounded p-2 text-black"
+          className="w-full h-32 bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg p-3 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm"
         />
 
         {/* Method selection */}
@@ -135,7 +135,7 @@ export default function StringObfuscatorPage() {
           <select
             value={method}
             onChange={(e) => setMethod(e.target.value)}
-            className="border p-2 rounded"
+            className="border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 p-2.5 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm"
           >
             <option value="rot13">ROT13</option>
             <option value="caesar">Caesar Cipher</option>
@@ -151,7 +151,7 @@ export default function StringObfuscatorPage() {
               type="number"
               value={shift}
               onChange={(e) => setShift(Number(e.target.value))}
-              className="w-20 border p-1 rounded"
+              className="w-24 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 p-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm"
               placeholder="Shift"
             />
           )}
@@ -161,57 +161,57 @@ export default function StringObfuscatorPage() {
               type="number"
               value={xorKey}
               onChange={(e) => setXorKey(Number(e.target.value))}
-              className="w-20 border p-1 rounded"
+              className="w-24 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 p-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm"
               placeholder="Key"
             />
           )}
 
           <button
             onClick={transform}
-            className="px-3 py-1 rounded bg-primary text-white font-medium flex items-center gap-1"
+            className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium flex items-center gap-1.5 text-sm transition shadow-sm"
           >
             <RefreshCw className="w-4 h-4" /> Transform
           </button>
         </div>
 
         {/* Output */}
-        <div className="mt-4">
-          <label className="text-xs text-slate-400">Output</label>
-          <pre className="text-sm whitespace-pre-wrap bg-slate-900 border border-slate-700 rounded p-2 h-40 overflow-auto text-green-200">
-            {output}
+        <div className="mt-5 space-y-2">
+          <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Output</label>
+          <pre className="text-sm font-mono whitespace-pre-wrap bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3.5 h-40 overflow-auto text-slate-800 dark:text-slate-200 shadow-sm">
+            {output || <span className="text-slate-400 dark:text-slate-500 font-sans text-xs">Transformed output will appear here...</span>}
           </pre>
 
-          <div className="flex gap-2 mt-2">
+          <div className="flex gap-2 mt-2 flex-wrap">
             <button
               onClick={copyOut}
-              className="px-3 py-1 border rounded flex items-center gap-1 text-sm"
+              className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg flex items-center gap-1.5 text-xs font-medium transition"
             >
-              <Copy className="w-4 h-4" /> Copy
+              <Copy className="w-3.5 h-3.5" /> Copy
             </button>
             <button
               onClick={exportTxt}
-              className="px-3 py-1 border rounded flex items-center gap-1 text-sm"
+              className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg flex items-center gap-1.5 text-xs font-medium transition"
             >
-              <Download className="w-4 h-4" /> Export
+              <Download className="w-3.5 h-3.5" /> Export TXT
             </button>
             <button
               onClick={shareOut}
-              className="px-3 py-1 border rounded flex items-center gap-1 text-sm"
+              className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg flex items-center gap-1.5 text-xs font-medium transition"
             >
-              <Share2 className="w-4 h-4" /> Share
+              <Share2 className="w-3.5 h-3.5" /> Share
             </button>
           </div>
         </div>
       </Section>
 
-      <Section title="About this tool">
-        <p className="text-sm text-slate-600">
-          This tool helps you quickly **obfuscate or de-obfuscate strings** using
+      <Section title="About this tool" subtitle="Quick encoder and obfuscator details">
+        <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+          This tool helps you quickly <strong>obfuscate or de-obfuscate strings</strong> using
           simple transformations: ROT13, Caesar cipher, XOR, Base64, and Hex. It
           is useful for analyzing encoded payloads, reversing obfuscation in
           malware scripts, or generating quick test cases.
         </p>
-        <ul className="list-disc pl-5 text-sm mt-2 text-slate-600">
+        <ul className="list-disc pl-5 text-sm mt-3 text-slate-700 dark:text-slate-300 space-y-1">
           <li>🔐 Encode/decode payloads in seconds</li>
           <li>⚡ Works fully client-side (no server, no logging)</li>
           <li>📤 Copy, export, or share results instantly</li>

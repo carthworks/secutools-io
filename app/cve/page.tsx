@@ -47,12 +47,12 @@ function CVEContent() {
               value={id}
               onChange={(e) => setId(e.target.value)}
               placeholder="e.g. CVE-2024-6387"
-              className="flex-1 bg-slate-900 border border-slate-800 rounded-lg p-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono"
+              className="flex-1 bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-lg p-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono shadow-sm"
             />
             <button
               onClick={() => lookup()}
               disabled={loading}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold transition-colors disabled:opacity-50 shadow-sm"
             >
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -65,7 +65,7 @@ function CVEContent() {
 
           {data && (
             <div className="mt-4">
-              <pre className="text-xs font-mono whitespace-pre-wrap bg-slate-950 border border-slate-800 rounded-lg p-4 text-slate-300 max-h-[600px] overflow-auto">
+              <pre className="text-xs font-mono whitespace-pre-wrap bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-4 text-slate-800 dark:text-slate-200 max-h-[600px] overflow-auto shadow-sm">
                 {JSON.stringify(data, null, 2)}
               </pre>
             </div>

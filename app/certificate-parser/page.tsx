@@ -248,9 +248,9 @@ export default function CertificateParserPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-4 bg-white dark:bg-slate-900 rounded-lg shadow">
-      <h2 className="text-lg font-semibold mb-2">Certificate Parser</h2>
-      <p className="text-sm text-slate-500 mb-4">
+    <div className="max-w-3xl mx-auto p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm">
+      <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Certificate Parser</h2>
+      <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
         Paste PEM, paste base64 DER, or upload a certificate file (.cer/.crt/.der/.pem). The parser extracts subject, issuer, SANs,
         fingerprint, public key and validity info.
       </p>
@@ -261,19 +261,19 @@ export default function CertificateParserPage() {
           onChange={(e) => setInput(e.target.value)}
           placeholder="Paste PEM (-----BEGIN CERTIFICATE-----...), or base64 DER..."
           rows={6}
-          className="w-full rounded border p-2 text-sm font-mono"
+          className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 p-3 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
 
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-2 items-center flex-wrap">
           <input
             ref={fileInputRef}
             type="file"
             onChange={handleFileUpload}
             accept=".pem,.crt,.cer,.der,application/x-x509-ca-cert"
-            className="text-xs"
+            className="text-xs text-slate-600 dark:text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-xs file:font-medium file:bg-slate-100 dark:file:bg-slate-800 file:text-slate-700 dark:file:text-slate-300 hover:file:bg-slate-200 dark:hover:file:bg-slate-700 cursor-pointer"
           />
           <button
-            className="px-3 py-1 rounded bg-indigo-600 text-white"
+            className="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition shadow-sm"
             onClick={() => parseCertificate(input)}
             disabled={loading}
           >
@@ -281,7 +281,7 @@ export default function CertificateParserPage() {
           </button>
 
           <button
-            className="px-3 py-1 rounded border"
+            className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 text-sm transition"
             onClick={() => {
               setInput("");
               setCert(null);
@@ -293,85 +293,85 @@ export default function CertificateParserPage() {
           </button>
         </div>
 
-        {error && <div className="p-3 rounded bg-rose-50 text-rose-700">{error}</div>}
+        {error && <div className="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/40 border-l-4 border-rose-500 text-rose-700 dark:text-rose-300 text-sm">{error}</div>}
       </div>
 
       {cert && (
-        <div className="mt-4 border rounded p-3 bg-slate-50">
-          <div className="flex items-start justify-between">
+        <div className="mt-6 border border-slate-200 dark:border-slate-800 rounded-xl p-4 bg-slate-50 dark:bg-slate-950/60 shadow-sm">
+          <div className="flex items-start justify-between flex-wrap gap-4">
             <div>
-              <div className="text-sm text-slate-600">Subject</div>
-              <div className="font-medium">{cert.subject}</div>
+              <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Subject</div>
+              <div className="font-semibold text-slate-900 dark:text-slate-100 mt-0.5">{cert.subject}</div>
 
-              <div className="text-sm text-slate-600 mt-2">Issuer</div>
-              <div className="font-medium">{cert.issuer}</div>
+              <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-3">Issuer</div>
+              <div className="font-semibold text-slate-900 dark:text-slate-100 mt-0.5">{cert.issuer}</div>
             </div>
 
             <div className="text-right text-xs">
-              <div>
-                Serial: <span className="font-mono">{cert.serialNumber ?? "—"}</span>
+              <div className="text-slate-600 dark:text-slate-400">
+                Serial: <span className="font-mono text-slate-900 dark:text-slate-200">{cert.serialNumber ?? "—"}</span>
               </div>
-              <div className="mt-2">
+              <div className="mt-2 text-slate-600 dark:text-slate-400">
                 Expires:{" "}
-                <span className={cert.expired ? "text-rose-600" : cert.expiresSoon ? "text-amber-600" : ""}>
+                <span className={cert.expired ? "text-rose-600 dark:text-rose-400 font-semibold" : cert.expiresSoon ? "text-amber-600 dark:text-amber-400 font-semibold" : "text-slate-900 dark:text-slate-200"}>
                   {cert.notAfter ?? "—"}
                 </span>
               </div>
-              <div className="text-slate-500">Days left: {cert.daysToExpiry ?? "—"}</div>
+              <div className="text-slate-500 dark:text-slate-400 mt-1">Days left: <span className="font-medium text-slate-800 dark:text-slate-200">{cert.daysToExpiry ?? "—"}</span></div>
             </div>
           </div>
 
-          <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-slate-200 dark:border-slate-800 pt-4">
             <div>
-              <div className="text-sm text-slate-600">Fingerprint (SHA-256)</div>
-              <div className="font-mono text-xs break-words">{cert.fingerprintSHA256}</div>
+              <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Fingerprint (SHA-256)</div>
+              <div className="font-mono text-xs break-words text-slate-800 dark:text-slate-200 mt-1">{cert.fingerprintSHA256}</div>
 
-              <div className="text-sm text-slate-600 mt-2">Signature algorithm</div>
-              <div className="text-sm">{cert.signatureAlgorithm}</div>
+              <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-3">Signature algorithm</div>
+              <div className="text-sm text-slate-800 dark:text-slate-200 mt-0.5">{cert.signatureAlgorithm}</div>
 
-              <div className="text-sm text-slate-600 mt-2">Public key</div>
-              <div className="text-xs font-mono break-words">
+              <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-3">Public key</div>
+              <div className="text-xs font-mono break-words text-slate-800 dark:text-slate-200 mt-0.5">
                 {cert.publicKeyAlgorithm}
                 {cert.publicKeySize ? ` (${cert.publicKeySize} bits)` : ""}
               </div>
             </div>
 
             <div>
-              <div className="text-sm text-slate-600">Subject Alternative Names (SANs)</div>
+              <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Subject Alternative Names (SANs)</div>
               {cert.subjectAltNames && cert.subjectAltNames.length > 0 ? (
-                <ul className="mt-1 text-sm">
+                <ul className="mt-1 space-y-1">
                   {cert.subjectAltNames.map((s, idx) => (
-                    <li key={idx} className="font-mono text-xs">
+                    <li key={idx} className="font-mono text-xs text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded p-1.5">
                       {s}
                     </li>
                   ))}
                 </ul>
               ) : (
-                <div className="text-sm text-slate-500">No SANs found</div>
+                <div className="text-sm text-slate-500 dark:text-slate-400 mt-1">No SANs found</div>
               )}
             </div>
           </div>
 
-          <div className="mt-3 flex gap-2 flex-wrap">
-            <button className="px-3 py-1 rounded border" onClick={() => copyToClipboard(cert.rawPem ?? "", "PEM copied")}>
+          <div className="mt-4 flex gap-2 flex-wrap border-t border-slate-200 dark:border-slate-800 pt-4">
+            <button className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 text-xs transition" onClick={() => copyToClipboard(cert.rawPem ?? "", "PEM copied")}>
               Copy PEM
             </button>
             <button
-              className="px-3 py-1 rounded border"
+              className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 text-xs transition"
               onClick={() => copyToClipboard(JSON.stringify(cert, null, 2), "Certificate JSON copied")}
             >
               Copy JSON
             </button>
-            <button className="px-3 py-1 rounded border" onClick={() => downloadJson(cert)}>
+            <button className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 text-xs transition" onClick={() => downloadJson(cert)}>
               Download JSON
             </button>
-            <button className="px-3 py-1 rounded border" onClick={() => copyToClipboard(cert.fingerprintSHA256 ?? "", "Fingerprint copied")}>
+            <button className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 text-xs transition" onClick={() => copyToClipboard(cert.fingerprintSHA256 ?? "", "Fingerprint copied")}>
               Copy Fingerprint
             </button>
           </div>
 
-          {cert.expired && <div className="mt-3 text-sm text-rose-600">Certificate is expired.</div>}
-          {!cert.expired && cert.expiresSoon && <div className="mt-3 text-sm text-amber-600">Certificate expires soon (≤ 30 days).</div>}
+          {cert.expired && <div className="mt-3 text-sm text-rose-600 dark:text-rose-400 font-medium">Certificate is expired.</div>}
+          {!cert.expired && cert.expiresSoon && <div className="mt-3 text-sm text-amber-600 dark:text-amber-400 font-medium">Certificate expires soon (≤ 30 days).</div>}
         </div>
       )}
     </div>

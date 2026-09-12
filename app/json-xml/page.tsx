@@ -449,54 +449,54 @@ export default function JsonXmlFormatter(): JSX.Element {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder='Paste JSON ({"foo":123}) or XML (<root>...</root>) here — Ctrl/Cmd+Enter to apply beautify'
-              className="w-full min-h-[420px] border rounded p-3 font-mono text-sm bg-white focus:ring-2 focus:ring-indigo-500"
+              className="w-full min-h-[420px] border border-slate-300 dark:border-slate-700 rounded-lg p-3 font-mono text-sm bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500 outline-none"
               aria-label="Input JSON or XML data"
             />
 
             <div className="flex items-center gap-2 mt-3 flex-wrap">
               <button
                 onClick={handleBeautifyCmd}
-                className="px-3 py-1 border rounded bg-emerald-50 hover:bg-emerald-100 text-emerald-700 flex items-center gap-2"
+                className="px-3 py-1.5 border border-emerald-300 dark:border-emerald-800 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 flex items-center gap-2 text-xs font-medium transition"
                 aria-label="Apply beautify to input"
               >
                 <CheckCircle className="w-4 h-4" /> Apply Beautify
               </button>
               <button
                 onClick={handleMinifyCmd}
-                className="px-3 py-1 border rounded bg-slate-50 hover:bg-slate-100 flex items-center gap-2"
+                className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center gap-2 text-xs font-medium transition"
                 aria-label="Apply minify to input"
               >
                 Minify Input
               </button>
               <button
                 onClick={() => setTab("beautify")}
-                className={`px-3 py-1 border rounded text-xs ${tab === "beautify" ? "bg-indigo-50 text-indigo-700" : "bg-white"}`}
+                className={`px-3 py-1.5 border rounded-lg text-xs font-medium transition ${tab === "beautify" ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border-indigo-300 dark:border-indigo-700" : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700"}`}
                 aria-label="Select beautify tab"
               >
                 Beautify tab
               </button>
               <button
                 onClick={() => setTab("minify")}
-                className={`px-3 py-1 border rounded text-xs ${tab === "minify" ? "bg-indigo-50 text-indigo-700" : "bg-white"}`}
+                className={`px-3 py-1.5 border rounded-lg text-xs font-medium transition ${tab === "minify" ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border-indigo-300 dark:border-indigo-700" : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700"}`}
                 aria-label="Select minify tab"
               >
                 Minify tab
               </button>
               <button
                 onClick={() => setTab("xmlformat")}
-                className={`px-3 py-1 border rounded text-xs ${tab === "xmlformat" ? "bg-indigo-50 text-indigo-700" : "bg-white"}`}
+                className={`px-3 py-1.5 border rounded-lg text-xs font-medium transition ${tab === "xmlformat" ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border-indigo-300 dark:border-indigo-700" : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700"}`}
                 aria-label="Select xml format tab"
               >
                 XML Format tab
               </button>
 
-              <div className="border-l pl-3 ml-auto flex items-center gap-2">
-                <label htmlFor="mode-select" className="text-xs text-slate-500">Mode</label>
+              <div className="border-l border-slate-300 dark:border-slate-700 pl-3 ml-auto flex items-center gap-2">
+                <label htmlFor="mode-select" className="text-xs text-slate-500 dark:text-slate-400 font-medium">Mode</label>
                 <select
                   id="mode-select"
                   value={mode}
                   onChange={(e) => setMode(e.target.value as Mode)}
-                  className="text-xs p-1 border rounded bg-white"
+                  className="text-xs p-1.5 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 outline-none"
                   aria-label="Select format mode"
                 >
                   <option value="auto">Auto</option>
@@ -508,16 +508,16 @@ export default function JsonXmlFormatter(): JSX.Element {
 
             <div className="mt-2 text-sm">
               {detectedStatus.detected ? (
-                <span className={`inline-flex items-center gap-2 text-xs px-2 py-1 rounded ${detectedStatus.valid ? "bg-green-100 text-green-800" : "bg-amber-100 text-amber-800"}`}>
-                  {detectedStatus.valid ? <CheckCircle className="w-3 h-3" /> : <AlertTriangle className="w-3 h-3" />}
+                <span className={`inline-flex items-center gap-2 text-xs px-2.5 py-1 rounded-md font-medium ${detectedStatus.valid ? "bg-green-100 dark:bg-green-950/50 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-800" : "bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800"}`}>
+                  {detectedStatus.valid ? <CheckCircle className="w-3.5 h-3.5" /> : <AlertTriangle className="w-3.5 h-3.5" />}
                   {detectedStatus.detected.toUpperCase()} — {detectedStatus.valid ? "Valid" : "Invalid / Preview"}
                 </span>
               ) : (
                 <span className="text-xs text-slate-400">No data</span>
               )}
-              {detectedStatus.error && <div className="mt-2 text-xs text-amber-700">Error: {detectedStatus.error}</div>}
+              {detectedStatus.error && <div className="mt-2 text-xs text-amber-700 dark:text-amber-400">Error: {detectedStatus.error}</div>}
               {message && (
-                <div className={`mt-2 text-sm ${message.type === "err" ? "text-rose-600" : "text-emerald-600"}`} role="alert">
+                <div className={`mt-2 text-sm ${message.type === "err" ? "text-rose-600 dark:text-rose-400" : "text-emerald-600 dark:text-emerald-400"}`} role="alert">
                   {message.text}
                 </div>
               )}
@@ -527,64 +527,64 @@ export default function JsonXmlFormatter(): JSX.Element {
           {/* Right: tabbed preview */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <div className="text-sm font-medium">Preview — <span className="text-xs text-slate-500 ml-2">{tab.toUpperCase()}</span></div>
-              <div className="flex items-center gap-2">
+              <div className="text-sm font-medium text-slate-900 dark:text-slate-100">Preview — <span className="text-xs text-slate-500 dark:text-slate-400 ml-2">{tab.toUpperCase()}</span></div>
+              <div className="flex items-center gap-1.5 flex-wrap">
                 <button
                   onClick={handleCopy}
-                  className="px-2 py-1 border rounded text-xs flex items-center gap-1"
+                  className="px-2.5 py-1 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-xs flex items-center gap-1 transition"
                   aria-label="Copy formatted output"
                 >
-                  <Copy className="w-4 h-4" /> Copy
+                  <Copy className="w-3.5 h-3.5" /> Copy
                 </button>
                 <button
                   onClick={() => handleExport("txt")}
-                  className="px-2 py-1 border rounded text-xs flex items-center gap-1"
+                  className="px-2.5 py-1 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-xs flex items-center gap-1 transition"
                   aria-label="Export as text file"
                 >
-                  <Download className="w-4 h-4" /> TXT
+                  <Download className="w-3.5 h-3.5" /> TXT
                 </button>
                 <button
                   onClick={() => handleExport("md")}
-                  className="px-2 py-1 border rounded text-xs flex items-center gap-1"
+                  className="px-2.5 py-1 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-xs flex items-center gap-1 transition"
                   aria-label="Export as markdown file"
                 >
-                  <Download className="w-4 h-4" /> MD
+                  <Download className="w-3.5 h-3.5" /> MD
                 </button>
                 <button
                   onClick={() => handleExport("json")}
-                  className="px-2 py-1 border rounded text-xs flex items-center gap-1"
+                  className="px-2.5 py-1 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-xs flex items-center gap-1 transition"
                   aria-label={`Export as ${detected === "json" ? "JSON" : "XML"} file`}
                 >
-                  <Download className="w-4 h-4" /> File
+                  <Download className="w-3.5 h-3.5" /> File
                 </button>
                 <button
                   onClick={handleShare}
-                  className="px-2 py-1 border rounded text-xs flex items-center gap-1"
+                  className="px-2.5 py-1 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-xs flex items-center gap-1 transition"
                   aria-label="Share formatted output"
                 >
-                  <Share2 className="w-4 h-4" /> Share
+                  <Share2 className="w-3.5 h-3.5" /> Share
                 </button>
                 <button
                   onClick={handlePrint}
-                  className="px-2 py-1 border rounded text-xs flex items-center gap-1"
+                  className="px-2.5 py-1 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-xs flex items-center gap-1 transition"
                   aria-label="Print formatted output"
                 >
-                  <Printer className="w-4 h-4" /> Print
+                  <Printer className="w-3.5 h-3.5" /> Print
                 </button>
               </div>
             </div>
 
             <div
               ref={previewRef}
-              className={`w-full min-h-[420px] border rounded p-3 text-sm bg-slate-50 overflow-auto ${lineWrap ? "whitespace-pre-wrap" : "whitespace-pre"} font-mono`}
+              className={`w-full min-h-[420px] border border-slate-300 dark:border-slate-800 rounded-lg p-3 text-sm bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 overflow-auto ${lineWrap ? "whitespace-pre-wrap" : "whitespace-pre"} font-mono`}
               aria-live="polite"
               role="region"
               aria-label="Formatted output preview"
             />
 
             <div className="mt-2 flex items-center justify-between">
-              <div className="text-xs text-slate-500">Rendered locally — no data sent to server</div>
-              <label className="flex items-center gap-1 text-xs">
+              <div className="text-xs text-slate-500 dark:text-slate-400">Rendered locally — no data sent to server</div>
+              <label className="flex items-center gap-1 text-xs text-slate-600 dark:text-slate-400">
                 <input
                   type="checkbox"
                   checked={lineWrap}

@@ -490,13 +490,13 @@ export default function ASNLookup() {
   }, [result]);
 
   return (
-    <div className="max-w-4xl mx-auto p-4 sm:p-6">
+    <div className="max-w-4xl mx-auto p-4 sm:p-6 text-slate-900 dark:text-slate-100">
       {/* header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold text-slate-900">ASN Lookup — Offline</h2>
-          <p className="text-sm text-slate-500 max-w-xl">
-            Find ASN / ISP info for IPv4 addresses using an offline dataset. Upload your CSV to extend the dataset. Quick export,
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">ASN & ISP Lookup</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 max-w-xl">
+            Quickly resolve IP addresses to Autonomous System Numbers (ASN), network owner, and prefix. Client-side dataset matching with CSV export,
             copy, and sharing included.
           </p>
         </div>
@@ -506,10 +506,10 @@ export default function ASNLookup() {
             onClick={() => {
               setIpInput("8.8.8.8");
             }}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded bg-slate-50 hover:bg-slate-100 text-sm"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm transition-colors"
             title="Try example"
           >
-            <Clock className="w-4 h-4 text-slate-600" /> Try example
+            <Clock className="w-4 h-4 text-slate-500 dark:text-slate-400" /> Try example
           </button>
           <div className="text-xs text-slate-400">Built for students & pros</div>
         </div>
@@ -518,7 +518,7 @@ export default function ASNLookup() {
       {/* main grid */}
       <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* left: input & controls */}
-        <div className="md:col-span-1 bg-white dark:bg-slate-800 p-4 rounded-lg border">
+        <div className="md:col-span-1 bg-white dark:bg-slate-900/90 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">IP address</label>
           <div className="mt-2 flex gap-2">
             <input
@@ -527,7 +527,7 @@ export default function ASNLookup() {
               value={ipInput}
               onChange={(e) => setIpInput(String(e.target.value || ""))}
               placeholder="e.g., 8.8.8.8 or 2001:4860:4860::8888"
-              className="flex-1 px-3 py-2 rounded border bg-white dark:bg-slate-900 text-sm outline-none focus:ring-2 focus:ring-indigo-300"
+              className="flex-1 px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
               aria-label="IP address input"
               onKeyDown={(e) => {
                 if (e.key === "Enter") handleLookup(ipInput.trim());
@@ -535,7 +535,7 @@ export default function ASNLookup() {
             />
             <button
               onClick={() => handleLookup(ipInput.trim())}
-              className="inline-flex items-center gap-2 px-3 rounded bg-indigo-600 text-white text-sm"
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors"
               aria-label="Lookup"
             >
               <IconSearch className="w-4 h-4" /> Lookup
@@ -543,15 +543,15 @@ export default function ASNLookup() {
           </div>
 
           {error ? (
-            <div className="mt-3 flex items-start gap-2 text-sm text-rose-700">
-              <XCircle className="w-4 h-4" /> <div>{error}</div>
+            <div className="mt-3 flex items-start gap-2 text-sm text-rose-700 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/30 p-2 rounded-lg border border-rose-200 dark:border-rose-900/50">
+              <XCircle className="w-4 h-4 flex-shrink-0 mt-0.5" /> <div>{error}</div>
             </div>
           ) : null}
 
-          <div className="mt-3 text-xs text-slate-500">Tips: paste IP and press Enter. Upload CSV to add mappings.</div>
+          <div className="mt-3 text-xs text-slate-500 dark:text-slate-400">Tips: paste IP and press Enter. Upload CSV to add mappings.</div>
 
-          <div className="mt-4 flex gap-2">
-            <label className="inline-flex items-center gap-2 px-3 py-2 rounded border bg-white text-sm cursor-pointer">
+          <div className="mt-4 flex flex-wrap gap-2">
+            <label className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm cursor-pointer transition-colors">
               <Upload className="w-4 h-4" />
               <input
                 type="file"
@@ -577,7 +577,7 @@ export default function ASNLookup() {
                   setTimeout(() => setLastAction(null), 1200);
                 }
               }}
-              className="inline-flex items-center gap-2 px-3 py-2 rounded border text-sm"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm transition-colors"
               aria-label="Download dataset"
               title="Download current dataset"
             >
@@ -586,7 +586,7 @@ export default function ASNLookup() {
           </div>
 
           <div className="mt-4">
-            <div className="flex items-center justify-between text-xs text-slate-500">
+            <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
               <div>History</div>
               <div className="flex items-center gap-2">
                 <button
@@ -611,81 +611,85 @@ export default function ASNLookup() {
                       setTimeout(() => setLastAction(null), 1200);
                     }
                   }}
-                  className="px-2 py-1 rounded text-xs border"
+                  className="px-2 py-1 rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs text-slate-700 dark:text-slate-300 transition-colors"
                 >
                   Copy
                 </button>
-                <button onClick={clearHistory} className="px-2 py-1 rounded text-xs border">
+                <button onClick={clearHistory} className="px-2 py-1 rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs text-slate-700 dark:text-slate-300 transition-colors">
                   Clear
                 </button>
               </div>
             </div>
-            <div className="mt-2 max-h-36 overflow-auto text-xs text-slate-700 dark:text-slate-200">
-              {(history || []).length === 0 ? <div className="text-slate-400">No lookups yet</div> : (history || []).map((h, i) => <div key={i} className="py-0.5">{String(h)}</div>)}
+            <div className="mt-2 max-h-36 overflow-auto text-xs text-slate-700 dark:text-slate-300 divide-y divide-slate-100 dark:divide-slate-800">
+              {(history || []).length === 0 ? <div className="text-slate-400">No lookups yet</div> : (history || []).map((h, i) => <div key={i} className="py-1">{String(h)}</div>)}
             </div>
           </div>
         </div>
 
         {/* middle/right: result and actions */}
         <div className="md:col-span-2 space-y-3">
-          <div className="bg-white dark:bg-slate-800 p-4 rounded-lg border">
-            <div className="flex items-start justify-between gap-3">
+          <div className="bg-white dark:bg-slate-900/90 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="font-medium text-slate-800 dark:text-slate-100">Result</h3>
-                  {loading && <div className="text-sm text-slate-500 inline-flex items-center gap-1"><Clock className="w-4 h-4" /> Searching…</div>}
+                  <h3 className="font-semibold text-slate-800 dark:text-slate-100">Result</h3>
+                  {loading && <div className="text-sm text-slate-500 dark:text-slate-400 inline-flex items-center gap-1"><Clock className="w-4 h-4 animate-spin" /> Searching…</div>}
                 </div>
-                <div className="text-xs text-slate-500 mt-1">{result?.message ?? "Enter an IP to start."}</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">{result?.message ?? "Enter an IP to start."}</div>
               </div>
 
-              <div className="flex items-center gap-2">
-                <button onClick={copyResult} className="px-2 py-1 rounded border text-sm" aria-label="Copy result">
-                  <Copy className="w-4 h-4" /> <span className="hidden sm:inline">Copy</span>
+              <div className="flex flex-wrap items-center gap-2">
+                <button onClick={copyResult} className="px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm transition-colors" aria-label="Copy result">
+                  <Copy className="w-4 h-4 inline mr-1" /> <span className="hidden sm:inline">Copy</span>
                 </button>
 
-                <button onClick={exportText} className="px-2 py-1 rounded border text-sm" aria-label="Export text">
-                  <FileText className="w-4 h-4" /> TXT
+                <button onClick={exportText} className="px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs transition-colors" aria-label="Export text">
+                  <FileText className="w-3.5 h-3.5 inline mr-0.5" /> TXT
                 </button>
-                <button onClick={exportJSON} className="px-2 py-1 rounded border text-sm" aria-label="Export JSON">
-                  <File className="w-4 h-4" /> JSON
+                <button onClick={exportJSON} className="px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs transition-colors" aria-label="Export JSON">
+                  <File className="w-3.5 h-3.5 inline mr-0.5" /> JSON
                 </button>
-                <button onClick={exportMarkdown} className="px-2 py-1 rounded border text-sm" aria-label="Export Markdown">
-                  <FileText className="w-4 h-4" /> MD
+                <button onClick={exportMarkdown} className="px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs transition-colors" aria-label="Export Markdown">
+                  <FileText className="w-3.5 h-3.5 inline mr-0.5" /> MD
                 </button>
-                <button onClick={exportPrintPDF} className="px-2 py-1 rounded border text-sm" aria-label="Print / Save as PDF">
-                  <Download className="w-4 h-4" /> PDF
+                <button onClick={exportPrintPDF} className="px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs transition-colors" aria-label="Print / Save as PDF">
+                  <Download className="w-3.5 h-3.5 inline mr-0.5" /> PDF
                 </button>
-                <button onClick={shareResult} className="px-2 py-1 rounded border text-sm" aria-label="Share result">
-                  <Share2 className="w-4 h-4" /> Share
+                <button onClick={shareResult} className="px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm transition-colors" aria-label="Share result">
+                  <Share2 className="w-4 h-4 inline mr-1" /> Share
                 </button>
               </div>
             </div>
 
             {/* result display */}
-            <div className="mt-3">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div className="mt-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* badges */}
-                <div className="col-span-1 space-y-2">
-                  <div className="text-xs text-slate-500">ASN</div>
-                  <div className="text-lg font-semibold text-slate-800 dark:text-slate-100">
-                    {result?.found?.asn ?? result?.suggestion?.asn ?? "—"}
+                <div className="col-span-1 space-y-3 p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
+                  <div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">ASN</div>
+                    <div className="text-lg font-semibold text-slate-800 dark:text-slate-100">
+                      {result?.found?.asn ?? result?.suggestion?.asn ?? "—"}
+                    </div>
                   </div>
 
-                  <div className="text-xs text-slate-500 mt-3">ISP</div>
-                  <div className="text-sm text-slate-700 dark:text-slate-200">{result?.found?.isp ?? result?.suggestion?.isp ?? "—"}</div>
+                  <div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">ISP</div>
+                    <div className="text-sm font-medium text-slate-700 dark:text-slate-200">{result?.found?.isp ?? result?.suggestion?.isp ?? "—"}</div>
+                  </div>
 
-                  <div className="flex gap-2 mt-3">
-                    <div className="text-xs text-slate-500">CIDR</div>
-                    <div className="text-xs text-slate-600">{result?.found?.cidr ?? result?.suggestion?.cidr ?? "—"}</div>
+                  <div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">CIDR</div>
+                    <div className="text-xs font-mono text-slate-700 dark:text-slate-300">{result?.found?.cidr ?? result?.suggestion?.cidr ?? "—"}</div>
                   </div>
                 </div>
 
                 {/* highlighted JSON / preview */}
                 <div className="md:col-span-2">
-                  <div className="rounded border p-3 bg-slate-50 dark:bg-slate-900">
+                  <div className="rounded-lg border border-slate-200 dark:border-slate-800 p-3 bg-slate-50 dark:bg-slate-950 font-mono">
                     <div
                       ref={resultRef}
-                      className="prose-pre max-h-72 overflow-auto text-sm"
+                      className="prose-pre max-h-72 overflow-auto text-sm text-slate-800 dark:text-slate-200"
                       aria-live="polite"
                       dangerouslySetInnerHTML={{ __html: highlighted }}
                     />
@@ -698,18 +702,18 @@ export default function ASNLookup() {
                         target="_blank"
                         rel="noreferrer"
                         href={`https://whois.arin.net/rest/ip/${String(result.found.cidr || "").split("/")[0]}`}
-                        className="text-xs px-2 py-1 rounded border"
+                        className="text-xs px-2.5 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
                       >
                         Lookup WHOIS
                       </a>
                     ) : null}
                     {result?.suggestion ? (
-                      <div className="text-xs px-2 py-1 rounded bg-yellow-50 text-yellow-800">
+                      <div className="text-xs px-2.5 py-1 rounded-lg bg-yellow-50 dark:bg-yellow-950/40 border border-yellow-200 dark:border-yellow-900/50 text-yellow-800 dark:text-yellow-300">
                         Suggestion: {result.suggestion.asn ?? "N/A"} — {result.suggestion.isp ?? "N/A"}
                       </div>
                     ) : null}
                     {!result?.found && !result?.suggestion && result?.message ? (
-                      <div className="text-xs px-2 py-1 rounded bg-slate-50 text-slate-800">{result.message}</div>
+                      <div className="text-xs px-2.5 py-1 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200">{result.message}</div>
                     ) : null}
 
                     {/* allow adding custom override: quick add */}
@@ -730,10 +734,10 @@ export default function ASNLookup() {
                           setTimeout(() => setLastAction(null), 1200);
                         }
                       }}
-                      className="px-2 py-1 rounded border text-sm"
+                      className="px-2.5 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs transition-colors"
                       aria-label="Add manual mapping"
                     >
-                      <Info className="w-4 h-4 inline" /> Add mapping
+                      <Info className="w-3.5 h-3.5 inline mr-1" /> Add mapping
                     </button>
                   </div>
                 </div>
@@ -743,42 +747,42 @@ export default function ASNLookup() {
 
           {/* small footer actions */}
           <div className="flex items-center justify-between">
-            <div className="text-xs text-slate-500">Lightweight • Offline-first • No external requests</div>
+            <div className="text-xs text-slate-500 dark:text-slate-400">Lightweight • Offline-first • No external requests</div>
             <div className="text-xs text-slate-400">{lastAction ?? "Ready"}</div>
           </div>
         </div>
       </div>
 
       {/* raw dataset preview */}
-      <div className="mt-4 bg-white dark:bg-slate-800 p-4 rounded border">
+      <div className="mt-4 bg-white dark:bg-slate-900/90 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
         <div className="flex items-center justify-between">
-          <div className="text-sm font-medium">Dataset (preview)</div>
-          <div className="text-xs text-slate-500">Rows: {(Array.isArray(dataset) ? dataset.length : 0)}</div>
+          <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">Dataset (preview)</div>
+          <div className="text-xs text-slate-500 dark:text-slate-400">Rows: {(Array.isArray(dataset) ? dataset.length : 0)}</div>
         </div>
         <div className="mt-2 text-xs overflow-auto max-h-40">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr>
-                <th className="py-1 pr-3">ASN</th>
-                <th className="py-1 pr-3">CIDR</th>
-                <th className="py-1 pr-3">ISP</th>
-                <th className="py-1 pr-3">Country</th>
-                <th className="py-1 pr-3">Notes</th>
+              <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300">
+                <th className="py-1.5 pr-3 font-semibold">ASN</th>
+                <th className="py-1.5 pr-3 font-semibold">CIDR</th>
+                <th className="py-1.5 pr-3 font-semibold">ISP</th>
+                <th className="py-1.5 pr-3 font-semibold">Country</th>
+                <th className="py-1.5 pr-3 font-semibold">Notes</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-800 dark:text-slate-200">
               {(Array.isArray(dataset) ? dataset.slice(0, 12) : []).map((r, i) => (
-                <tr key={i} className="border-t">
-                  <td className="py-1 pr-3">{r?.asn ?? ""}</td>
-                  <td className="py-1 pr-3">{r?.cidr ?? ""}</td>
-                  <td className="py-1 pr-3">{r?.isp ?? ""}</td>
-                  <td className="py-1 pr-3">{r?.country ?? ""}</td>
-                  <td className="py-1 pr-3">{r?.notes ?? ""}</td>
+                <tr key={i}>
+                  <td className="py-1.5 pr-3 font-mono">{r?.asn ?? ""}</td>
+                  <td className="py-1.5 pr-3 font-mono">{r?.cidr ?? ""}</td>
+                  <td className="py-1.5 pr-3">{r?.isp ?? ""}</td>
+                  <td className="py-1.5 pr-3">{r?.country ?? ""}</td>
+                  <td className="py-1.5 pr-3 text-slate-500 dark:text-slate-400">{r?.notes ?? ""}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-          {(Array.isArray(dataset) && dataset.length > 12) && <div className="mt-2 text-xs text-slate-500">Showing first 12 rows</div>}
+          {(Array.isArray(dataset) && dataset.length > 12) && <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">Showing first 12 rows</div>}
         </div>
       </div>
     </div>

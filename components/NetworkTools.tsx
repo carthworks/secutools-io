@@ -455,7 +455,6 @@ export default function NetworkTools() {
             </div>
           )}
         </div>
-        </div>
       </Section>
     </div>
   );

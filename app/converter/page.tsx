@@ -188,10 +188,10 @@ export default function ConverterPage() {
     return (
         <div className="space-y-8">
             <section className="text-center space-y-4">
-                <h1 className="text-3xl sm:text-4xl font-semibold text-slate-800">
+                <h1 className="text-3xl sm:text-4xl font-semibold text-slate-900 dark:text-white">
                     Unicode/Hex/Binary Converter
                 </h1>
-                <p className="text-slate-600 max-w-2xl mx-auto">
+                <p className="text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
                     Convert between Text, Unicode, Hexadecimal, Binary, Decimal, Octal, and Base64
                 </p>
             </section>
@@ -199,13 +199,13 @@ export default function ConverterPage() {
             <Section title="Conversion Settings" subtitle="Choose input and output formats">
                 <div className="grid md:grid-cols-3 gap-4 items-end">
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-2">
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                             Input Format
                         </label>
                         <select
                             value={inputFormat}
                             onChange={(e) => setInputFormat(e.target.value as Format)}
-                            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                            className="w-full px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
                         >
                             {formats.map((f) => (
                                 <option key={f.value} value={f.value}>
@@ -218,21 +218,21 @@ export default function ConverterPage() {
                     <div className="flex justify-center">
                         <button
                             onClick={swapFormats}
-                            className="p-2 rounded-lg border border-slate-300 hover:bg-slate-50 transition-colors"
+                            className="p-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
                             title="Swap formats"
                         >
-                            <ArrowRightLeft className="w-5 h-5 text-slate-600" />
+                            <ArrowRightLeft className="w-5 h-5 text-slate-600 dark:text-slate-400" />
                         </button>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-2">
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                             Output Format
                         </label>
                         <select
                             value={outputFormat}
                             onChange={(e) => setOutputFormat(e.target.value as Format)}
-                            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                            className="w-full px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
                         >
                             {formats.map((f) => (
                                 <option key={f.value} value={f.value}>
@@ -247,8 +247,8 @@ export default function ConverterPage() {
             <Section title="Input" subtitle={`Enter ${formats.find((f) => f.value === inputFormat)?.label}`}>
                 <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                        <label className="text-sm text-slate-600">
-                            Example: <code className="bg-slate-100 px-2 py-1 rounded text-xs">{getExample(inputFormat)}</code>
+                        <label className="text-sm text-slate-600 dark:text-slate-400">
+                            Example: <code className="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-xs text-slate-800 dark:text-slate-200">{getExample(inputFormat)}</code>
                         </label>
                     </div>
 
@@ -256,12 +256,12 @@ export default function ConverterPage() {
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         placeholder={`Enter ${formats.find((f) => f.value === inputFormat)?.label.toLowerCase()}...`}
-                        className="w-full h-48 px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent font-mono text-sm"
+                        className="w-full h-48 px-4 py-3 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500 focus:border-transparent font-mono text-sm outline-none"
                     />
 
                     <button
                         onClick={handleConvert}
-                        className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"
+                        className="w-full px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors font-medium shadow-sm"
                     >
                         Convert
                     </button>
@@ -269,8 +269,8 @@ export default function ConverterPage() {
             </Section>
 
             {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                    <p className="text-red-800 text-sm">
+                <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 rounded-lg p-4">
+                    <p className="text-red-800 dark:text-red-300 text-sm">
                         <strong>Error:</strong> {error}
                     </p>
                 </div>
@@ -282,11 +282,11 @@ export default function ConverterPage() {
                         <div className="flex gap-2">
                             <button
                                 onClick={copyToClipboard}
-                                className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors"
+                                className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                             >
                                 {copied ? (
                                     <>
-                                        <Check className="w-4 h-4 text-green-600" />
+                                        <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
                                         <span className="text-sm">Copied!</span>
                                     </>
                                 ) : (
@@ -298,7 +298,7 @@ export default function ConverterPage() {
                             </button>
                             <button
                                 onClick={downloadOutput}
-                                className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors"
+                                className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                             >
                                 <Download className="w-4 h-4" />
                                 <span className="text-sm">Download</span>
@@ -308,11 +308,11 @@ export default function ConverterPage() {
                         <textarea
                             value={output}
                             readOnly
-                            className="w-full h-48 px-4 py-3 border border-slate-300 rounded-lg bg-slate-50 font-mono text-sm"
+                            className="w-full h-48 px-4 py-3 border border-slate-300 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-mono text-sm outline-none"
                         />
 
-                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                            <p className="text-sm text-blue-800">
+                        <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/50 rounded-lg p-4">
+                            <p className="text-sm text-blue-800 dark:text-blue-300">
                                 <strong>Output length:</strong> {output.length} characters
                             </p>
                         </div>
@@ -322,60 +322,60 @@ export default function ConverterPage() {
 
             <Section title="Format Reference" subtitle="Understanding different formats">
                 <div className="grid md:grid-cols-2 gap-4 text-sm">
-                    <div className="bg-slate-50 rounded-lg p-4">
-                        <h3 className="font-semibold text-slate-800 mb-2">Text (UTF-8)</h3>
-                        <p className="text-slate-600 mb-2">
+                    <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2">Text (UTF-8)</h3>
+                        <p className="text-slate-600 dark:text-slate-400 mb-2">
                             Standard text encoding. Each character can be 1-4 bytes.
                         </p>
-                        <code className="text-xs bg-white px-2 py-1 rounded">Example: Hello</code>
+                        <code className="text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 px-2 py-1 rounded">Example: Hello</code>
                     </div>
 
-                    <div className="bg-slate-50 rounded-lg p-4">
-                        <h3 className="font-semibold text-slate-800 mb-2">Unicode</h3>
-                        <p className="text-slate-600 mb-2">
-                            Unicode code points in U+XXXX format.
+                    <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2">Unicode (U+XXXX)</h3>
+                        <p className="text-slate-600 dark:text-slate-400 mb-2">
+                            Unicode code points in hex format. Universal character representation.
                         </p>
-                        <code className="text-xs bg-white px-2 py-1 rounded">Example: U+0048 U+0065</code>
+                        <code className="text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 px-2 py-1 rounded">Example: U+0048 U+0065</code>
                     </div>
 
-                    <div className="bg-slate-50 rounded-lg p-4">
-                        <h3 className="font-semibold text-slate-800 mb-2">Hexadecimal</h3>
-                        <p className="text-slate-600 mb-2">
-                            Base-16 representation. Each byte is 2 hex digits (0-9, A-F).
+                    <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2">Hexadecimal</h3>
+                        <p className="text-slate-600 dark:text-slate-400 mb-2">
+                            Base16 representation. 2 hex digits per byte.
                         </p>
-                        <code className="text-xs bg-white px-2 py-1 rounded">Example: 48 65 6c 6c 6f</code>
+                        <code className="text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 px-2 py-1 rounded">Example: 48 65 6c 6c 6f</code>
                     </div>
 
-                    <div className="bg-slate-50 rounded-lg p-4">
-                        <h3 className="font-semibold text-slate-800 mb-2">Binary</h3>
-                        <p className="text-slate-600 mb-2">
-                            Base-2 representation. Each byte is 8 bits (0 or 1).
+                    <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2">Binary</h3>
+                        <p className="text-slate-600 dark:text-slate-400 mb-2">
+                            Base2 representation. 8 bits per byte.
                         </p>
-                        <code className="text-xs bg-white px-2 py-1 rounded">Example: 01001000</code>
+                        <code className="text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 px-2 py-1 rounded">Example: 01001000 01100101</code>
                     </div>
 
-                    <div className="bg-slate-50 rounded-lg p-4">
-                        <h3 className="font-semibold text-slate-800 mb-2">Decimal</h3>
-                        <p className="text-slate-600 mb-2">
-                            Base-10 representation. Each byte is 0-255.
+                    <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2">Decimal</h3>
+                        <p className="text-slate-600 dark:text-slate-400 mb-2">
+                            Base10 byte values (0-255) separated by commas.
                         </p>
-                        <code className="text-xs bg-white px-2 py-1 rounded">Example: 72, 101, 108</code>
+                        <code className="text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 px-2 py-1 rounded">Example: 72, 101, 108</code>
                     </div>
 
-                    <div className="bg-slate-50 rounded-lg p-4">
-                        <h3 className="font-semibold text-slate-800 mb-2">Octal</h3>
-                        <p className="text-slate-600 mb-2">
-                            Base-8 representation. Each byte is 3 octal digits (0-7).
+                    <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2">Octal</h3>
+                        <p className="text-slate-600 dark:text-slate-400 mb-2">
+                            Base8 byte values (0-377) separated by spaces.
                         </p>
-                        <code className="text-xs bg-white px-2 py-1 rounded">Example: 110 145 154</code>
+                        <code className="text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 px-2 py-1 rounded">Example: 110 145 154</code>
                     </div>
 
-                    <div className="bg-slate-50 rounded-lg p-4">
-                        <h3 className="font-semibold text-slate-800 mb-2">Base64</h3>
-                        <p className="text-slate-600 mb-2">
+                    <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-lg p-4">
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2">Base64</h3>
+                        <p className="text-slate-600 dark:text-slate-400 mb-2">
                             Binary-to-text encoding using A-Z, a-z, 0-9, +, /.
                         </p>
-                        <code className="text-xs bg-white px-2 py-1 rounded">Example: SGVsbG8=</code>
+                        <code className="text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 px-2 py-1 rounded">Example: SGVsbG8=</code>
                     </div>
                 </div>
             </Section>

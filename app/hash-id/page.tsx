@@ -205,7 +205,7 @@ export default function HashIdentifierPage() {
   return (
     <div className="space-y-8">
       <Section title="Hash Identifier" subtitle="Detect probable hash algorithms from pasted text or single hash">
-        <p className="text-sm text-slate-600 max-w-2xl">
+        <p className="text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
           Paste a hash or logs containing hashes. The tool will try to identify probable hash types (MD5, SHA-1, SHA-256, bcrypt, Argon2, etc.), show a confidence score, and give suggestions.
         </p>
 
@@ -217,32 +217,32 @@ export default function HashIdentifierPage() {
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Paste hash or logs here (supports multiple tokens)"
-            className="w-full min-h-[120px] border rounded p-3 font-mono bg-white text-sm"
+            className="w-full min-h-[120px] border border-slate-300 dark:border-slate-700 rounded-lg p-3 font-mono bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             aria-label="Hash input"
           />
 
           <div className="flex gap-2 flex-wrap items-center">
-            <button onClick={() => handleClear()} className="px-3 py-1 border rounded text-sm flex items-center gap-2">
+            <button onClick={() => handleClear()} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-sm flex items-center gap-1.5 transition">
               <RefreshCw className="w-4 h-4" /> Clear
             </button>
 
-            <div className="flex gap-2 ml-auto">
-              <button onClick={() => exportResult("txt")} className="px-3 py-1 border rounded text-sm flex items-center gap-2"><FileText className="w-4 h-4" /> TXT</button>
-              <button onClick={() => exportResult("md")} className="px-3 py-1 border rounded text-sm flex items-center gap-2"><Download className="w-4 h-4" /> MD</button>
-              <button onClick={() => exportResult("json")} className="px-3 py-1 border rounded text-sm flex items-center gap-2"><Download className="w-4 h-4" /> JSON</button>
-              <button onClick={handleShare} className="px-3 py-1 border rounded text-sm flex items-center gap-2"><Share2 className="w-4 h-4" /> Share</button>
+            <div className="flex gap-2 ml-auto flex-wrap">
+              <button onClick={() => exportResult("txt")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-sm flex items-center gap-1.5 transition"><FileText className="w-4 h-4" /> TXT</button>
+              <button onClick={() => exportResult("md")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-sm flex items-center gap-1.5 transition"><Download className="w-4 h-4" /> MD</button>
+              <button onClick={() => exportResult("json")} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-sm flex items-center gap-1.5 transition"><Download className="w-4 h-4" /> JSON</button>
+              <button onClick={handleShare} className="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-sm flex items-center gap-1.5 transition"><Share2 className="w-4 h-4" /> Share</button>
             </div>
           </div>
 
           {/* quick samples */}
-          <div className="flex gap-2 text-xs text-slate-600">
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium">Samples:</span>
+          <div className="flex gap-2 text-xs text-slate-600 dark:text-slate-400">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Samples:</span>
               {samples.map((s) => (
                 <button
                   key={s.label}
                   onClick={() => setText(s.value)}
-                  className="px-2 py-1 border rounded bg-slate-50 text-xs"
+                  className="px-2.5 py-1 border border-slate-300 dark:border-slate-700 rounded-md bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 text-xs transition"
                 >
                   {s.label}
                 </button>
@@ -254,38 +254,38 @@ export default function HashIdentifierPage() {
         {/* Results / preview */}
         <div className="mt-4 grid gap-4 md:grid-cols-3">
           {/* Left: summary */}
-          <div className="md:col-span-1 bg-white border rounded p-3">
+          <div className="md:col-span-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm">
             <div className="flex items-center gap-2">
-              <div className="font-semibold">Top Detection</div>
+              <div className="font-semibold text-slate-900 dark:text-slate-100">Top Detection</div>
               {primary ? (
                 primary.confidence >= 75 ? (
-                  <div className="ml-auto text-green-600 inline-flex items-center gap-1 text-sm"><CheckCircle className="w-4 h-4" /> {primary.confidence}%</div>
+                  <div className="ml-auto text-emerald-600 dark:text-emerald-400 inline-flex items-center gap-1 text-sm font-medium"><CheckCircle className="w-4 h-4" /> {primary.confidence}%</div>
                 ) : (
-                  <div className="ml-auto text-amber-600 inline-flex items-center gap-1 text-sm"><AlertTriangle className="w-4 h-4" /> {primary.confidence}%</div>
+                  <div className="ml-auto text-amber-600 dark:text-amber-400 inline-flex items-center gap-1 text-sm font-medium"><AlertTriangle className="w-4 h-4" /> {primary.confidence}%</div>
                 )
               ) : (
-                <div className="ml-auto text-slate-500 text-sm">No candidates</div>
+                <div className="ml-auto text-slate-500 dark:text-slate-400 text-sm">No candidates</div>
               )}
             </div>
 
             <div className="mt-3 text-sm">
               {primary ? (
                 <>
-                  <div className="font-medium">Token</div>
-                  <div className="font-mono break-words mt-1 text-xs bg-slate-50 border rounded p-2">{primary.token}</div>
+                  <div className="font-medium text-slate-900 dark:text-slate-100">Token</div>
+                  <div className="font-mono break-words mt-1 text-xs bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 rounded-lg p-2.5">{primary.token}</div>
 
                   <div className="mt-3">
-                    <div className="font-medium">Possible types</div>
-                    <ul className="list-disc pl-5 mt-1 text-sm">
+                    <div className="font-medium text-slate-900 dark:text-slate-100">Possible types</div>
+                    <ul className="list-disc pl-5 mt-1 text-sm text-slate-700 dark:text-slate-300">
                       {primary.matches.map((m) => (
-                        <li key={m.name}><span className="font-medium">{m.name}</span> — <span className="text-slate-600">{m.desc}</span></li>
+                        <li key={m.name}><span className="font-medium text-slate-900 dark:text-white">{m.name}</span> — <span className="text-slate-600 dark:text-slate-400">{m.desc}</span></li>
                       ))}
                     </ul>
                   </div>
 
                   {primary.notes?.length ? (
-                    <div className="mt-3 text-xs text-slate-500">
-                      <div className="font-medium">Notes</div>
+                    <div className="mt-3 text-xs text-slate-500 dark:text-slate-400">
+                      <div className="font-medium text-slate-900 dark:text-slate-100">Notes</div>
                       <ul className="list-disc pl-5">
                         {primary.notes.map((n, i) => <li key={i}>{n}</li>)}
                       </ul>
@@ -293,42 +293,42 @@ export default function HashIdentifierPage() {
                   ) : null}
 
                   <div className="mt-3 flex gap-2">
-                    <button onClick={() => handleCopyToken(primary.token)} className="px-2 py-1 border rounded text-sm flex items-center gap-1"><Copy className="w-4 h-4" /> Copy</button>
-                    <button onClick={() => printAsPDF("Hash Identify", `<pre>${escapeHtml(primary.token)}</pre>`)} className="px-2 py-1 border rounded text-sm flex items-center gap-1"><Download className="w-4 h-4" /> Print</button>
+                    <button onClick={() => handleCopyToken(primary.token)} className="px-2.5 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs flex items-center gap-1.5 transition"><Copy className="w-3.5 h-3.5" /> Copy</button>
+                    <button onClick={() => printAsPDF("Hash Identify", `<pre>${escapeHtml(primary.token)}</pre>`)} className="px-2.5 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs flex items-center gap-1.5 transition"><Download className="w-3.5 h-3.5" /> Print</button>
                   </div>
                 </>
               ) : (
-                <div className="text-sm text-slate-500">No token selected. Paste a hash or sample above to detect.</div>
+                <div className="text-sm text-slate-500 dark:text-slate-400">No token selected. Paste a hash or sample above to detect.</div>
               )}
             </div>
           </div>
 
           {/* Middle: candidate list */}
-          <div className="md:col-span-2 bg-white border rounded p-3">
+          <div className="md:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm">
             <div className="flex items-center justify-between">
-              <div className="font-semibold">All Detections ({detections.length})</div>
-              <div className="text-xs text-slate-500">Real-time</div>
+              <div className="font-semibold text-slate-900 dark:text-slate-100">All Detections ({detections.length})</div>
+              <div className="text-xs text-slate-500 dark:text-slate-400">Real-time</div>
             </div>
 
             <div className="mt-3 space-y-2">
               {detections.length === 0 ? (
-                <div className="text-sm text-slate-400">No tokens detected. Try pasting a hash or log line.</div>
+                <div className="text-sm text-slate-500 dark:text-slate-400">No tokens detected. Try pasting a hash or log line.</div>
               ) : (
                 detections.map((d) => (
-                  <div key={d.token} className={`p-2 border rounded flex items-center gap-3 ${selected===d.token ? "bg-slate-50" : ""}`}>
+                  <div key={d.token} className={`p-3 border rounded-lg flex items-center gap-3 transition ${selected===d.token ? "bg-indigo-50/50 dark:bg-indigo-950/30 border-indigo-300 dark:border-indigo-700" : "bg-slate-50/50 dark:bg-slate-950/50 border-slate-200 dark:border-slate-800"}`}>
                     <div className="flex-1">
-                      <div className="font-mono text-xs break-words">{d.token}</div>
-                      <div className="text-xs text-slate-600 mt-1">
-                        Matches: {d.matches.map(m=>m.name).join(", ") || "—"} • Confidence: {d.confidence}%
+                      <div className="font-mono text-xs break-words text-slate-900 dark:text-slate-100">{d.token}</div>
+                      <div className="text-xs text-slate-600 dark:text-slate-400 mt-1">
+                        Matches: <span className="text-slate-900 dark:text-slate-200 font-medium">{d.matches.map(m=>m.name).join(", ") || "—"}</span> • Confidence: <span className="font-semibold text-indigo-600 dark:text-indigo-400">{d.confidence}%</span>
                       </div>
-                      {d.notes?.length ? <div className="text-xs text-amber-600 mt-1">{d.notes.join("; ")}</div> : null}
+                      {d.notes?.length ? <div className="text-xs text-amber-600 dark:text-amber-400 mt-1">{d.notes.join("; ")}</div> : null}
                     </div>
                     <div className="flex flex-col gap-2 items-end">
-                      <div className="flex gap-1">
-                        <button onClick={()=>{ setSelected(d.token); handleCopyToken(d.token); }} className="px-2 py-1 border rounded text-xs">Copy</button>
-                        <button onClick={()=>{ setSelected(d.token); setMessage(`Selected ${d.token}`); setTimeout(()=>setMessage(null),1200); }} className="px-2 py-1 border rounded text-xs">Select</button>
+                      <div className="flex gap-1.5">
+                        <button onClick={()=>{ setSelected(d.token); handleCopyToken(d.token); }} className="px-2.5 py-1 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md text-xs transition">Copy</button>
+                        <button onClick={()=>{ setSelected(d.token); setMessage(`Selected ${d.token}`); setTimeout(()=>setMessage(null),1200); }} className="px-2.5 py-1 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md text-xs transition">Select</button>
                       </div>
-                      <div className="text-xs text-slate-400">{d.token.length} chars</div>
+                      <div className="text-xs text-slate-400 dark:text-slate-500">{d.token.length} chars</div>
                     </div>
                   </div>
                 ))
@@ -338,21 +338,21 @@ export default function HashIdentifierPage() {
 
           {/* Right (below on small): tips */}
           <div className="md:col-span-3">
-            <div className="mt-3 bg-white border rounded p-3 text-sm">
-              <div className="font-medium">Quick Tips</div>
-              <ul className="list-disc pl-5 mt-2 text-slate-600">
+            <div className="mt-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 text-sm shadow-sm">
+              <div className="font-medium text-slate-900 dark:text-slate-100">Quick Tips</div>
+              <ul className="list-disc pl-5 mt-2 text-slate-600 dark:text-slate-400 space-y-1">
                 <li>Context matters — identical hex lengths can map to multiple algorithms (MD5 vs NTLM).</li>
                 <li>If a token contains `$` with parameters, it may be bcrypt/argon2/other adaptive hash.</li>
                 <li>Base64 tokens can encode binary hashes — decode first if unsure.</li>
                 <li>For suspicious hashes, try searching VirusTotal or threat intel sources (requires API keys).</li>
               </ul>
-              <div className="mt-3 text-xs text-slate-500">All detection runs locally in your browser. No data is sent to our servers.</div>
+              <div className="mt-3 text-xs text-slate-500 dark:text-slate-500">All detection runs locally in your browser. No data is sent to our servers.</div>
             </div>
           </div>
         </div>
 
         {/* small ephemeral message */}
-        {message && <div className="mt-2 text-sm text-green-600">{message}</div>}
+        {message && <div className="mt-2 text-sm text-emerald-600 dark:text-emerald-400">{message}</div>}
       </Section>
     </div>
   );

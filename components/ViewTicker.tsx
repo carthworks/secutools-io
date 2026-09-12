@@ -51,7 +51,7 @@ export default function ViewTicker() {
     ip?.replace(/\.\d+$/, ".***") || (error ? "unavailable" : "loading…");
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 px-3 sm:px-0 w-full">
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400 px-3 sm:px-0 w-full">
       {/* Always show local count */}
       <div className="flex items-center gap-1">
         <svg

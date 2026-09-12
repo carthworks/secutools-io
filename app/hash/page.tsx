@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 import { useState } from "react"
 import Section from "@/components/Section"
 
@@ -37,24 +37,26 @@ setBusy(false)
 }
 
 return (
-<div className="space-y-8">
+<div className="space-y-8 text-slate-900 dark:text-slate-100">
 <Section title="Hash Calculator" subtitle="MD5, SHA1, SHA256, SHA512">
 <div className="flex flex-col gap-3">
-<textarea value={input} onChange={e=>setInput(e.target.value)} placeholder="Enter text or paste bytes (UTF-8)" className="w-full h-28 bg-white border border-slate-300 rounded p-2" />
+<textarea value={input} onChange={e=>setInput(e.target.value)} placeholder="Enter text or paste bytes (UTF-8)" className="w-full h-28 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg p-3 font-mono text-sm outline-none focus:ring-2 focus:ring-primary" />
 <div className="flex items-center gap-2">
-<select value={algo} onChange={e=>setAlgo(e.target.value)} className="bg-white border border-slate-300 rounded px-2 py-1">
+<select value={algo} onChange={e=>setAlgo(e.target.value)} className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 text-sm outline-none">
 {algoOptions.map(a=> <option key={a} value={a}>{a.toUpperCase()}</option>)}
 </select>
-<button onClick={calc} disabled={busy} className="px-3 py-1 rounded bg-primary text-white font-medium disabled:opacity-60">{busy? "Hashing..." : "Calculate"}</button>
+<button onClick={calc} disabled={busy} className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm transition-colors disabled:opacity-60">{busy? "Hashing..." : "Calculate"}</button>
 </div>
-<input value={output} readOnly className="w-full bg-white border border-slate-300 rounded p-2" />
+<input value={output} readOnly placeholder="Hash output will appear here" className="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg p-3 font-mono text-sm outline-none" />
 </div>
 </Section>
 <Section title="Hash Identifier" subtitle="Guess likely algorithm from hash length/pattern">
 <div className="flex flex-col gap-3">
-<input value={toIdentify} onChange={e=>setToIdentify(e.target.value)} placeholder="Paste a hash (hex/base64)" className="w-full bg-white border border-slate-300 rounded p-2" />
-<button onClick={()=>setIdentified(identifyHash(toIdentify))} className="px-3 py-1 rounded bg-slate-600 text-white">Identify</button>
-<div className="text-sm text-slate-700">{identified.join(", ")}</div>
+<input value={toIdentify} onChange={e=>setToIdentify(e.target.value)} placeholder="Paste a hash (hex/base64)" className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg p-3 font-mono text-sm outline-none focus:ring-2 focus:ring-primary" />
+<div className="flex items-center gap-3">
+<button onClick={()=>setIdentified(identifyHash(toIdentify))} className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium transition-colors">Identify</button>
+{identified.length > 0 && <div className="text-sm font-semibold text-slate-800 dark:text-slate-200">{identified.join(", ")}</div>}
+</div>
 </div>
 </Section>
 </div>
